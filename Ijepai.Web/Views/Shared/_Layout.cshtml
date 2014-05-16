@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ijepai</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body style="display: none">
+    <div class="navbar navbar-inverse navbar-fixed-top" id="header">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Ijepai", "Index", "Home", null, new { @class = "navbar-brand" })
+            </div>
+            <div id="header-right">
+                <div class="navbar-collapse collapse pull-right" id="header-right">
+                    <ul class="nav navbar-nav" id="top-nav">
+                        <li>@Html.ActionLink("Dashboard", "Index", "Home", null, new { @id = "dashboard-tab-btn" })</li>
+                        <li>@Html.ActionLink("Statistics", "Index", "Home", null, new { @id = "stats-tab-btn" })</li>
+                        <li>@Html.ActionLink("Labs", "Index", "Home", null, new { @id = "lab-tab-btn", @class = "selected-tab-btn" })</li>
+                        <li>@Html.ActionLink("Bills", "Index", "Home", null, new { @id = "bill-tab-btn" })</li>
+                    </ul>
+                    <div id="logout-button-container">
+                        <a href="#" class="glyphicon glyphicon-off" id="logout-button"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content" id="content">
+        @RenderBody()
+    </div>
+    <footer id="footer">
+        <div id="footer-content">
+            <p>&copy; @DateTime.Now.Year - Ijepai</p>
+        </div>
+    </footer>
+
+    <div id="message">
+        <div id="message-wrap">
+            <span id="message-type-indicator" class="glyphicon"></span>
+            <div id="message-heading">
+                Press F11 for full screen.
+            </div>
+            <div id="message-content">
+                You can press F11 (or any other browser specific key) to make browser go full screen, this increases work area.
+            </div>
+        </div>
+        <div id="close-message-box"></div>
+    </div>
+
+    <div id="lab-action-forms-template" style="display: none">
+        <form class="lab-extend"></form>
+        <form class="lab-edit"></form>
+        <form class="lab-participants-edit"></form>
+        <form class="lab-delete"></form>
+    </div>
+    <div id="participant-action-forms-template" style="display: none">
+        <form class="participant-edit"></form>
+        <form class="participant-move"></form>
+        <form class="participant-delete"></form>
+        <form class="participant-machine-link"></form>
+    </div>
+    <div id="create-lab-form-content">
+        <div id="create-lab-form-header">
+            <ul id="create-lab-form-tabs">
+                <li id="show-create-lab-form-tab" class="active-lab-form-tab">Lab</li>
+                <li id="show-configure-lab-form-tab">Configuration</li>
+                <li id="show-edit-participant-form-tab">Participants</li>
+            </ul>
+            <ul id="create-lab-form-actions">
+                <li class="glyphicon glyphicon-remove" id="create-lab-form-close"></li>
+            </ul>
+        </div>
+        @using (Ajax.BeginForm(
+        "CreateLab",
+        "Labs",
+        new { },
+        new AjaxOptions
+        {
+            HttpMethod = "POST",
+            OnSuccess = "NewLabForm.createLabFormSuccess",
+        },
+        new
+        {
+            @id = "create-lab-form",
+            @enctype = "multipart/form-data"
+        }
+    ))
+        {
+            <div id="create-lab-form-body">
+                <div id="create-lab-form-tab">
+                    @Html.Partial("/Views/Labs/_LabCreatePartial.cshtml")
+                </div>
+                <div id="configure-lab-form-tab" style="display: none;">
+                    @Html.Partial("/Views/Labs/_LabCreateFormPartial.cshtml")
+                </div>
+                <div id="edit-participant-form-tab" style="display: none;">
+                    @Html.Partial("/Views/Labs/_LabParticipantCreatePartial.cshtml")
+                </div>
+            </div>
+            <div id="create-lab-form-footer">
+                <input type="Submit" value="Create" id="create-lab-btn" class="btn btn-default" />
+                <input type="button" value="Reset" id="reset-lab-btn" class="btn btn-default" />
+            </div>
+        }
+    </div>
+    <div id="extend-lab-form-content">
+
+    </div>
+    <div id="edit-participants-form-content">
+
+    </div>
+    <div id="edit-lab-form-content">
+
+    </div>
+    <div id="delete-lab-form-content">
+
+    </div>
+    <div id="overlay">
+
+    </div>
+    @using (Ajax.BeginForm("LogOff", "Account", new { }, new AjaxOptions { OnFailure = "LogoutFailure", OnSuccess = "LogoutSuccess" }, new { id = "logout-form" }))
+    {
+        @Html.AntiForgeryToken();
+    }
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/Scripts.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+        @if (User.Identity.IsAuthenticated) {
+            @:AppData.LoggedIn = 1;
+        } else {
+            @:AppData.LoggedIn = 0;
+        }
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

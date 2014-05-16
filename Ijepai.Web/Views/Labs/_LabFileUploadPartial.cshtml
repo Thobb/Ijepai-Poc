@@ -1,0 +1,12 @@
+﻿@model Ijepai.Web.Models.LabFiles
+
+<div class="form-horizontal">
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.File_Path, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.File_Path)
+            @Html.ValidationMessageFor(model => model.File_Path)
+        </div>
+    </div>
+</div>

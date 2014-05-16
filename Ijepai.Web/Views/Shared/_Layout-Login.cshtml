@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ijepai</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" id="header">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Ijepai", "Index", "Home", null, new { @class = "navbar-brand" })
+            </div>
+        </div>
+    </div>
+    <div class="container body-content" id="content">
+        @RenderBody()
+    </div>
+    <footer id="footer">
+        <div id="footer-content">
+            <p>&copy; @DateTime.Now.Year - Ijepai</p>
+        </div>
+    </footer>
+
+    <div id="message">
+        <div id="message-wrap">
+            <span id="message-type-indicator" class="glyphicon"></span>
+            <div id="message-heading">
+                Press F11 for full screen.
+            </div>
+            <div id="message-content">
+                You can press F11 (or any other browser specific key) to make browser go full screen, this increases work area.
+            </div>
+        </div>
+        <div id="close-message-box"></div>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/Scripts.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+        @if (User.Identity.IsAuthenticated) {
+            @:AppData.LoggedIn = 1;
+        } else {
+            @:AppData.LoggedIn = 0;
+        }
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

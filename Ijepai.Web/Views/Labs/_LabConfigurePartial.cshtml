@@ -1,0 +1,41 @@
+﻿@model Ijepai.Web.Models.newLabModel
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.VM_Count, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.VM_Count)
+        @Html.ValidationMessageFor(model => model.VM_Count)
+    </div>
+</div>
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.VM_Type, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.VM_Type)
+        @Html.ValidationMessageFor(model => model.VM_Type)
+    </div>
+</div>
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.Hard_Disk, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.Hard_Disk)
+        @Html.ValidationMessageFor(model => model.Hard_Disk)
+    </div>
+</div>
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.OS, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.OS)
+        @Html.ValidationMessageFor(model => model.OS)
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Networked, new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Networked)
+        @Html.ValidationMessageFor(model => model.Networked)
+    </div>
+</div>

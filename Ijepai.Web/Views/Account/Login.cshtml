@@ -1,0 +1,68 @@
+﻿@model Ijepai.Web.Models.LoginViewModel
+
+@{
+    Layout = "/Views/Shared/_Layout-Login.cshtml";
+}
+<div class="row" id="Login-Page">
+    <h2>Login</h2>
+    <hr />
+    <div class="col-md-12">
+        <section id="loginForm">
+            @using (Ajax.BeginForm(
+                "Login",
+                "Account",
+                new {
+                    form = "LoginForm"
+                },
+                new AjaxOptions{
+                    HttpMethod = "Post",
+                    OnSuccess = "LoginSuccess",
+                    OnBegin = "LoginBegin",
+                    OnComplete = "LoginComplete"
+                },
+                new {
+                    @class = "form-horzontal", role = "form"
+                }
+            ))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @value = "", @autocomplete = "off" })
+                        </div>
+                        <div class="col-md-6">
+                            @Html.ValidationMessageFor(m => m.UserName)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        <div class="col-md-4">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-6">
+                            @Html.ValidationMessageFor(m => m.Password)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            @Html.LabelFor(m => m.RememberMe)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Log in" class="btn btn-default" />
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+</div>

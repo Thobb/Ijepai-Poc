@@ -1,0 +1,55 @@
+﻿@model Ijepai.Web.Models.LabCreate
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.VM_Count, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.VM_Count)
+        @Html.ValidationMessageFor(model => model.VM_Count)
+    </div>
+</div>
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.VM_Type, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.VM_Type)
+        @Html.ValidationMessageFor(model => model.VM_Type)
+    </div>
+</div>
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.predefinedSoftwares, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.predefinedSoftwares)
+        @Html.ValidationMessageFor(model => model.predefinedSoftwares)
+    </div>
+</div>
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.Networked, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.Networked)
+        @Html.ValidationMessageFor(model => model.Networked)
+    </div>
+</div>
+
+<div class="machine-size-os">
+    <div class="predefined-size-os">
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.Machine_Size, new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.Machine_Size)
+                @Html.ValidationMessageFor(model => model.Machine_Size)
+            </div>
+        </div>
+
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.OS, new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.OS)
+                @Html.ValidationMessageFor(model => model.OS)
+            </div>
+        </div>
+    </div>
+    <div class="choose-custom-machine">
+        <input type="file" name="dataFile[0]" id="dataFile" />
+    </div>
+</div>

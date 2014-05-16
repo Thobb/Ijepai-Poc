@@ -1,0 +1,36 @@
+﻿@model Ijepai.Web.Models.LabCreate
+
+@Html.AntiForgeryToken()
+<input type="hidden" name="Lab_ID" value="0" />
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.Name)
+        @Html.ValidationMessageFor(model => model.Name)
+    </div>
+</div>
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.Time_Zone, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.Time_Zone)
+        @Html.ValidationMessageFor(model => model.Time_Zone)
+    </div>
+</div>
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.Start_Time, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.Start_Time)
+        @Html.ValidationMessageFor(model => model.Start_Time)
+    </div>
+</div>
+
+<div class="form-group col-md-6">
+    @Html.LabelFor(model => model.End_Time, new { @class = "control-label col-md-3" })
+    <div class="col-md-9">
+        @Html.EditorFor(model => model.End_Time)
+        @Html.ValidationMessageFor(model => model.End_Time)
+    </div>
+</div>

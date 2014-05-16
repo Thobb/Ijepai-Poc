@@ -1,0 +1,17 @@
+﻿<div id="tabs">
+    <div id="dashboard-tab">
+        @Html.Action("GetView", "Dashboard")
+    </div>
+
+    <div id="lab-tab" class="selected-tab">
+        @Html.Action("GetView", "Labs")
+    </div>
+
+    <div id="bill-tab">
+        @Html.Action("GetView", "Bills")
+    </div>
+
+    <div id="stats-tab">
+        @Html.Action("GetView", "Statistics")
+    </div>
+</div>

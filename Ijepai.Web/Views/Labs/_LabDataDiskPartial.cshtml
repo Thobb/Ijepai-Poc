@@ -1,0 +1,11 @@
+﻿@model Ijepai.Web.Models.LabDataDisk
+
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.LabelFor(model => model.DataDisk_Path, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.DataDisk_Path)
+            @Html.ValidationMessageFor(model => model.DataDisk_Path)
+        </div>
+    </div>
+</div>
