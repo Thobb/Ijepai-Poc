@@ -28,7 +28,7 @@ namespace Ijepai.Web.Models
         public System.DateTime End_Time { get; set; }
 
         [Display(Name = "Select Softwares")]
-        public string predefinedSoftwares { get; set; }
+        public ICollection<PredefinedSoftware> predefinedSoftwares { get; set; }
 
         [Required(ErrorMessage = "There must be atleast 1 machine in Lab.")]
         [Range(1, 10000, ErrorMessage = "Lab size can only be 1 to 10000")]
@@ -91,5 +91,11 @@ namespace Ijepai.Web.Models
         [Display(Name = "Upload Files")]
         [DataType(DataType.Upload)]
         public ICollection<HttpPostedFileBase> Files { get; set; }
+    }
+
+    public class PredefinedSoftware
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
     }
 }

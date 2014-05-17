@@ -56,8 +56,14 @@ namespace Ijepai.Web.Controllers.Labs
             {
                 if (Lab_ID != 0)
                 {
-                    ConfigureLab(newLabData, Lab_ID);
-                    EditParticipants(newLabData.LabParticipants, Lab_ID);
+                    if (newLabData.Networked != null)
+                    {
+                        ConfigureLab(newLabData, Lab_ID);
+                    }
+                    if (newLabData.LabParticipants.Count() != 0)
+                    {
+                        EditParticipants(newLabData.LabParticipants, Lab_ID);
+                    }
                 }
             }
             catch (Exception ex)
@@ -108,12 +114,16 @@ namespace Ijepai.Web.Controllers.Labs
             return 0;
         }
 
-        public JsonResult UploadLabResources(HttpPostedFileBase file)
+        public JsonResult UploadLabResources(HttpPostedFileBase dataFile)
         {
-            if ((file != null) && (file.ContentLength > 0))
+            if (!System.IO.Directory.Exists(Server.MapPath("/Lab_Data")))
             {
-                var fileName = System.IO.Path.GetFileName(file.FileName);
-                file.SaveAs(System.IO.Path.Combine(Server.MapPath("/App_Data"), fileName));
+                System.IO.Directory.CreateDirectory(Server.MapPath("/Lab_Data"));
+            }
+            if ((dataFile != null) && (dataFile.ContentLength > 0))
+            {
+                var fileName = System.IO.Path.GetFileName(dataFile.FileName);
+                dataFile.SaveAs(System.IO.Path.Combine(Server.MapPath("/Lab_Data"), fileName));
             }
             return Json(new { Status = 0 });
         }

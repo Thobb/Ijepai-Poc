@@ -116,7 +116,42 @@
 
     </div>
     <div id="edit-participants-form-content">
-
+        <div id="edit-participants-form-header">
+            <ul id="edit-participants-form-tab-list">
+                <li id="edit-participants-list">Add / Remove Participants</li>
+            </ul>
+            <ul id="edit-participants-form-actions">
+                <li id="close-participants-form" class="glyphicon glyphicon-remove"></li>
+            </ul>
+        </div>
+        @using (Ajax.BeginForm(
+            "CreateLab",
+            "Labs",
+            new { },
+            new AjaxOptions
+            {
+                HttpMethod = "POST",
+                OnSuccess = "NewLabForm.editParticipantFormSuccess",
+            },
+            new
+            {
+                @id = "edit-participants-form",
+                @enctype = "multipart/form-data"
+            }
+        ))
+        {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Lab_ID" id="edit-participants-lab-id" value="0" />
+        <div id="edit-participants-form-body">
+            <div id="edit-participants-form-list">
+            </div>
+            <a href="#" id="edit-lab-participants-add-participant" count="">Add a participant</a>
+        </div>
+        <div id="edit-participants-form-footer">
+            <input type="Submit" value="Create" id="edit-participant-list-btn" class="btn btn-default" />
+            <input type="button" value="Reset" id="reset-participant-list-btn" class="btn btn-default" />
+        </div>
+        }
     </div>
     <div id="edit-lab-form-content">
 

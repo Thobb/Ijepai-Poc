@@ -560,8 +560,7 @@ body {
     top: -1px;
 }
 #create-lab-form-body {
-    padding-top: 25px;
-    padding-bottom: 5px;
+    padding: 25px 0 5px 10px;
     box-shadow: 2px 0 10px #000 inset, -2px 0 10px #000 inset;
     max-height: 400px;
     overflow-y: auto;
@@ -590,12 +589,13 @@ body {
 #create-lab-participant-list, #create-lab-participant-list .participant-row, #create-lab-participant-list .add-participant-row-1, #create-lab-participant-list .add-participant-row-2 {
     overflow: hidden;
 }
-#create-lab-participant-list .participant-row {
+.participant-row {
     position: relative;
     margin: 0 15px 5px 15px;
     background: #222;
     border-radius: 5px;
     padding-top: 15px;
+    overflow: hidden;
 }
 .new-participant-row-index {
     position: absolute;
@@ -608,13 +608,95 @@ body {
     border-radius: 3px 0 0 0;
     background: #1133ff;
 }
+.new-participant-row {
+
+}
 #create-lab-form-add-participant {
     float: right;
     margin: 0 20px 5px 0;
 }
-.choose-custom-machine {
+.machine-size-os {
+    clear:both;
     overflow: hidden;
+    position: relative;
+    height: 40px;
+}
+.toggle-machine-size-os {
+    position: absolute;
+    left: 0px;
+    top: -1px;
+    padding: 3px 5px 7px 5px;
+    z-index: 10;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.toggle-machine-size-os:hover {
+    background: #1133ff;
+}
+.predefined-size-os {
+    overflow: hidden;
+}
+.choose-custom-machine {
     clear: both;
+    display: none;
+    left: 0;
+    width: 100%;
+    position: absolute;
+}
+#edit-participants-form-content {
+    position: absolute;
+    left: 1%;
+    top: 80px;
+    width: 98%;
+    display: none;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    box-shadow: 4px 4px 10px #000;
+    z-index: 5;
+}
+#edit-participants-form-header {
+    border-bottom: 2px solid #fff;
+    background: #222;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    color: #fff;
+}
+#edit-participants-form-tab-list {
+    float: left;
+    margin-bottom: 0;
+}
+#edit-participants-form-tab-list li {
+    padding: 2px 40px;
+}
+#edit-participants-list {
+    background: #1133ff;
+}
+#edit-participants-form-actions {
+    float: right;
+    margin-bottom: 0;
+}
+#close-participants-form {
+    padding: 5px;
+    top: -1px;
+}
+#close-participants-form:hover {
+    cursor: pointer;
+}
+#edit-participants-form-body {
+    overflow-y: auto;
+    max-height: 400px;
+    padding: 25px 0 5px 10px;
+    box-shadow: 2px 0 10px #000 inset, -2px 0 10px inset;
+    background: #333;
+}
+#edit-participants-form-footer {
+    border-top: 2px solid #fff;
+    background: #222;
+    border-radius: 0 0 5px 5px;
+    overflow: hidden;
+}
+#edit-participants-form-list {
+    color: #fff;
 }
 /**************************************** /New Lab Form *********************************/
 #overlay {

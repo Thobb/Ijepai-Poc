@@ -110,3 +110,5 @@ C:\Users\dell\Desktop\Ijepai\Ijepai.Web\obj\Debug\Ijepai.Web.Migrations.Initial.
 C:\Users\dell\Desktop\Ijepai\Ijepai.Web\obj\Debug\Ijepai.Web.csproj.GenerateResource.Cache
 C:\Users\dell\Desktop\Ijepai\Ijepai.Web\obj\Debug\Ijepai.Web.dll
 C:\Users\dell\Desktop\Ijepai\Ijepai.Web\obj\Debug\Ijepai.Web.pdb
+C:\Users\dell\Documents\Visual Studio 2013\Projects\Ijepai-POC\Ijepai\Ijepai.Web\obj\Debug\Ijepai.Web.Migrations.Initial.resources
+C:\Users\dell\Documents\Visual Studio 2013\Projects\Ijepai-POC\Ijepai\Ijepai.Web\obj\Debug\Ijepai.Web.csproj.GenerateResource.Cache
