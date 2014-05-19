@@ -20,11 +20,13 @@ namespace Ijepai.Web.Models
         [Required(ErrorMessage = "Specify starting time of Lab.")]
         [Display(Name = "Start Time")]
         [DataType(DataType.DateTime, ErrorMessage = "Time specified is not in correct format.")]
+        [DisplayFormat(DataFormatString = "HH:mm d-MMM-yyyy", ApplyFormatInEditMode = true)]
         public System.DateTime Start_Time { get; set; }
 
         [Required(ErrorMessage = "Specify end time of Lab.")]
         [Display(Name = "End Time")]
         [DataType(DataType.DateTime, ErrorMessage = "Time specified is not in correct format.")]
+        [DisplayFormat(DataFormatString = "d-MMM-yyyy HH:mm", ApplyFormatInEditMode = true)]
         public System.DateTime End_Time { get; set; }
 
         [Display(Name = "Select Softwares")]

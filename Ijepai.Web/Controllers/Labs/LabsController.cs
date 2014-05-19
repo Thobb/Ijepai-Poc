@@ -18,7 +18,7 @@ namespace Ijepai.Web.Controllers.Labs
         public JsonResult Index()
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            var labData = db.Labs.ToList().Select(l => new { l.ID, l.Name, l.Time_Zone, Start_Time = l.Start_Time.ToString("dd-MMM-yyyy HH:MM"), End_Time = l.End_Time.ToString("dd-MMM-yyyy HH:MM"), l.Status, l.LabConfig.VM_Count });
+            var labData = db.Labs.ToList().Select(l => new { l.ID, l.Name, l.Time_Zone, Start_Time = l.Start_Time.ToString("dd-MMM-yyyy HH:MM"), End_Time = l.End_Time.ToString("dd-MMM-yyyy HH:MM"), l.Status, VM_Count = (l.LabConfig == null)? 0 :l.LabConfig.VM_Count });
             return Json(new { Status = 0, TotalItems = labData.Count(), rows = labData });
         }
 
@@ -125,6 +125,18 @@ namespace Ijepai.Web.Controllers.Labs
                 var fileName = System.IO.Path.GetFileName(dataFile.FileName);
                 dataFile.SaveAs(System.IO.Path.Combine(Server.MapPath("/Lab_Data"), fileName));
             }
+            return Json(new { Status = 0 });
+        }
+
+        public JsonResult DeleteLab(int Lab_ID)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var lab = db.Labs.Where(l => l.ID == Lab_ID).FirstOrDefault();
+            db.Labs.Remove(lab);
+            db.LabParticipants.Where(p => p.LabID == Lab_ID).ToList().ForEach(p => db.LabParticipants.Remove(p));
+            db.LabConfiguration.Where(c => c.LabID == Lab_ID).ToList().ForEach(c => db.LabConfiguration.Remove(c));
+
+            db.SaveChanges();
             return Json(new { Status = 0 });
         }
 

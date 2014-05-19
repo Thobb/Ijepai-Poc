@@ -44,20 +44,24 @@
             }
         },
         populateEditParticipantList: function (rowId, conf, Data) {
-            form = $("#lab-participants-edit");
-            form.css("display", "block");
+            $("#lab-participants-edit").css("display", "block");
             $("#edit-participants-form-list").html("");
             $("#edit-participants-form-content").fadeToggle();
             var index = 0;
-            for (i in Data) {
-                NewLabForm.create_new_participant_row({
-                    Index: index,
-                    Email_Address: Data[i]["Email_Address"],
-                    First_Name: Data[i]["First_Name"],
-                    Last_Name: Data[i]["Last_Name"],
-                    Role: Data[i]["Role"]
-                }, "edit-participants-form-list");
+            if (Data.length == 0) {
+                NewLabForm.create_new_participant_row({ Role: "Admin", Index: index }, "edit-participants-form-list");
                 index++;
+            } else {
+                for (i in Data) {
+                    NewLabForm.create_new_participant_row({
+                        Index: index,
+                        Email_Address: Data[i]["Email_Address"],
+                        First_Name: Data[i]["First_Name"],
+                        Last_Name: Data[i]["Last_Name"],
+                        Role: Data[i]["Role"]
+                    }, "edit-participants-form-list");
+                    index++;
+                }
             }
             $("#edit-lab-participants-add-participant").attr("count", index);
         }
@@ -107,18 +111,37 @@
                             for (field in cols) {
                                 tr.append("<td>" + rows[i][field] + "</td>")
                             }
-                            tr.find(".refresh-participant-table").click(function (e) {
+                            tr.find(".refresh-participant-table").not(".inactive-lab-action").click(function (e) {
                                 e.preventDefault();
                                 Grid.LoadSubgrid($(this).parent().parent().parent().attr("id"), conf)
                                 return false;
                             });
-                            tr.find(".edit-lab-participant-list").click(function(e) {
+                            tr.find(".edit-lab-participant-list").not(".inactive-lab-action").click(function (e) {
                                 e.preventDefault();
                                 $("#overlay").fadeIn();
                                 $("#edit-participants-lab-id").val($(this).parent().parent().parent().attr("id").slice(4));
                                 Grid.LoadSubgrid($(this).parent().parent().parent().attr("id"), conf, "populateEditParticipantList");
                                 return false;
-                            })
+                            });
+                            tr.find(".reschedule-lab").not(".inactive-lab-action").click(function (e) {
+                                e.preventDefault();
+                                $("#overlay").fadeIn();
+                                $("#reschedule-lab-id").val($(this).parent().parent().parent().attr("id").slice(4));
+                                $("#extend-lab-form-content").fadeIn();
+                                return false;
+                            });
+                            tr.find(".edit-lab-attributes").not(".inactive-lab-action").click(function (e) {
+                                e.preventDefault();
+                                alert("hi");
+                                return false;
+                            });
+                            tr.find(".delete-lab").not(".inactive-lab-action").click(function (e) {
+                                e.preventDefault();
+                                $("#delete-lab-id").val($(this).parent().parent().parent().attr("id").slice(4));
+                                $("#overlay").fadeIn();
+                                $("#delete-lab-form-content").fadeIn();
+                                return false;
+                            });
                             tbody.append(tr);
                             if (hasSubgrid) {
                                 var subgridCols = config.subgridColumns;
@@ -420,6 +443,21 @@ var NewLabForm = {
             NewLabForm.closeEditParticipantForm();
             return false;
         });
+        $("#close-extend-lab-form").click(function (e) {
+            e.preventDefault();
+            NewLabForm.closeRescheduleLabForm();
+            return false;
+        });
+        $("#cancel-lab-deletion-btn").click(function (e) {
+            e.preventDefault();
+            NewLabForm.closeDeleteLabForm();
+            return false;
+        });
+        $("#close-delete-lab-form").click(function (e) {
+            e.preventDefault();
+            NewLabForm.closeDeleteLabForm();
+            return false;
+        });
         (function uploadDataDisk() {
             $(".data-disk").unbind("change");
             $(".data-disk").change(function () {
@@ -458,7 +496,6 @@ var NewLabForm = {
         NewLabForm.UploadComplete = function(evt) {
             if (evt.target.status == 200)
                 alert("File uploaded successfully.");
-
             else
                 alert("Error Uploading File");
         }
@@ -467,6 +504,25 @@ var NewLabForm = {
             alert("There was an error attempting to upload the file.");
 
         }
+    },
+    closeDeleteLabForm: function () {
+        Grid.Load("#lab-list", "LabGrid");
+        $("#delete-lab-form").trigger("reset");
+        $("#delete-lab-form-content").fadeOut(function () {
+            $("#overlay").fadeOut(200);
+        })
+    },
+    deleteLabFormSuccess: function(){
+        NewLabForm.closeDeleteLabForm();
+    },
+    closeRescheduleLabForm: function () {
+        $("#reschedule-lab-form").trigger("reset");
+        $("#extend-lab-form-content").fadeOut(function () {
+            $("#overlay").fadeOut(200);
+        })
+    },
+    rescheduleLabFormSuccess: function(){
+        NewLabForm.closeRescheduleLabForm();
     },
     closeEditParticipantForm: function(){
         $("#edit-participants-form-content").fadeOut(function () {
@@ -640,8 +696,22 @@ $(function () {
     App.Init();
     //Message.show(false, false, "glyphicon-info-sign", false, false)
     $(window).resize(App.setPage);
+    $("#Start_Time").datetimepicker({
+        //format: 'H:i d-M-Y'
+    });
+    $("#End_Time").datetimepicker({
+        //format: 'd-M-Y H:i'
+    });
+    $("#Start_Time_Calendar").datetimepicker();
+    $("#End_Time_Calendar").datetimepicker();
+    $("#reschedule-lab-start-time-calendar").datetimepicker();
+    $("#reschedule-lab-end-time-calendar").datetimepicker();
+    $("#reschedule-lab-start-time").datetimepicker();
+    $("#reschedule-lab-end-time").datetimepicker();
 })
-
+$.validator.dateTime = function (value, element) {
+    alert(value)
+}
 function getToken() {
     $.ajax({
         url: "/Account/getToken",

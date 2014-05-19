@@ -6,6 +6,7 @@
     <title>Ijepai</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
 
 </head>
 <body style="display: none">
@@ -107,13 +108,59 @@
                 </div>
             </div>
             <div id="create-lab-form-footer">
-                <input type="Submit" value="Create" id="create-lab-btn" class="btn btn-default" />
+                <input type="Submit" value="Submit" id="create-lab-btn" class="btn btn-default" />
                 <input type="button" value="Reset" id="reset-lab-btn" class="btn btn-default" />
             </div>
         }
     </div>
     <div id="extend-lab-form-content">
-
+        <div id="extend-lab-form-header">
+            <ul id="extend-lab-form-tabs">
+                <li id="edit-lab-schedule">Reschedule Lab</li>
+            </ul>
+            <ul id="extend-lab-form-actions">
+                <li id="close-extend-lab-form" class="glyphicon glyphicon-remove"></li>
+            </ul>
+        </div>
+        @using (Ajax.BeginForm(
+            "CreateLab",
+            "Labs",
+            new { },
+            new AjaxOptions
+            {
+                HttpMethod = "POST",
+                OnSuccess = "NewLabForm.rescheduleLabFormSuccess",
+            },
+            new
+            {
+                @id = "reschedule-lab-form"
+            }
+        ))
+        {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Lab_ID" id="reschedule-lab-id" value="0" />
+        <input type="hidden" name="Name" id="reschedule-lab-name" value="" />
+        <div id="extend-lab-form-body">
+            <div class="col-md-6">
+                <label for="reschedule-lab-start-time" class="col-md-3">Start Time</label>
+                <div class="col-md-9">
+                    <input id="reschedule-lab-start-time" name="Start_Time" autocomplete="off" />
+                    <span id="reschedule-lab-start-time-calendar" class="glyphicon glyphicon-calendar" style="position: absolute; color: #3399ff; top: 2px; left: 155px;"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="reschedule-lab-end-time" class="col-md-3">End Time</label>
+                <div class="col-md-9">
+                    <input id="reschedule-lab-end-time" name="End_Time" autocomplete="off" />
+                    <span id="reschedule-lab-end-time-calendar" class="glyphicon glyphicon-calendar" style="position: absolute; color: #3399ff; top: 2px; left: 155px;"></span>
+                </div>
+            </div>
+        </div>
+        <div id="extend-lab-form-footer">
+            <input type="Submit" value="Create" id="reschedule-lab-btn" class="btn btn-default" />
+            <input type="button" value="Reset" id="reset-lab-btn" class="btn btn-default" />
+        </div>
+        }
     </div>
     <div id="edit-participants-form-content">
         <div id="edit-participants-form-header">
@@ -135,8 +182,7 @@
             },
             new
             {
-                @id = "edit-participants-form",
-                @enctype = "multipart/form-data"
+                @id = "edit-participants-form"
             }
         ))
         {
@@ -157,11 +203,42 @@
 
     </div>
     <div id="delete-lab-form-content">
-
+        <div id="delete-lab-form-header">
+            <ul id="delete-lab-form-tabs">
+                <li id="delete-lab">Delete Lab</li>
+            </ul>
+            <ul id="delete-lab-form-actions">
+                <li id="close-delete-lab-form" class="glyphicon glyphicon-remove"></li>
+            </ul>
+        </div>
+        @using (Ajax.BeginForm(
+            "DeleteLab",
+            "Labs",
+            new { },
+            new AjaxOptions
+            {
+                HttpMethod = "POST",
+                OnSuccess = "NewLabForm.deleteLabFormSuccess",
+            },
+            new
+            {
+                @id = "edit-participants-form"
+            }
+        ))
+        {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Lab_ID" id="delete-lab-id" value="0" />
+        <div id="delete-lab-form-body">
+            <span class="glyphicon glyphicon-warning-sign" style="color: red; font-size: 1.5em"></span>
+            The Lab and its resources will be deleted permanently. You can not undo this action. Do you wish to proceed?
+        </div>
+        <div id="delete-lab-form-footer">
+            <input type="submit" value="Delete" id="delete-lab-btn" class="btn btn-default" />
+            <input type="button" value="Cancel" id="cancel-lab-deletion-btn" class="btn btn-default" />
+        </div>
+        }
     </div>
-    <div id="overlay">
-
-    </div>
+    <div id="overlay"></div>
     @using (Ajax.BeginForm("LogOff", "Account", new { }, new AjaxOptions { OnFailure = "LogoutFailure", OnSuccess = "LogoutSuccess" }, new { id = "logout-form" }))
     {
         @Html.AntiForgeryToken();
@@ -171,6 +248,7 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script src="~/Scripts/Scripts.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.datetimepicker.js"></script>
     <script type="text/javascript">
         @if (User.Identity.IsAuthenticated) {
             @:AppData.LoggedIn = 1;

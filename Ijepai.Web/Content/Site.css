@@ -574,7 +574,7 @@ body {
     background: #222;
     border-radius: 0 0 5px 5px;
 }
-#create-lab-form-content input{
+#create-lab-form-content input, #extend-lab-form-content input {
     border-radius: 2px;
     border: 2px solid #999;
 }
@@ -643,7 +643,7 @@ body {
     width: 100%;
     position: absolute;
 }
-#edit-participants-form-content {
+#edit-participants-form-content, #extend-lab-form-content, #delete-lab-form-content {
     position: absolute;
     left: 1%;
     top: 80px;
@@ -654,49 +654,52 @@ body {
     box-shadow: 4px 4px 10px #000;
     z-index: 5;
 }
-#edit-participants-form-header {
+#edit-participants-form-header, #extend-lab-form-header, #delete-lab-form-header {
     border-bottom: 2px solid #fff;
     background: #222;
     border-radius: 5px 5px 0 0;
     overflow: hidden;
     color: #fff;
 }
-#edit-participants-form-tab-list {
+#edit-participants-form-tab-list, #extend-lab-form-tabs, #delete-lab-form-tabs {
     float: left;
     margin-bottom: 0;
 }
-#edit-participants-form-tab-list li {
+#edit-participants-form-tab-list li, #extend-lab-form-tabs li, #delete-lab-form-tabs li {
     padding: 2px 40px;
 }
-#edit-participants-list {
+#edit-participants-list, #edit-lab-schedule, #delete-lab {
     background: #1133ff;
 }
-#edit-participants-form-actions {
+#edit-participants-form-actions, #extend-lab-form-actions, #delete-lab-form-actions {
     float: right;
     margin-bottom: 0;
 }
-#close-participants-form {
+#close-participants-form, #close-extend-lab-form, #close-delete-lab-form {
     padding: 5px;
     top: -1px;
 }
-#close-participants-form:hover {
+#close-participants-form:hover, #close-extend-lab-form:hover, #close-delete-lab-form:hover {
     cursor: pointer;
 }
-#edit-participants-form-body {
+#edit-participants-form-body, #extend-lab-form-body, #delete-lab-form-body {
     overflow-y: auto;
     max-height: 400px;
-    padding: 25px 0 5px 10px;
-    box-shadow: 2px 0 10px #000 inset, -2px 0 10px inset;
+    padding: 25px 0 15px 10px;
+    box-shadow: 2px 0 10px #000 inset, -2px 0 10px #000 inset;
     background: #333;
+    color: #fff;
 }
-#edit-participants-form-footer {
+#edit-participants-form-footer, #extend-lab-form-footer, #delete-lab-form-footer {
     border-top: 2px solid #fff;
     background: #222;
     border-radius: 0 0 5px 5px;
     overflow: hidden;
+    padding: 5px 10px;
 }
-#edit-participants-form-list {
-    color: #fff;
+#edit-lab-participants-add-participant {
+    float: right;
+    margin-right: 20px;
 }
 /**************************************** /New Lab Form *********************************/
 #overlay {

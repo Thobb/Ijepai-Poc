@@ -22,15 +22,16 @@
 <div class="form-group col-md-6">
     @Html.LabelFor(model => model.Start_Time, new { @class = "control-label col-md-3" })
     <div class="col-md-9">
-        @Html.EditorFor(model => model.Start_Time)
-        @Html.ValidationMessageFor(model => model.Start_Time)
-    </div>
+        @Html.TextBoxFor(model => model.Start_Time, new {type = "datetime", autocomplete = "off"})
+        <span id="Start_Time_Calendar" class="glyphicon glyphicon-calendar" style="position: absolute; color: #3399ff; left: 155px;"></span>
+        @Html.ValidationMessageFor(model => model.Start_Time)</div>
 </div>
 
 <div class="form-group col-md-6">
     @Html.LabelFor(model => model.End_Time, new { @class = "control-label col-md-3" })
     <div class="col-md-9">
-        @Html.EditorFor(model => model.End_Time)
+        @Html.TextBoxFor(model => model.End_Time, new { type = "datetime", autocomplete = "off" })
+        <span id="End_Time_Calendar" class="glyphicon glyphicon-calendar" style="position: absolute; color: #3399ff; left: 155px;"></span>
         @Html.ValidationMessageFor(model => model.End_Time)
     </div>
 </div>
