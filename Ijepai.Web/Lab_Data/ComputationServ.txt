@@ -1,0 +1,41 @@
+Aim :- Providing computation (with or without persistant or non-persistant storage) as a service.
+Constituents :- Thin clients (commercial thin-client pc, old pc, smartphones (with or without external monitor), tablets (with or without external monitor), embeded soc ranging from intel edison, intel galilio like, raspberry pi or beagle bone like, and in future based on Arm 50 range as well) on client side.
+Cloud services like ibm cloud, hp cloud or may be amazon as well (Currently using windows azure).
+Software for binding thin-clients with cloud (Inhouse called "Ijepai").
+About "Ijepai" software :- "Ijepai" is an automated versetile software with very flexible and automated (size of machine, number of machines, configuration of machines and other characteristics like uptime of machine, software on machine, wether the sessions are persistant or not and so on).
+Benefits :- Ease of getting up running (Low cost to be paid upfront, can reuse discarded old cpu). High mobility (Work from home, physical shifting of environment as a company grows or if they find some other location more conducive and productive). Fluidity computation power (Computation power can be borrowed from cloud as well as internal network if desired), Reduced downtime, Reduced cost of repairs.
+Target Scenarios :- Startups, Incubators, Growing organizations, Lab provisioning for Teaching (Students use their laptops at home and use virtual machines of desired configuration on cloud), Lab provisioning for collaboration (BYOD) on software projects.
+
+
+Intel® Celeron® Processor J1900 (2M Cache,2 GHz up to 2.42 GHz)        FC-BGA13F, 10 W,  4/4,   FCBGA1170, Q4'13, $82.00, DDR3L-1333
+Intel® Core™ i5-4300U Processor (3M Cache,1.9 GHz up to 2.90 GHz)      FC-BGA12F, 15 W,  2/4,   FCBGA1168, Q3'13, $281.00
+Intel® Xeon® Processor E5-2680 v2 (25M Cache, 2.8 GHz up to 3.6 GHz)   FC-LGA12,  115 W, 10/20, FCLGA2011, Q3'13, $1723.00
+Intel® Core™ i7-4850EQ Processor (6M Cache, 1.6 GHzup to 3.2 GHz)      FC-BGA12F, 47 W,  4/8,   FCBGA1364, Q3'13, $466.00
+Intel® Core™ i3-3217UE Processor (3M Cache, 1.60 GHz)                  FC-BGA12F, 17 W,  2/4,   FCBGA1023, Q3'12, $261.00
+
+
+Our product :-
+    Service [One time cost] : Designing network for offices, labs for schools and colleges (Includes procuring hardware for client).
+    Service [Monthly billing] : A software for the network facilitation with one cloud and one local component (called "Ijepai")
+
+Network design could be :-
+    1) Restructuring existing network.
+    2) Expanding a currently existing network (We expect this would be most common scenario).
+    3) Setting up a new network.
+
+A typical scenario :-
+Let's say there are we have to set up a network of 100 computers (work or lab), 97 for developers, 2 as local backup servers and 1 for front desk. 
+Now depending upon load we assume that 10 to 30 machines would be required in a workstation configuration (more clock speed cpu, better clock speed ram, size could vary from 4gb to 16gb or more)
+and rest 70 to 90 machines would be thin clients (barebone systems or even tablets smart phones).
+The 99 developer machines would run most of their software on cloud (workstations and thin clients) maybe in form of virtual machines and some locally. If any of these machines or the front desk machine requires more than 90% of its resources (ram or cpu cycles) then some of its work (software processes) would be delegated to the workstation so that it never hangs and the system keeps running fluidly without a snag.
+
+Finer details :-
+workstations would be intel based or if client budget is low some or all could be amd based.
+Thin clients depending on client budget could be intel, amd, arm, mix or maybe BYOD scheme.
+Software for process delegation and cloud environment presentation and mangement is inhouse (called "Ijepai").
+
+My personal estimate is that 60% to 70% machines would have intel cpu and 25% to 40% will have intel board. A very small number of solutions would include solid state drives.
+We intend to put something like 100 machines (10 networks of 15 machines or maybe 2 networks of 75 machines) a month. This number is ofcourse subjected to our growth.
+
+We need to setup a test network for R&D and QA. This development network would consist of one high end machine few intermediate machines and some really small development boards (to replicate a hetrogeneous environment). Small development boards could be Norco BIS-6630, Beagle bone black, Raspberry pi, Rad xa, old pc. We also expect that within 2-3 Moore cycles the i3 would start making its way into thin-clients.
+Intel's role :- While looking for development boards I came across the site that says that Intel may ship development and evaluation samples, and the processors fit (complete boards would have been nicer) right into the setup of our test network. One more thing that cought my eye was that Intel also does embeded system workshops (in future we intend to look into that as well).

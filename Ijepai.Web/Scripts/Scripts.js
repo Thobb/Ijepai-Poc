@@ -1,4 +1,5 @@
 ﻿var Grid = {
+    openGrids: "",
     Init: function (el, conf) {
         var config = Grids[conf];
         var index = 0;
@@ -11,37 +12,110 @@
         headings.append("<th class=\"table-index " + prefix + "-col-" + index + "\">S No</th>");
         for (i in cols) {
             index++;
-            headings.append("<th class=\"" + prefix + "-col-" + i + "\" style=\"" + cols[i].style + "\">" + cols[i].title + "</th>");
+            headings.append("<th class=\"" + i + "\" style=\"" + cols[i].style + "\">" + cols[i].title + "</th>");
         }
         $(el).append($("<thead />").append(headings))
         Grid.Load(el, conf);
     },
     GridMethods : {
         populateParticipantTable: function (rowId, conf, Data) {
-            var config = Grids[conf];
-            var row = $("#" + rowId)
+            var row = $("#" + rowId);
+            var labId = rowId.slice(4);
             if (Data.length != 0) {
+                $("#" + rowId + "-subgrid-row .no-data-found").css("display", "none");
+                var config = Grids[conf];
                 var tbody = $("<tbody />");
                 var subgridColumns = config.subgridColumns;
                 var index = 0;
+                var status = row.find(".Status").html();
+                var participantActions = {
+                    editParticipant: {
+                        policy: "Disallow",
+                        title: "Edit participant particulars."
+                    },
+                    moveParticipant: {
+                        policy: "Disallow",
+                        title: "Move or copy participant to another lab."
+                    },
+                    getMachineLink: {
+                        policy: "Disallow",
+                        title: "Get link to lab."
+                    },
+                    deleteParticipant: {
+                        policy: "Disallow",
+                        title: "Remove this participant from lab."
+                    }
+                }
                 for (i in Data) {
                     index++;
                     var participantRow = $("<tr />").attr("id", "participant-" + Data[i].ID);
-                    participantRow.append("<td>" + index + "</td>")
-                    Data[i]["participantActions"] = $("#participant-actions-template").html();
+                    var vmControl = $("<td class='vm-status glyphicon glyphicon-play' title='Click to start the VM'>");
+                    vmControl.click(function () {
+                        if ($(this).hasClass("glyphicon-play")) {
+                            $(this).removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
+                        } else {
+                            $(this).removeClass("glyphicon-stop").addClass("glyphicon-play").attr("title", "Click to start the VM");
+                        }
+                    });
+                    participantRow.append(vmControl).append("<td>" + index + "</td>");
+                    var actionNode = $("#participant-actions-template");
+                    Data[i]["participantActions"] = actionNode.html();
                     for (cell in subgridColumns) {
-                        participantRow.append("<td>" + Data[i][cell] + "</td>");
+                        participantRow.append("<td class='" + cell + "'>" + Data[i][cell] + "</td>");
                     }
+                    participantRow.find(".paricipant-edit").not(".inactive-lab-action").click(function (e) {
+                        e.preventDefault();
+                        row = $(this).parent().parent().parent();
+                        $("#Username").val(row.find(".Email_Address").html());
+                        $("#First_Name").val(row.find(".First_Name").html());
+                        $("#Last_Name").val(row.find(".Last_Name").html());
+                        $("#Role").val(row.find(".Role").html());
+                        $("#edit-participant-lab-id").val(labId);
+                        $("#edit-participant-id").val(row.attr("id").slice(12));
+                        $("#overlay").fadeIn();
+                        $("#edit-participant-form-container").fadeIn();
+                        return false;
+                    });
+                    participantRow.find(".participant-move").not(".inactive-lab-action").click(function (e) {
+                        e.preventDefault();
+                        row = $(this).parent().parent().parent();
+                        $("#move-participant-id").val(row.attr("id").slice(12));
+                        $("#move-participant-lab-id").val(labId);
+                        $("#overlay").fadeIn();
+                        $("#move-participant-form-container").fadeIn();
+                        return false;
+                    });
+                    participantRow.find(".participant-machine-link").not(".inactive-lab-action").click(function (e) {
+                        e.preventDefault();
+                        row = $(this).parent().parent().parent();
+                        $("#lab-id-machine-link").val(labId);
+                        $("#participant-id-machine-link").val(row.attr("id").slice(12));
+                        $("#overlay").fadeIn();
+                        $("#get-lab-link-form-container").fadeIn();
+                        return false;
+                    });
+                    participantRow.find(".participant-delete").not(".inactive-lab-action").click(function (e) {
+                        e.preventDefault();
+                        row = $(this).parent().parent().parent();
+                        $("#lab-id-delete-participant").val(labId);
+                        $("#participant-id-delete-participant").val(row.attr("id").slice(12))
+                        $("#overlay").fadeIn();
+                        $("#delete-participant-form-container").fadeIn();
+                        return false;
+                    })
                     tbody.append(participantRow);
                 }
-                if ($("#" + row.attr("id") + "-subgrid-row").find("tbody").length) {
-                    $("#" + row.attr("id") + "-subgrid-row .subgrid-table tbody").replaceWith(tbody);
+                if ($("#" + rowId + "-subgrid-row").find("tbody").length) {
+                    $("#" + rowId + "-subgrid-row .subgrid-table tbody").replaceWith(tbody);
                 } else {
-                    $("#" + row.attr("id") + "-subgrid-row .subgrid-table").append(tbody);
+                    $("#" + rowId + "-subgrid-row .subgrid-table").append(tbody);
                 }
+                $("#" + rowId + "-subgrid-row .subgrid-table").fadeIn();
             } else {
-                $("#" + row.attr("id") + "-subgrid-row .carved-box").html("<p class=\"no-data-found\">No participants are associated with this lab.</p>")
+                $("#" + rowId + "-subgrid-row .no-data-found").fadeIn();
+                $("#" + rowId + "-subgrid-row .subgrid-table").css("display", "none");
             }
+            $("#" + rowId + "-subgrid-row").css("display", "table-row");
         },
         populateEditParticipantList: function (rowId, conf, Data) {
             $("#lab-participants-edit").css("display", "block");
@@ -64,6 +138,26 @@
                 }
             }
             $("#edit-lab-participants-add-participant").attr("count", index);
+        },
+        populateEditLabParticipantList: function (rowId, conf, Data) {
+            $("#create-lab-participant-list").html("");
+            var index = 0;
+            if (Data.length == 0) {
+                NewLabForm.create_new_participant_row({ Role: "Admin", Index: index }, "create-lab-participant-list");
+                index++;
+            } else {
+                for (i in Data) {
+                    NewLabForm.create_new_participant_row({
+                        Index: index,
+                        Email_Address: Data[i]["Email_Address"],
+                        First_Name: Data[i]["First_Name"],
+                        Last_Name: Data[i]["Last_Name"],
+                        Role: Data[i]["Role"]
+                    }, "create-lab-participant-list");
+                    index++;
+                }
+            }
+            $("#create-lab-form-add-participant").attr("count", index);
         }
     },
     LoadSubgrid: function (rowId, conf, fn) {
@@ -82,6 +176,12 @@
             }
         })
     },
+    LoadSubGridRow: function(list){
+
+    },
+    LoadGridRow: function(list){
+
+    },
     Load: function (el, conf) {
         var config = Grids[conf];
         $.ajax({
@@ -89,6 +189,20 @@
             type: "POST",
             success: function (data, status, xhr) {
                 //data = $.parseJSON(data);
+                var actions = ["extendLab", "deleteLab", "editLab", "addParticipant"];
+                var actionPolicies = {
+                    "extendLab": "Disallow",
+                    "editLab": "Disallow",
+                    "editParticipant": "Disallow",
+                    "deleteLab": "Disallow"
+                };
+                var actionTitles = {
+                    "extendLab": "Extend Lab Duration",
+                    "deleteLab": "Remove Lab With Assets",
+                    "editLab": "Edit Lab Particulars",
+                    "editParticipant": "Add or Remove Participants",
+                    "refreshParticipantList": "Refresh participant list of this lab"
+                };
                 var totalItems = data.TotalItems;
                 var rows = data.rows;
                 if (data.Status == "0") {
@@ -107,13 +221,37 @@
                                 tr.append("<td class=\"expander collapsed-lab-row glyphicon glyphicon-plus\" />");
                             }
                             tr.append("<td>" + serialNum + "</td>").addClass("lab-row " + classes[i % 2]);
-                            rows[i]["labActions"] = $("#lab-actions-template").html();
+                            var actionsNode = $("#lab-actions-template").clone();
+                            rows[i]["VM_Count"] = rows[i]["Participant_Count"] + " / " + rows[i]["VM_Count"];
+                            var status = rows[i]["Status"];
+                            if (status == "Scheduled") {
+                                actionPolicies.deleteLab = "Permit";
+                                actionPolicies.editParticipant = "Permit";
+                                actionPolicies.editLab = "Permit";
+                            } else if (status == "Starting") {
+                                actionPolicies.extendLab = "Permit";
+                                actionPolicies.editParticipant = "Permit";
+                            } else if (status == "Available") {
+                                actionPolicies.extendLab = "Permit";
+                                actionPolicies.editParticipant = "Permit";
+                                actionPolicies.deleteLab = "Permit";
+                            } else if (status == "Stopping") {
+                            } else if (status == "Exhausted") {
+                                actionPolicies.deleteLab = "Permit";
+                            }
+                            $.each(actionsNode.find("li"), function () {
+                                $(this).attr("title", actionTitles[$(this).data("role")]);
+                                if (actionPolicies[$(this).data("role")] == "Disallow"){
+                                    $(this).addClass("inactive-lab-action").attr("title", "The action is not appropriate in current context");
+                                }
+                            });
+                            rows[i]["labActions"] = actionsNode.html();
                             for (field in cols) {
-                                tr.append("<td>" + rows[i][field] + "</td>")
+                                tr.append("<td class='" + field + "'>" + rows[i][field] + "</td>");
                             }
                             tr.find(".refresh-participant-table").not(".inactive-lab-action").click(function (e) {
                                 e.preventDefault();
-                                Grid.LoadSubgrid($(this).parent().parent().parent().attr("id"), conf)
+                                Grid.LoadSubgrid($(this).parent().parent().parent().attr("id"), conf);
                                 return false;
                             });
                             tr.find(".edit-lab-participant-list").not(".inactive-lab-action").click(function (e) {
@@ -126,13 +264,35 @@
                             tr.find(".reschedule-lab").not(".inactive-lab-action").click(function (e) {
                                 e.preventDefault();
                                 $("#overlay").fadeIn();
-                                $("#reschedule-lab-id").val($(this).parent().parent().parent().attr("id").slice(4));
+                                var row = $(this).parent().parent().parent();
+                                $("#reschedule-lab-start-time").val(row.find(".Start_Time").html());
+                                $("#reschedule-lab-end-time").val(row.find(".End_Time").html());
+                                $("#reschedule-lab-id").val(row.attr("id").slice(4));
                                 $("#extend-lab-form-content").fadeIn();
                                 return false;
                             });
                             tr.find(".edit-lab-attributes").not(".inactive-lab-action").click(function (e) {
                                 e.preventDefault();
-                                alert("hi");
+                                Grid.LoadSubgrid($(this).parent().parent().parent().attr("id"), conf, "populateEditLabParticipantList");
+
+                                $("#create-lab-form").trigger("reset");
+                                var row = $(this).parent().parent().parent();
+                                $("#Lab_ID_for_edit").val(row.attr("id").slice(4));
+                                $("#Name").val(row.find(".Name").html());
+                                $("#Time_Zone").val(row.find(".Time_Zone").html());
+                                $("#Start_Time").val(row.find(".Start_Time").html());
+                                $("#End_Time").val(row.find(".End_Time").html());
+                                $("#VM_Count").val(row.find(".VM_Count").html().split(" / ")[1]);
+                                $("#VM_Type").val(row.find(".VM_Type").html());
+                                $("#OS").val(row.find(".OS").html());
+                                $("#Machine_Size").val(row.find(".Hard_Disk").html());
+                                $("#Networked").val(row.find(".Networked").html());
+
+                                $("#overlay").toggle();
+                                $("#create-lab-form-content").fadeIn(function () {
+                                    $("#create-lab-form-tabs li.active-lab-form-tab").removeClass("active-lab-form-tab");
+                                    $("#show-create-lab-form-tab").addClass("active-lab-form-tab");
+                                });
                                 return false;
                             });
                             tr.find(".delete-lab").not(".inactive-lab-action").click(function (e) {
@@ -153,11 +313,11 @@
                                 var subGrid = $("<table id=\"" + rows[i][config.id] + "-subgrid\" class=\"subgrid-table\" />");
                                 var head = $("<thead />")
                                 var headings = $("<tr />");
-                                headings.append($("<th class=\"participant-index\">S No</th>"))
-                                for (i in subgridCols) {
-                                    headings.append($("<th style=\"" + subgridCols[i].style + "\">" + subgridCols[i].title + "</th>"))
+                                headings.append("<th class='vm-status'></th>").append($("<th class=\"participant-index\">S No</th>"))
+                                for (j in subgridCols) {
+                                    headings.append($("<th style=\"" + subgridCols[j].style + "\">" + subgridCols[j].title + "</th>"))
                                 }
-                                tbody.append(row.append(subGridMarker).append(subGridCell.append(subGridContainer.append(subGrid.append(head.append(headings))))));
+                                tbody.append(row.append(subGridMarker).append(subGridCell.append(subGridContainer.append(subGrid.append(head.append(headings))).append("<p class=\"no-data-found\">No participants are associated with this lab.</p>"))));
                             }
                         }
                         if ($(el).find("tbody").length) {
@@ -172,13 +332,15 @@
                                 row.addClass("loaded").toggleClass("open-subgrid");
                                 if ($(this).hasClass("glyphicon-plus")) {
                                     $(this).addClass("glyphicon-minus").removeClass("glyphicon-plus");
+                                    if (row.hasClass("open-subgrid") && !loadedEarlier) {
+                                        Grid.LoadSubgrid(row.attr("id"), conf);
+                                    } else {
+                                        $("#" + row.attr("id") + "-subgrid-row").css("display", "table-row");
+                                    }
                                 } else {
                                     $(this).removeClass("glyphicon-minus").addClass("glyphicon-plus");
+                                    $("#" + row.attr("id") + "-subgrid-row").css("display", "none");
                                 }
-                                if (row.hasClass("open-subgrid") && !loadedEarlier) {
-                                    Grid.LoadSubgrid(row.attr("id"), conf)
-                                }
-                                $("#" + row.attr("id") + "-subgrid-row").toggle();
                             })
                         })
                     } else {
@@ -215,10 +377,15 @@ var Grids = {
         id: "ID",
         columns: {
             Name: { title: "Lab Name" },
+            Time_Zone: { title: "Time Zone" },
             Start_Time: { title: "Start Time", style: "width: 185px" },
             End_Time: { title: "End Time", style: "width: 185px" },
             Status: { title: "Status", style: "width: 100px" },
             VM_Count: { title: "Total VMs" },
+            Networked: { title: "Networked" },
+            OS: { title: "OS" },
+            VM_Type: { title: "VM Type" },
+            Hard_Disk: { title: "Machine Size" },
             labActions: { title: "Actions" }
         },
         subgrid: true,
@@ -227,6 +394,7 @@ var Grids = {
             Email_Address: { title: "Username" },
             First_Name: { title: "First Name" },
             Last_Name: { title: "Last Name" },
+            Role: { title: "Role"},
             participantActions: { title: "Actions" }
         }
     }
@@ -324,7 +492,52 @@ var AjaxLoader = {
     }
 }
 var Notification = {
+    Init: function () {
+        $("#notification-btn").click(function () {
+            $("#notification-wrap").slideToggle();
+        })
+    },
+    Show: function () {
+        $("#notification-wrap").slideDown();
+        Notification.Visible = 1;
+    },
+    Put: function (message, title) {
+        var node = $("#notification-template").clone();
+        node.find(".notification-message").html(message);
+        $("#notification").append(node.html()).attr("title", title);
+        $(".close-notification-row").click(function () {
+            var totalNotifications = $("#notifications").find(".notification-row").length;
+            var title = "";
+            $(this).parent().fadeOut(function () {
+                $(this).remove();
+                if (totalNotifications == 0) {
+                    title = "No new notification.";
+                    $("#no-notification-notice").show();
+                    setTimeout(Notification.Hide, 2000);
+                } else if (totalNotifications == 1) {
+                    title = "1 Notification."
+                } else {
+                    title = totalNotifications + " Notifications."
+                }
+                $("#notification-btn").attr("title", title)
+            });
+        });
+        if (!Notification.Visible) {
+            Notification.Show();
+            $("#no-notification-notice").css("display", "none");
+        }
 
+        $("#no-notification-notice").hide();
+        if ($("#notifications").find(".notification-row").length == 1) {
+            $("#notification-btn").attr("title", "1 Notification")
+        } else {
+            $("#notification-btn").attr("title", $("#notifications").find(".notification-row").length + " Notifications")
+        }
+    },
+    Hide: function () {
+        $("#notification-wrap").slideUp();
+        Notification.Visible = 0;
+    }
 }
 var Lib = {
 }
@@ -338,6 +551,83 @@ App = {
     Init: function () {
         App.setPage();
         App.setNav("top-nav");
+        App.getLabList();
+        $("#close-edit-participant-form").click(App.closeEditParticipantForm);
+        $("#clear-participant-particulars").trigger("reset");
+        $("#close-move-participant-form").click(App.closeMoveParticipantForm);
+        $("#close-delete-participant-form").click(App.closeDeleteParticipantForm);
+        $("#cancel-participant-deletion").click(App.closeDeleteParticipantForm);
+        $("#close-get-machine-link-form").click(App.closeGetMachineLinkForm);
+        $("#cancel-get-machine-link").click(App.closeGetMachineLinkForm);
+    },
+    LabList: [],
+    getLabList: function () {
+        $.ajax({
+            url: "/Labs/LabList",
+            dataType: "json",
+            type: "post",
+            success: function (data, status, xhr) {
+                if (data.Status == 0) {
+                    var rows = data.rows;
+                    App.LabList = rows;
+                    var selectBox = $("<select name='newLab_ID'>").addClass("form-control").attr("id", "move-to-lab-options");
+                    for (i in rows) {
+                        selectBox.append("<option value='" + rows[i].ID + "'>" + rows[i].Name + "</option>");
+                    }
+                    $("#move-participant-form-body").html(selectBox);
+                }
+            }
+        })
+    },
+    closeEditParticipantForm: function(){
+        $("#edit-participant-form-container").fadeOut(function () {
+            $("#edit-participant-form").trigger("reset");
+            $("#overlay").fadeOut(200);
+        })
+        return false;
+    },
+    closeMoveParticipantForm: function(){
+        $("#move-participant-form-container").fadeOut(function () {
+            $("#move-participant-form").trigger("reset");
+            $("#overlay").fadeOut(200);
+        })
+        return false;
+    },
+    closeDeleteParticipantForm: function(){
+        $("#delete-participant-form-container").fadeOut(function () {
+            $("#delete-participant-form").trigger("reset");
+            $("#overlay").fadeOut(200);
+        })
+        return false;
+    },
+    closeGetMachineLinkForm: function(){
+        $("#get-lab-link-form-container").fadeOut(function () {
+            $("#get-machine-link-form").trigger("reset");
+            $("#overlay").fadeOut();
+        })
+        return false;
+    },
+    editParticipantFormSuccess: function(data){
+        if (data.Status == 0) {
+            Grid.LoadSubgrid(data.Lab, "LabGrid");
+            App.closeEditParticipantForm();
+        }
+    },
+    moveParticipantFormSuccess: function(data){
+        if (data.Status == 0) {
+            Grid.LoadSubgrid(data.prevLab, "LabGrid");
+            Grid.LoadSubgrid(data.newLab, "LabGrid");
+            App.closeMoveParticipantForm();
+        }
+    },
+    deleteParticipantFormSuccess: function(data){
+        if (data.Status == 0) {
+            Grid.LoadSubgrid(data.Lab, "LabGrid");
+            App.closeDeleteParticipantForm();
+        }
+    },
+    getMachineLinkFormSuccess: function(){
+
     },
     showTab: function (el) {
         var tab = $("#" + el);
@@ -485,9 +775,36 @@ var NewLabForm = {
         })();   
         NewLabForm.send = function(name) {
             var formData = new FormData();
-            formData.append("dataFile", NewLabForm.fd[name]);
+            var file = NewLabForm.fd[name];
+            var fileId = file.name.split(".")[0] + "_";
+            formData.append("dataFile", file);
+
+            var notice = $("#upload-file-notice-template").clone();
+            var title = "Uploading : '" + file.name + "',   Size : " + file.size;
+            notice.find(".upload-file-progress-bar-core").addClass(fileId)
+            notice.find(".upload-filename").html(file.name).click(function () {
+                if ($(this).css("text-overflow") == "elipsis") {
+                    $(this).css({ "text-overflow": "", "word-wrap": "break-word" });
+                } else {
+                    $(this).css({ "text-overflow": "elipsis", "word-wrap": "normal" });
+                }
+            });
+            notice.find(".upload-filesize").html(file.size).click(function () {
+                if ($(this).css("text-overflow") == "elipsis") {
+                    $(this).css("text-overflow", "");
+                } else {
+                    $(this).css("text-overflow", "");
+                }
+            });
+            Notification.Put(notice.html(), title);
+
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/Labs/UploadLabResources", true);
+            xhr.upload.addEventListener("progress", function (evt) {
+                alert(evt.loaded)
+                var percentageComplete = Math.round((evt.loaded * 100) / evt.total);
+                $("." + fileId).find("upload-file-progress-bar-core").css("width", percentageComplete + "%")
+            }, false);
             xhr.addEventListener("load", function (evt) { NewLabForm.UploadComplete(evt); }, false);
             xhr.addEventListener("error", function (evt) { NewLabForm.UploadFailed(evt); }, false);
             xhr.send(formData);
@@ -507,18 +824,20 @@ var NewLabForm = {
     },
     closeDeleteLabForm: function () {
         Grid.Load("#lab-list", "LabGrid");
-        $("#delete-lab-form").trigger("reset");
         $("#delete-lab-form-content").fadeOut(function () {
             $("#overlay").fadeOut(200);
+            $("#delete-lab-form").trigger("reset");
         })
     },
-    deleteLabFormSuccess: function(){
+    deleteLabFormSuccess: function () {
+        App.getLabList();
         NewLabForm.closeDeleteLabForm();
     },
     closeRescheduleLabForm: function () {
-        $("#reschedule-lab-form").trigger("reset");
+        Grid.Load("#lab-list", "LabGrid");
         $("#extend-lab-form-content").fadeOut(function () {
             $("#overlay").fadeOut(200);
+            $("#reschedule-lab-form").trigger("reset");
         })
     },
     rescheduleLabFormSuccess: function(){
@@ -550,6 +869,7 @@ var NewLabForm = {
         for (i in NewLabForm.fd) {
             NewLabForm.send(i)
         }
+        App.getLabList();
         NewLabForm.fd = {};
     },
     create_new_participant_row: function (options, container) {
@@ -673,6 +993,7 @@ $(function () {
         })
         $("#new-lab-btn").click(function (e) {
             e.preventDefault();
+            $("#Lab_ID_for_edit").val(0);
             if (Number($("#create-lab-form-add-participant").attr("count")) <= 0) {
                 NewLabForm.create_new_participant_row({ Index: 0, Role: "Admin" })
                 $("#create-lab-form-add-participant").attr("count", 1)
@@ -691,23 +1012,24 @@ $(function () {
             return false;
         })
         NewLabForm.Init();
+        Notification.Init();
         AppData.Load();
     }
     App.Init();
     //Message.show(false, false, "glyphicon-info-sign", false, false)
     $(window).resize(App.setPage);
     $("#Start_Time").datetimepicker({
-        //format: 'H:i d-M-Y'
+        format: 'd/M/Y H:i'
     });
     $("#End_Time").datetimepicker({
-        //format: 'd-M-Y H:i'
+        format: 'd/M/Y H:i'
     });
-    $("#Start_Time_Calendar").datetimepicker();
-    $("#End_Time_Calendar").datetimepicker();
-    $("#reschedule-lab-start-time-calendar").datetimepicker();
-    $("#reschedule-lab-end-time-calendar").datetimepicker();
-    $("#reschedule-lab-start-time").datetimepicker();
-    $("#reschedule-lab-end-time").datetimepicker();
+    $("#reschedule-lab-start-time").datetimepicker({
+        format: 'd/M/Y H:i'
+    });
+    $("#reschedule-lab-end-time").datetimepicker({
+        format: 'd/M/Y H:i'
+    });
 })
 $.validator.dateTime = function (value, element) {
     alert(value)

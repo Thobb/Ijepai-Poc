@@ -1,0 +1,194 @@
+dataflow execution engine
+commands are nodes in dataflow graph
+based on .NET, return values of commands are objects, or set of objects rather than strings and hence can be operated upon on object oriented style, this is accomplished by powershell parser
+[Virtual machine management, active directory management]
+ipconfig, net
+
+verb-noun
+
+f7 ~= get-history
+
+get-help
+Get-Help <cmdlet name> -Detailed
+Get-Help <cmdlet name> -Examples
+Get-Help <cmdlet name> -Full
+get-help About_*
+get-help get-* | format-table Name, Synopsis -AutoSize
+get-help get-host -full
+get-verb
+get-command
+get-command *service*
+get-member
+get-process | get-member -Static
+get-module
+get-module -ListAvailable
+#load all available modules
+Get-Module -ListAvailable | Import-Module
+
+get-eventlog -List
+get-eventlog -LogName application -Newest 10
+get-eventlog -lo application -n 10 (specify enough of parameter for disambiguation)
+
+get-host | select-object version
+
+get-alias -Definition *process
+get-alias -Name sa*
+gal sa* [positional parameters]
+
+get-process [a-q]*[g-t] | stop-process -whatif
+get-process [a-q]*[g-t] | stop-process -confirm
+get-process | get-members
+get-process | where {$_.workingset -gt 5mb} | sort workingset | format-list *
+get-process | where {$_.workingset -gt 5mb} | sort workingset | format-table name, workingset -Autosize
+get-process | where {$true}
+get-process | where {$false}
+get-process *ss | where {read-host -prompt $_}
+[$_ = current object, {} = block of script]
+get-process | where-object {$_.Handles -ge 500 }
+get-process | select cpu, handles, id
+get-process *ss | foreach {"begin"} {"[each object] Process = " + $_.Name} {end}
+(get-process Powershell).Fileversion
+
+#formatting output
+"{0:c}" -f 1kb
+
+#xml parsing
+$file = [xml](cat D:\path\to\xml\file.xml)
+$file.tag1.tag2
+$file.tag1.tag2[0]
+$var = $file.tag1 | select -expand tag2 | select -expand tag3
+$var | select -first 10
+$var | select -last 10
+$var | group tag2 | sort count
+
+#Constants (Math library)
+[Math]::pi
+
+get-psdrive
+registry drive, all variables reside in variable drive.
+dir w*\d*
+
+#Assigning services to variables, working with objects
+$service = get-service audiosrv
+$service.requiredservices
+$service.displayname
+$service.stop()
+$service.start()
+
+$process = get-process
+$process | get-member
+$process[0]
+$process[0..5]
+
+$date = get-date
+$date | get-memeber
+$date.adddays(3)
+$date.dayofweek
+
+#functions
+function dday {[datetime]"12/12/2014" - (get-date)}
+
+#download from web
+$client = new-object System.Net.WebClient
+$client.DownloadFile( $url, $path )
+(new-object System.Net.WebClient).DownloadFile($url, $path)
+
+Invoke-WebRequest http://www.google.com/ -OutFile c:\google.html
+
+Import-Module BitsTransfer
+Start-BitsTransfer -source "http://urlToDownload"
+
+
+
+#Create a storage container and upload a jpg (or pdf or some other data file) to cloud. Storage demo.
+====================================================================================================================================
+cls
+Set-AzureSubscription storagedemo CurrentStorageAccount mwstoragedemos1
+Select-AzureSubscription storagedemo
+
+#Create a storage
+New-AzureStorageContainer -Name "myimages" -Permission public
+
+#Upload file to storage
+Set-AzureStorageBlobContent -Container "myimages" -File "D:\path\to\file\abc.jpg" -Blob "abc.jpg"
+
+#Get list of what is in storage
+Get-AzureStorageContainer | Get-AzureStorageBlob
+
+#Download the file
+Get-AzureStorageBlobContent -Blob "abc.jpg" -Container "myimages" -destination "D:\path\to\destination\download.jpg"
+
+
+
+#Async Blob copy (e.g. Copying virtual machines).
+====================================================================================================================================
+#Source VHD (public ftp server, azure storage or any other public storage)
+$srcUri = "http://mwweststorage.blob.core.windows.net/source/testcopy.vhd
+
+#Target storage account
+$storageAccount = "mwstoragedemos1"
+$storageKey = "base 64 encoded string"
+
+$destContext = New-AzureStorageContext -StorageAccountName $storageAccount -StorageAccountKey $storageKey
+
+#Destination container name
+$containerName = "copiedVHD"
+
+New-AzureStorageContainer -Name $containerName
+
+$blob1 = Start-CopyAzureStorageBlob -srcUri $srcUri -DestContainer $containerName -DestBlob "testcopy.vhd" -DestContext $destContext
+
+$blob1 | Get-AzureStorageBlobCopyState
+
+
+
+#Local Blob copy.
+====================================================================================================================================
+select-azuresubscription msft
+
+$sourceVHD = "D:\path\to\vhd\file.vhd"
+$destinationVHD = "https://mwweststorage.blob.core.windows.net/uploads/file.vhd"
+
+Add-AzureVhd -LocalFilePath $sourceVHD -Destination $destinationVHD
+
+Add-AzureDisk -DiskName "file" -MediaLocation $destinationVHD -Label "file"
+
+
+
+
+
+#Handy powershell commands
+====================================================================================================================================
+Get-Alias
+Get-Variable (e.g. $host, $error[0])
+Format-List
+Get-Member
+Get-Help term -Full (e.g. Get-Help command)
+Get-Command
+Select-Object
+
+
+http://www.youtube.com/watch?v=7LMo0nxFB_g&list=PL6D474E721138865A
+http://www.youtube.com/watch?v=7DkR1N7CPfE
+http://www.youtube.com/watch?v=0rE6kXvK8J8
+
+http://www.youtube.com/watch?v=euFmt_ETrcE
+
+
+
+#win + R (command window)
+powershell -noexit -command &{get-process >> c:\fso\ServiceProcessBios.txt; get-service | where{$_.Status -eq 'Running'} >> c:\fso\ServiceProcessBios.txt; Get-WmiObject Win32_bios >> c:\fso\ServiceProcessBios.txt}
+
+
+
+
+
+#Utilites
+compare
+foreach
+group
+measure
+select
+sort
+tee
+where

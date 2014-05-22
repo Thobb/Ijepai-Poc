@@ -206,7 +206,7 @@ body {
 }
 
 #lab-list tbody tr.open-subgrid {
-    border-bottom: none;
+    border-bottom: 1px solid transparent;
     background-position-x: -374px;
 }
 
@@ -253,6 +253,11 @@ body {
     width: 45px;
 }
 
+#lab-list .vm-status {
+    width: 20px;
+    cursor: pointer;
+}
+
 #lab-list .no-data-found {
     text-align: center;
     color: #ff2200;
@@ -261,6 +266,10 @@ body {
 
 #lab-list .carved-box {
     background: #b5e7fe;
+}
+
+#lab-list .Time_Zone, #lab-list .Networked, #lab-list .OS, #lab-list .VM_Type, #lab-list .Hard_Disk {
+    display: none;
 }
 
 /* tab 3 */
@@ -327,6 +336,7 @@ body {
 
 #footer p {
     margin-bottom: 0;
+    float:left;
 }
 
 #footer-content {
@@ -335,6 +345,22 @@ body {
     color: #aaa;
 }
 
+#app-actions {
+    float: right;
+    color: #fff;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+#app-actions li {
+    cursor: pointer;
+    float: left;
+    height: 20px;
+    padding: 0 20px;
+}
+
+#app-actions li:hover {
+}
 #login-form-page {
 }
 
@@ -411,6 +437,116 @@ body {
 
 #message:hover #close-message-box {
     display: block;
+}
+
+#notification-wrap {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    bottom: 20px;
+    right: 1%;
+    width: 33%;
+    border-top: 2px solid #fff;
+    border-right: 2px solid #fff;
+    border-left: 2px solid #fff;
+    border-radius: 5px 5px 0 0;
+    background: #999999; /* Old browsers */
+    color: #fff;
+    background: -moz-linear-gradient(top, rgba(151, 151, 151, 0.5) 0%, rgba(55, 55, 55, 0.5) 40%, rgba(34, 34, 34, 0.5) 71%, rgba(0, 0, 0, 0.5) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#999999), color-stop(40%,#555555), color-stop(71%,rgba(34, 34, 34, 0.5)), color-stop(100%,rgba(0, 0, 0, 0.5))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(151, 151, 151, 0.5) 0%,rgba(55, 55, 55, 0.5) 40%,rgba(34, 34, 34, 0.5) 71%,rgba(0, 0, 0, 0.5) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(151, 151, 151, 0.5) 0%,rgba(55, 55, 55, 0.5) 40%,rgba(34, 34, 34, 0.5) 71%,rgba(0, 0, 0, 0.5) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(151, 151, 151, 0.5) 0%,rgba(55, 55, 55, 0.5) 40%,rgba(34, 34, 34, 0.5) 71%,rgba(0, 0, 0, 0.5) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(151, 151, 151, 0.5) 0%,rgba(55, 55, 55, 0.5) 40%,rgba(34, 34, 34, 0.5) 71%,rgba(0, 0, 0, 0.5) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#999999', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+}
+
+#notification li {
+    margin: 5px;
+    padding: 2px 25px 2px 5px;
+    overflow: hidden;
+    border: 1px solid transparent;
+    position: relative;
+}
+
+#notification li .notification-row {
+    float: left;
+    text-align: justify;
+}
+
+#notification li.notification-row:hover {
+	-moz-box-shadow:inset 0px 1px 0px 0px #efdcfb;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #efdcfb;
+	box-shadow:inset 0px 1px 0px 0px #efdcfb;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #dfbdfa), color-stop(1, #bc80ea));
+	background:-moz-linear-gradient(top, #dfbdfa 5%, #bc80ea 100%);
+	background:-webkit-linear-gradient(top, #dfbdfa 5%, #bc80ea 100%);
+	background:-o-linear-gradient(top, #dfbdfa 5%, #bc80ea 100%);
+	background:-ms-linear-gradient(top, #dfbdfa 5%, #bc80ea 100%);
+	background:linear-gradient(to bottom, #dfbdfa 5%, #bc80ea 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfbdfa', endColorstr='#bc80ea',GradientType=0);
+	background-color:#dfbdfa;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #c584f3;
+    color: #000;
+}
+
+#notification .close-notification-row {
+    right: 0;
+    cursor: pointer;
+    padding: 5px;
+    top: -1px;
+    position: absolute;
+}
+
+#notification .close-notification-row:hover {
+    color: #fff;
+}
+
+#no-notification-notice {
+}
+
+#no-notification-notice:hover {
+
+}
+
+.upload-file-info {
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.upload-filename {
+    float: left;
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.upload-filesize {
+    float: right;
+    width: 19%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.upload-file-progress-bar-status {
+    display: inline;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.upload-file-progress-bar-core {
+    width: 0%;
+    height: 1px;
+    background: #fff;
+    margin: 5px 0px;
+    box-shadow: 2px 2px 5px #fff , -2px 2px 5px #fff, -2px -2px 5px #fff, 2px -2px 5px #fff, -2px 0 5px #fff, 2px 0 5px #fff;
+}
+
+.upload-file-progress-bar-wrap {
+    background: #000;
 }
 
 #templates {
@@ -643,7 +779,10 @@ body {
     width: 100%;
     position: absolute;
 }
-#edit-participants-form-content, #extend-lab-form-content, #delete-lab-form-content {
+#edit-participants-form-content, #extend-lab-form-content,
+#delete-lab-form-content, #edit-participant-form-container,
+#move-participant-form-container, #delete-participant-form-container,
+#get-lab-link-form-container {
     position: absolute;
     left: 1%;
     top: 80px;
@@ -654,35 +793,60 @@ body {
     box-shadow: 4px 4px 10px #000;
     z-index: 5;
 }
-#edit-participants-form-header, #extend-lab-form-header, #delete-lab-form-header {
+#edit-participants-form-header, #extend-lab-form-header,
+#delete-lab-form-header, #edit-participant-form-header,
+#move-participant-form-header, #delete-participant-form-header,
+#get-machine-link-form-header {
     border-bottom: 2px solid #fff;
     background: #222;
     border-radius: 5px 5px 0 0;
     overflow: hidden;
     color: #fff;
 }
-#edit-participants-form-tab-list, #extend-lab-form-tabs, #delete-lab-form-tabs {
+#edit-participants-form-tab-list, #extend-lab-form-tabs,
+#delete-lab-form-tabs, #edit-participant-form-tabs,
+#move-participant-form-tabs, #delete-participant-from-tabs,
+#get-machine-link-form-tabs {
     float: left;
     margin-bottom: 0;
 }
-#edit-participants-form-tab-list li, #extend-lab-form-tabs li, #delete-lab-form-tabs li {
+#edit-participants-form-tab-list li, #extend-lab-form-tabs li,
+#delete-lab-form-tabs li, #edit-participant-form-tabs li,
+#move-participant-form-tabs li, #delete-participant-from-tabs li,
+#get-machine-link-form-tabs li {
     padding: 2px 40px;
 }
-#edit-participants-list, #edit-lab-schedule, #delete-lab {
+#edit-participants-list, #edit-lab-schedule,
+#delete-lab, #edit-participant-particulars,
+#move-lab-participant, #delete-participant,
+#get-machine-link {
     background: #1133ff;
 }
-#edit-participants-form-actions, #extend-lab-form-actions, #delete-lab-form-actions {
+#edit-participants-form-actions, #extend-lab-form-actions,
+#delete-lab-form-actions, #edit-participant-form-actions,
+#move-participant-form-actions, #delete-participant-form-actions,
+#get-machine-link-form-actions {
     float: right;
     margin-bottom: 0;
 }
-#close-participants-form, #close-extend-lab-form, #close-delete-lab-form {
+#close-participants-form, #close-extend-lab-form,
+#close-delete-lab-form, #close-edit-participant-form,
+#close-move-participant-form, #close-delete-participant-form,
+#close-get-machine-link-form {
     padding: 5px;
     top: -1px;
+    float: left;
 }
-#close-participants-form:hover, #close-extend-lab-form:hover, #close-delete-lab-form:hover {
+#close-participants-form:hover, #close-extend-lab-form:hover,
+#close-delete-lab-form:hover, #close-edit-participant-form:hover,
+#close-move-participant-form:hover, #close-delete-participant-form:hover ,
+#close-get-machine-link-form:hover {
     cursor: pointer;
 }
-#edit-participants-form-body, #extend-lab-form-body, #delete-lab-form-body {
+#edit-participants-form-body, #extend-lab-form-body,
+#delete-lab-form-body, #edit-participant-form-body,
+#move-participant-form-body, #delete-participant-form-body,
+#get-machine-link-form-body {
     overflow-y: auto;
     max-height: 400px;
     padding: 25px 0 15px 10px;
@@ -690,7 +854,10 @@ body {
     background: #333;
     color: #fff;
 }
-#edit-participants-form-footer, #extend-lab-form-footer, #delete-lab-form-footer {
+#edit-participants-form-footer, #extend-lab-form-footer,
+#delete-lab-form-footer, #edit-participant-form-footer,
+#move-participant-form-footer, #delete-participant-form-footer,
+#get-machine-link-form-footer {
     border-top: 2px solid #fff;
     background: #222;
     border-radius: 0 0 5px 5px;
@@ -700,6 +867,13 @@ body {
 #edit-lab-participants-add-participant {
     float: right;
     margin-right: 20px;
+}
+#edit-participant-form-container .new-participant-row-index, #edit-participant-form-container #delete-participant-row {
+    display: none;
+}
+#move-to-lab-options option, #Role option, #edit-participants-form-list select.role option, #edit-participant-form-tab select.role option {
+    padding: 4px 15px;
+    border-bottom: 1px solid #ddd;
 }
 /**************************************** /New Lab Form *********************************/
 #overlay {

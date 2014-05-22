@@ -1,7 +1,7 @@
 ﻿@model Ijepai.Web.Models.LabCreate
 
 @Html.AntiForgeryToken()
-<input type="hidden" name="Lab_ID" value="0" />
+<input type="hidden" name="Lab_ID" value="0" id="Lab_ID_for_edit" />
 
 <div class="form-group col-md-6">
     @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
@@ -14,8 +14,16 @@
 <div class="form-group col-md-6">
     @Html.LabelFor(model => model.Time_Zone, new { @class = "control-label col-md-3" })
     <div class="col-md-9">
-        @Html.EditorFor(model => model.Time_Zone)
-        @Html.ValidationMessageFor(model => model.Time_Zone)
+        <select name="Time_Zone" id="Time_Zone" class="text-box single-line">
+            @{
+                System.Collections.ObjectModel.ReadOnlyCollection<TimeZoneInfo> tz;
+                tz = TimeZoneInfo.GetSystemTimeZones();
+                foreach (var i in tz)
+                {
+                    <option value="@i.Id">@i.DisplayName</option>
+                }
+            }
+        </select>
     </div>
 </div>
 

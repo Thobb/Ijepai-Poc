@@ -41,6 +41,9 @@
     <footer id="footer">
         <div id="footer-content">
             <p>&copy; @DateTime.Now.Year - Ijepai</p>
+            <ul id="app-actions">
+                <li id="notification-btn" class="glyphicon glyphicon-list" title="No new notification."></li>
+            </ul>
         </div>
     </footer>
 
@@ -56,187 +59,29 @@
         </div>
         <div id="close-message-box"></div>
     </div>
-
-    <div id="lab-action-forms-template" style="display: none">
-        <form class="lab-extend"></form>
-        <form class="lab-edit"></form>
-        <form class="lab-participants-edit"></form>
-        <form class="lab-delete"></form>
-    </div>
-    <div id="participant-action-forms-template" style="display: none">
-        <form class="participant-edit"></form>
-        <form class="participant-move"></form>
-        <form class="participant-delete"></form>
-        <form class="participant-machine-link"></form>
-    </div>
-    <div id="create-lab-form-content">
-        <div id="create-lab-form-header">
-            <ul id="create-lab-form-tabs">
-                <li id="show-create-lab-form-tab" class="active-lab-form-tab">Lab</li>
-                <li id="show-configure-lab-form-tab">Configuration</li>
-                <li id="show-edit-participant-form-tab">Participants</li>
-            </ul>
-            <ul id="create-lab-form-actions">
-                <li class="glyphicon glyphicon-remove" id="create-lab-form-close"></li>
-            </ul>
-        </div>
-        @using (Ajax.BeginForm(
-        "CreateLab",
-        "Labs",
-        new { },
-        new AjaxOptions
-        {
-            HttpMethod = "POST",
-            OnSuccess = "NewLabForm.createLabFormSuccess",
-        },
-        new
-        {
-            @id = "create-lab-form",
-            @enctype = "multipart/form-data"
-        }
-    ))
-        {
-            <div id="create-lab-form-body">
-                <div id="create-lab-form-tab">
-                    @Html.Partial("/Views/Labs/_LabCreatePartial.cshtml")
-                </div>
-                <div id="configure-lab-form-tab" style="display: none;">
-                    @Html.Partial("/Views/Labs/_LabCreateFormPartial.cshtml")
-                </div>
-                <div id="edit-participant-form-tab" style="display: none;">
-                    @Html.Partial("/Views/Labs/_LabParticipantCreatePartial.cshtml")
-                </div>
+    <div id="notification-wrap">
+        <ul id="notification">
+            <li id="no-notification-notice">No Notifications.</li>
+        </ul>
+        <div id="upload-file-notice-template" style="display: none;">
+            <div class="upload-file-info">
+                <span class="upload-filename"></span>
+                <span class="upload-filesize"></span>
             </div>
-            <div id="create-lab-form-footer">
-                <input type="Submit" value="Submit" id="create-lab-btn" class="btn btn-default" />
-                <input type="button" value="Reset" id="reset-lab-btn" class="btn btn-default" />
-            </div>
-        }
-    </div>
-    <div id="extend-lab-form-content">
-        <div id="extend-lab-form-header">
-            <ul id="extend-lab-form-tabs">
-                <li id="edit-lab-schedule">Reschedule Lab</li>
-            </ul>
-            <ul id="extend-lab-form-actions">
-                <li id="close-extend-lab-form" class="glyphicon glyphicon-remove"></li>
-            </ul>
-        </div>
-        @using (Ajax.BeginForm(
-            "CreateLab",
-            "Labs",
-            new { },
-            new AjaxOptions
-            {
-                HttpMethod = "POST",
-                OnSuccess = "NewLabForm.rescheduleLabFormSuccess",
-            },
-            new
-            {
-                @id = "reschedule-lab-form"
-            }
-        ))
-        {
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="Lab_ID" id="reschedule-lab-id" value="0" />
-        <input type="hidden" name="Name" id="reschedule-lab-name" value="" />
-        <div id="extend-lab-form-body">
-            <div class="col-md-6">
-                <label for="reschedule-lab-start-time" class="col-md-3">Start Time</label>
-                <div class="col-md-9">
-                    <input id="reschedule-lab-start-time" name="Start_Time" autocomplete="off" />
-                    <span id="reschedule-lab-start-time-calendar" class="glyphicon glyphicon-calendar" style="position: absolute; color: #3399ff; top: 2px; left: 155px;"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <label for="reschedule-lab-end-time" class="col-md-3">End Time</label>
-                <div class="col-md-9">
-                    <input id="reschedule-lab-end-time" name="End_Time" autocomplete="off" />
-                    <span id="reschedule-lab-end-time-calendar" class="glyphicon glyphicon-calendar" style="position: absolute; color: #3399ff; top: 2px; left: 155px;"></span>
+            <div class="upload-file-progress">
+                <div class="upload-file-progress-bar-wrap">
+                    <div class="upload-file-progress-bar-status">
+                        <div class="upload-file-progress-bar-core"></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div id="extend-lab-form-footer">
-            <input type="Submit" value="Create" id="reschedule-lab-btn" class="btn btn-default" />
-            <input type="button" value="Reset" id="reset-lab-btn" class="btn btn-default" />
-        </div>
-        }
-    </div>
-    <div id="edit-participants-form-content">
-        <div id="edit-participants-form-header">
-            <ul id="edit-participants-form-tab-list">
-                <li id="edit-participants-list">Add / Remove Participants</li>
-            </ul>
-            <ul id="edit-participants-form-actions">
-                <li id="close-participants-form" class="glyphicon glyphicon-remove"></li>
-            </ul>
-        </div>
-        @using (Ajax.BeginForm(
-            "CreateLab",
-            "Labs",
-            new { },
-            new AjaxOptions
-            {
-                HttpMethod = "POST",
-                OnSuccess = "NewLabForm.editParticipantFormSuccess",
-            },
-            new
-            {
-                @id = "edit-participants-form"
-            }
-        ))
-        {
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="Lab_ID" id="edit-participants-lab-id" value="0" />
-        <div id="edit-participants-form-body">
-            <div id="edit-participants-form-list">
-            </div>
-            <a href="#" id="edit-lab-participants-add-participant" count="">Add a participant</a>
-        </div>
-        <div id="edit-participants-form-footer">
-            <input type="Submit" value="Create" id="edit-participant-list-btn" class="btn btn-default" />
-            <input type="button" value="Reset" id="reset-participant-list-btn" class="btn btn-default" />
-        </div>
-        }
-    </div>
-    <div id="edit-lab-form-content">
-
-    </div>
-    <div id="delete-lab-form-content">
-        <div id="delete-lab-form-header">
-            <ul id="delete-lab-form-tabs">
-                <li id="delete-lab">Delete Lab</li>
-            </ul>
-            <ul id="delete-lab-form-actions">
-                <li id="close-delete-lab-form" class="glyphicon glyphicon-remove"></li>
-            </ul>
-        </div>
-        @using (Ajax.BeginForm(
-            "DeleteLab",
-            "Labs",
-            new { },
-            new AjaxOptions
-            {
-                HttpMethod = "POST",
-                OnSuccess = "NewLabForm.deleteLabFormSuccess",
-            },
-            new
-            {
-                @id = "edit-participants-form"
-            }
-        ))
-        {
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="Lab_ID" id="delete-lab-id" value="0" />
-        <div id="delete-lab-form-body">
-            <span class="glyphicon glyphicon-warning-sign" style="color: red; font-size: 1.5em"></span>
-            The Lab and its resources will be deleted permanently. You can not undo this action. Do you wish to proceed?
-        </div>
-        <div id="delete-lab-form-footer">
-            <input type="submit" value="Delete" id="delete-lab-btn" class="btn btn-default" />
-            <input type="button" value="Cancel" id="cancel-lab-deletion-btn" class="btn btn-default" />
-        </div>
-        }
+        <ul id="notification-template" style="display: none;">
+            <li class="notification-row">
+                <div class="notification-message"></div>
+                <span class="glyphicon glyphicon-remove close-notification-row"></span>
+            </li>
+        </ul>
     </div>
     <div id="overlay"></div>
     @using (Ajax.BeginForm("LogOff", "Account", new { }, new AjaxOptions { OnFailure = "LogoutFailure", OnSuccess = "LogoutSuccess" }, new { id = "logout-form" }))
