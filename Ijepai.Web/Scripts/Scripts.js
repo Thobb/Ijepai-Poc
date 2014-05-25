@@ -115,6 +115,8 @@
                 $("#" + rowId + "-subgrid-row .no-data-found").fadeIn();
                 $("#" + rowId + "-subgrid-row .subgrid-table").css("display", "none");
             }
+            AjaxLoader.hide("#" + rowId + " .expander", "glyphicon-minus");
+            row.addClass("loaded").addClass("open-subgrid");
             $("#" + rowId + "-subgrid-row").css("display", "table-row");
         },
         populateEditParticipantList: function (rowId, conf, Data) {
@@ -173,6 +175,8 @@
                 } else {
                     alert("Some error occured")
                 }
+                $("#" + rowId + "-subgrid-row .subgrid-data").fadeTo(500, 1);
+                $("#" + rowId + "-subgrid-row .load-screen").css("display", "none");
             }
         })
     },
@@ -251,7 +255,11 @@
                             }
                             tr.find(".refresh-participant-table").not(".inactive-lab-action").click(function (e) {
                                 e.preventDefault();
-                                Grid.LoadSubgrid($(this).parent().parent().parent().attr("id"), conf);
+                                var rowId = $(this).parent().parent().parent().attr("id");
+                                $("#" + rowId + "-subgrid-row .load-screen").css("display", "block");
+                                AjaxLoader.show("#" + rowId + " .expander");
+                                $("#" + rowId + "-subgrid-row .subgrid-data").fadeTo(500, 0.3);
+                                Grid.LoadSubgrid(rowId, conf);
                                 return false;
                             });
                             tr.find(".edit-lab-participant-list").not(".inactive-lab-action").click(function (e) {
@@ -308,8 +316,9 @@
                                 var subgridClassPrefix = config.subgridClassPrefix;
                                 var row = $("<tr id=\"lab-" + rows[i][config.id] + "-subgrid-row\" class=\"subgrid-container-row\" />");
                                 var subGridMarker = $("<td class=\"subgrid-marker\"></td>");
-                                var subGridCell = $("<td colspan=\"" + colNum + "\"></td>");
+                                var subGridCell = $("<td class='subgrid-data' colspan=\"" + colNum + "\"></td>");
                                 var subGridContainer = $("<div class=\"carved-box\" />");
+                                var loadScreen = $("<div class='load-screen' />");
                                 var subGrid = $("<table id=\"" + rows[i][config.id] + "-subgrid\" class=\"subgrid-table\" />");
                                 var head = $("<thead />")
                                 var headings = $("<tr />");
@@ -317,7 +326,7 @@
                                 for (j in subgridCols) {
                                     headings.append($("<th style=\"" + subgridCols[j].style + "\">" + subgridCols[j].title + "</th>"))
                                 }
-                                tbody.append(row.append(subGridMarker).append(subGridCell.append(subGridContainer.append(subGrid.append(head.append(headings))).append("<p class=\"no-data-found\">No participants are associated with this lab.</p>"))));
+                                tbody.append(row.append(subGridMarker).append(subGridCell.append(subGridContainer.append(loadScreen).append(subGrid.append(head.append(headings))).append("<p class=\"no-data-found\">No participants are associated with this lab.</p>"))));
                             }
                         }
                         if ($(el).find("tbody").length) {
@@ -329,16 +338,18 @@
                             $(this).click(function () {
                                 var row = $(this).parent("tr");
                                 var loadedEarlier = row.hasClass("loaded");
-                                row.addClass("loaded").toggleClass("open-subgrid");
                                 if ($(this).hasClass("glyphicon-plus")) {
-                                    $(this).addClass("glyphicon-minus").removeClass("glyphicon-plus");
-                                    if (row.hasClass("open-subgrid") && !loadedEarlier) {
+                                    if (!loadedEarlier ) {
+                                        AjaxLoader.show("#" + row.attr("id") + " .expander");
                                         Grid.LoadSubgrid(row.attr("id"), conf);
                                     } else {
+                                        $(this).addClass("glyphicon-minus").removeClass("glyphicon-plus");
+                                        row.addClass("loaded").addClass("open-subgrid");
                                         $("#" + row.attr("id") + "-subgrid-row").css("display", "table-row");
                                     }
                                 } else {
                                     $(this).removeClass("glyphicon-minus").addClass("glyphicon-plus");
+                                    row.addClass("loaded").removeClass("open-subgrid");
                                     $("#" + row.attr("id") + "-subgrid-row").css("display", "none");
                                 }
                             })
@@ -352,23 +363,6 @@
             }
         })
     },
-    methods: {
-        refreshLabParticipants: function (labId) {
-
-        },
-        editLabDuration: function (labId) {
-
-        },
-        editLab: function (labId) {
-
-        },
-        editLabParticipants: function (labId) {
-
-        },
-        deleteLab: function (labId) {
-
-        }
-    }
 }
 var Grids = {
     LabGrid: {
@@ -471,10 +465,12 @@ var Message = {
     }
 }
 var AjaxLoader = {
-    timer: new Array(),
+    timer: {},
     show: function (selector) {
-        $(selector).attr("class", "glyphicon ajax-loader");
-        AjaxLoader.timer[selector] = setInterval(function () {
+        AjaxLoader.timer[selector] = {};
+        AjaxLoader.timer[selector].class = $(selector).classRegEx("glyphicon-")
+        $(selector).addClass("ajax-loader").removeClass(AjaxLoader.timer[selector].class);
+        AjaxLoader.timer[selector].handler = setInterval(function () {
             $(selector).css("background-position", function (i, value) {
                 var x = parseInt(value, 10);
                 if (x <= -494) {
@@ -486,9 +482,11 @@ var AjaxLoader = {
             })
         }, 50);
     },
-    hide: function (selector) {
-        $(selector).removeClass("ajax-loader").addClass("glyphicon-hand-right");
-        clearInterval(AjaxLoader.timer[selector]);
+    hide: function (selector, selectorClass) {
+        if (selectorClass === null) selectorClass = "glyphicon-hand-right";
+        if(selectorClass === true) selectorClass = AjaxLoader.timer[selector].class
+        $(selector).removeClass("ajax-loader").addClass(selectorClass);
+        clearInterval(AjaxLoader.timer[selector].handler);
     }
 }
 var Notification = {
@@ -574,7 +572,7 @@ App = {
                     for (i in rows) {
                         selectBox.append("<option value='" + rows[i].ID + "'>" + rows[i].Name + "</option>");
                     }
-                    $("#move-participant-form-body").html(selectBox);
+                    $("#target-lab-container").html(selectBox);
                 }
             }
         })
@@ -1071,6 +1069,16 @@ function LogoutFailure(response) {
 }
 
 (function ($) {
+    $.fn.classRegEx = function (regex) {
+        var classes = $(this).attr("class");
+        if (!classes || !regex) return "";
+        classes = classes.split(' ');
+        var len = classes.length;
+        for (var i = 0; i < len; i++) {
+            if (classes[i].match(regex)) return classes[i];
+        }
+        return "";
+    };
     $.fn.hasClassRegEx = function (regex) {
         var classes = $(this).attr('class');
         if (!classes || !regex) return false;

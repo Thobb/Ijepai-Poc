@@ -235,7 +235,7 @@
                 </div>
                 <div class="add-participant-row-2">
                     <div class="form-group col-md-6">
-                        <label for="LabParticipants[undefined].First_Name" class="control-label col-md-3 first-name-label">First name</label>
+                        <label for="First_Name" class="control-label col-md-3 first-name-label">First name</label>
                         <div class="col-md-9">
                             <input value="" name="First_Name" id="First_Name" class="form-control first-name">
                         </div>
@@ -284,7 +284,11 @@
         <input type="hidden" name="Lab_ID" id="move-participant-lab-id" />
         <input type="hidden" name="Participant_ID" id="move-participant-id" />
         <div id="move-participant-form-body">
-
+            <div class="form-group col-md-6 form-horizontal">
+                <label for="First_Name" class="control-label col-md-3 first-name-label">Target lab</label>
+                <div class="col-md-9" id="target-lab-container">
+                </div>
+            </div>
         </div>
         <div id="move-participant-form-footer">
             <input type="submit" name="todo" value="Move" class="btn btn-default" />
@@ -357,7 +361,6 @@
         <input type="hidden" name="Lab_ID" value="" id="lab-id-machine-link" />
         <input type="hidden" name="Participant_ID" value="" id="participant-id-machine-link" />
         <div id="get-machine-link-form-body">
-
         </div>
         <div id="get-machine-link-form-footer">
             <input type="submit" name="get-link" value="Get Link" class="btn btn-default" />

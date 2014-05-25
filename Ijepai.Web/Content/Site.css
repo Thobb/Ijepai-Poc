@@ -42,6 +42,25 @@ input[type="checkbox"].input-validation-error {
     display: none;
 }
 
+.no-text-selection {
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.load-screen{
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+}
+
 /****************************************  Site  ************************************/
 
 * {
@@ -266,6 +285,7 @@ body {
 
 #lab-list .carved-box {
     background: #b5e7fe;
+    position: relative;
 }
 
 #lab-list .Time_Zone, #lab-list .Networked, #lab-list .OS, #lab-list .VM_Type, #lab-list .Hard_Disk {
