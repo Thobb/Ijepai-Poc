@@ -148,6 +148,16 @@ body {
 
 /* tab 1 */
 
+#admin-tab-btn, #admin-tab{
+    background: #E29B59
+}
+
+#admin-tab-btn.selected-tab-btn {
+    color: #902227;
+}
+
+/* tab 1 */
+
 #dashboard-tab-btn, #dashboard-tab {
     background-color: #00bb33;
 }
@@ -629,12 +639,12 @@ body {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
 }
 
-.lab-actions li.inactive-lab-action {
+.lab-actions li.inactive-action {
     cursor: not-allowed;
     opacity: 0.3;
 }
 
-.lab-actions li.inactive-lab-action:hover {
+.lab-actions li.inactive-action:hover {
     color: #000;
     text-shadow: none;
 }
@@ -659,12 +669,12 @@ body {
     text-shadow: 1px 1px 2px rgba(255, 0, 0, 0.3), -1px -1px 2px rgba(255, 0, 0, 0.3);
 }
 
-.participant-actions li.inactive-lab-action {
+.participant-actions li.inactive-action {
     cursor: not-allowed;
     opacity: 0.3;
 }
 
-.participant-actions li.inactive-lab-action:hover {
+.participant-actions li.inactive-action:hover {
     color: #000;
     text-shadow: none;
 }

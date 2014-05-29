@@ -45,6 +45,12 @@ namespace Ijepai.Web.Controllers.Labs
             return Json(new { Status = 0, TotalItems = labData.Count(), rows = labData });
         }
 
+        [Authorize]
+        public ActionResult Subdomain(string subdomain)
+        {
+            return Content(subdomain);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -59,7 +65,7 @@ namespace Ijepai.Web.Controllers.Labs
                 Last_Name = p.Last_Name ?? "",
                 Role = p.Role ?? ""
             }));
-            return Json(new { Status = 0, TotalItems = participants.Count(), rows = participants });
+            return Json(new { Status = 0, TotalItems = participants.Count(), rows = participants, org = Session["org"] });
         }
 
         [HttpPost]
@@ -98,10 +104,7 @@ namespace Ijepai.Web.Controllers.Labs
                     {
                         ConfigureLab(newLabData, Lab_ID);
                     }
-                    if (newLabData.LabParticipants.Count() != 0)
-                    {
-                        EditParticipants(newLabData.LabParticipants, Lab_ID);
-                    }
+                    EditParticipants(newLabData.LabParticipants, Lab_ID);
                 }
             }
             catch (Exception ex)
@@ -109,7 +112,7 @@ namespace Ijepai.Web.Controllers.Labs
                 string message = ex.ToString();
             }
 
-            result = Json(new { Status = 0, ModelState = a });
+            result = Json(new { Status = 0, ModelState = a, Lab = "lab-" + Lab_ID });
             return result;
         }
 
@@ -117,13 +120,24 @@ namespace Ijepai.Web.Controllers.Labs
         {
             ApplicationDbContext db = new ApplicationDbContext();
             LabConfiguration newLabConfig = new LabConfiguration();
-            newLabConfig.LabID = Lab_ID;
+            LabConfiguration config = db.LabConfiguration.Where(c => c.LabID == Lab_ID).FirstOrDefault();
+            if (config != null)
+            {
+                newLabConfig = config;
+            }
+            else
+            {
+                newLabConfig.LabID = Lab_ID;
+            }
             newLabConfig.Networked = newLabData.Networked;
             newLabConfig.OS = newLabData.OS;
             newLabConfig.VM_Count = newLabData.VM_Count;
             newLabConfig.VM_Type = newLabData.VM_Type;
             newLabConfig.Hard_Disk = newLabData.Machine_Size;
-            db.LabConfiguration.Add(newLabConfig);
+            if (config == null)
+            {
+                db.LabConfiguration.Add(newLabConfig);
+            }
             db.SaveChanges();
             return 0;
         }
@@ -145,10 +159,10 @@ namespace Ijepai.Web.Controllers.Labs
                         labParticipant.Role = participant.Role.Trim();
                         labParticipant.LabID = Lab_ID;
                         db.LabParticipants.Add(labParticipant);
-                        db.SaveChanges();
                     }
                 }
             }
+            db.SaveChanges();
             return 0;
         }
 

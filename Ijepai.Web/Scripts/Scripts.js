@@ -30,16 +30,16 @@
                 var status = row.find(".Status").html();
                 var participantActions = {
                     editParticipant: {
-                        policy: "Disallow",
+                        policy: "Allow",
                         title: "Edit participant particulars."
                     },
                     moveParticipant: {
-                        policy: "Disallow",
+                        policy: "Allow",
                         title: "Move or copy participant to another lab."
                     },
                     getMachineLink: {
-                        policy: "Disallow",
-                        title: "Get link to lab."
+                        policy: "Allow",
+                        title: "Get participant machine's link."
                     },
                     deleteParticipant: {
                         policy: "Disallow",
@@ -59,11 +59,17 @@
                     });
                     participantRow.append(vmControl).append("<td>" + index + "</td>");
                     var actionNode = $("#participant-actions-template");
+                    $.each(actionNode.find("li"), function () {
+                        $(this).attr("title", participantActions[$(this).data("role")].title);
+                        if (participantActions[$(this).data("role")].policy == "Disallow") {
+                            $(this).addClass("inactiv-action").attr("title", "The action is not appropriate in current context");
+                        }
+                    });
                     Data[i]["participantActions"] = actionNode.html();
                     for (cell in subgridColumns) {
                         participantRow.append("<td class='" + cell + "'>" + Data[i][cell] + "</td>");
                     }
-                    participantRow.find(".paricipant-edit").not(".inactive-lab-action").click(function (e) {
+                    participantRow.find(".paricipant-edit").not(".inactive-action").click(function (e) {
                         e.preventDefault();
                         row = $(this).parent().parent().parent();
                         $("#Username").val(row.find(".Email_Address").html());
@@ -76,7 +82,7 @@
                         $("#edit-participant-form-container").fadeIn();
                         return false;
                     });
-                    participantRow.find(".participant-move").not(".inactive-lab-action").click(function (e) {
+                    participantRow.find(".participant-move").not(".inactive-action").click(function (e) {
                         e.preventDefault();
                         row = $(this).parent().parent().parent();
                         $("#move-participant-id").val(row.attr("id").slice(12));
@@ -85,7 +91,7 @@
                         $("#move-participant-form-container").fadeIn();
                         return false;
                     });
-                    participantRow.find(".participant-machine-link").not(".inactive-lab-action").click(function (e) {
+                    participantRow.find(".participant-machine-link").not(".inactive-action").click(function (e) {
                         e.preventDefault();
                         row = $(this).parent().parent().parent();
                         $("#lab-id-machine-link").val(labId);
@@ -94,7 +100,7 @@
                         $("#get-lab-link-form-container").fadeIn();
                         return false;
                     });
-                    participantRow.find(".participant-delete").not(".inactive-lab-action").click(function (e) {
+                    participantRow.find(".participant-delete").not(".inactive-action").click(function (e) {
                         e.preventDefault();
                         row = $(this).parent().parent().parent();
                         $("#lab-id-delete-participant").val(labId);
@@ -122,7 +128,6 @@
         populateEditParticipantList: function (rowId, conf, Data) {
             $("#lab-participants-edit").css("display", "block");
             $("#edit-participants-form-list").html("");
-            $("#edit-participants-form-content").fadeToggle();
             var index = 0;
             if (Data.length == 0) {
                 NewLabForm.create_new_participant_row({ Role: "Admin", Index: index }, "edit-participants-form-list");
@@ -188,25 +193,11 @@
     },
     Load: function (el, conf) {
         var config = Grids[conf];
+        var labActions = config.labActions;
         $.ajax({
             url: config.url,
             type: "POST",
             success: function (data, status, xhr) {
-                //data = $.parseJSON(data);
-                var actions = ["extendLab", "deleteLab", "editLab", "addParticipant"];
-                var actionPolicies = {
-                    "extendLab": "Disallow",
-                    "editLab": "Disallow",
-                    "editParticipant": "Disallow",
-                    "deleteLab": "Disallow"
-                };
-                var actionTitles = {
-                    "extendLab": "Extend Lab Duration",
-                    "deleteLab": "Remove Lab With Assets",
-                    "editLab": "Edit Lab Particulars",
-                    "editParticipant": "Add or Remove Participants",
-                    "refreshParticipantList": "Refresh participant list of this lab"
-                };
                 var totalItems = data.TotalItems;
                 var rows = data.rows;
                 if (data.Status == "0") {
@@ -229,87 +220,41 @@
                             rows[i]["VM_Count"] = rows[i]["Participant_Count"] + " / " + rows[i]["VM_Count"];
                             var status = rows[i]["Status"];
                             if (status == "Scheduled") {
-                                actionPolicies.deleteLab = "Permit";
-                                actionPolicies.editParticipant = "Permit";
-                                actionPolicies.editLab = "Permit";
+                                labActions.deleteLab.policy = "Permit";
+                                labActions.editParticipant.policy = "Permit";
+                                labActions.editLab.policy = "Permit";
+                                labActions.refreshParticipantList.policy = "Permit";
                             } else if (status == "Starting") {
-                                actionPolicies.extendLab = "Permit";
-                                actionPolicies.editParticipant = "Permit";
+                                labActions.extendLab = "Permit";
+                                labActions.editParticipant = "Permit";
+                                labActions.refreshParticipantList.policy = "Permit";
                             } else if (status == "Available") {
-                                actionPolicies.extendLab = "Permit";
-                                actionPolicies.editParticipant = "Permit";
-                                actionPolicies.deleteLab = "Permit";
+                                labActions.extendLab = "Permit";
+                                labActions.editParticipant = "Permit";
+                                labActions.deleteLab = "Permit";
+                                labActions.refreshParticipantList.policy = "Permit";
                             } else if (status == "Stopping") {
+                                labActions.refreshParticipantList.policy = "Permit";
                             } else if (status == "Exhausted") {
-                                actionPolicies.deleteLab = "Permit";
+                                labActions.deleteLab.policy = "Permit";
+                                labActions.refreshParticipantList.policy = "Permit";
                             }
                             $.each(actionsNode.find("li"), function () {
-                                $(this).attr("title", actionTitles[$(this).data("role")]);
-                                if (actionPolicies[$(this).data("role")] == "Disallow"){
-                                    $(this).addClass("inactive-lab-action").attr("title", "The action is not appropriate in current context");
+                                var id = rows[i].ID;
+                                var actionOb = labActions[$(this).data("role")];
+                                $(this).attr("title", actionOb.title);
+                                if (actionOb.policy == "Disallow"){
+                                    $(this).addClass("inactive-action").attr("title", "The action is not appropriate in current context");
+                                } else {
+                                    $(this).click(function () {
+                                        actionOb.method(id);
+                                    });
                                 }
                             });
-                            rows[i]["labActions"] = actionsNode.html();
+                            rows[i]["labActions"] = actionsNode.children();
                             for (field in cols) {
-                                tr.append("<td class='" + field + "'>" + rows[i][field] + "</td>");
+                                tr.append($("<td>").addClass(field).append(rows[i][field]));
                             }
-                            tr.find(".refresh-participant-table").not(".inactive-lab-action").click(function (e) {
-                                e.preventDefault();
-                                var rowId = $(this).parent().parent().parent().attr("id");
-                                $("#" + rowId + "-subgrid-row .load-screen").css("display", "block");
-                                AjaxLoader.show("#" + rowId + " .expander");
-                                $("#" + rowId + "-subgrid-row .subgrid-data").fadeTo(500, 0.3);
-                                Grid.LoadSubgrid(rowId, conf);
-                                return false;
-                            });
-                            tr.find(".edit-lab-participant-list").not(".inactive-lab-action").click(function (e) {
-                                e.preventDefault();
-                                $("#overlay").fadeIn();
-                                $("#edit-participants-lab-id").val($(this).parent().parent().parent().attr("id").slice(4));
-                                Grid.LoadSubgrid($(this).parent().parent().parent().attr("id"), conf, "populateEditParticipantList");
-                                return false;
-                            });
-                            tr.find(".reschedule-lab").not(".inactive-lab-action").click(function (e) {
-                                e.preventDefault();
-                                $("#overlay").fadeIn();
-                                var row = $(this).parent().parent().parent();
-                                $("#reschedule-lab-start-time").val(row.find(".Start_Time").html());
-                                $("#reschedule-lab-end-time").val(row.find(".End_Time").html());
-                                $("#reschedule-lab-id").val(row.attr("id").slice(4));
-                                $("#extend-lab-form-content").fadeIn();
-                                return false;
-                            });
-                            tr.find(".edit-lab-attributes").not(".inactive-lab-action").click(function (e) {
-                                e.preventDefault();
-                                Grid.LoadSubgrid($(this).parent().parent().parent().attr("id"), conf, "populateEditLabParticipantList");
-
-                                $("#create-lab-form").trigger("reset");
-                                var row = $(this).parent().parent().parent();
-                                $("#Lab_ID_for_edit").val(row.attr("id").slice(4));
-                                $("#Name").val(row.find(".Name").html());
-                                $("#Time_Zone").val(row.find(".Time_Zone").html());
-                                $("#Start_Time").val(row.find(".Start_Time").html());
-                                $("#End_Time").val(row.find(".End_Time").html());
-                                $("#VM_Count").val(row.find(".VM_Count").html().split(" / ")[1]);
-                                $("#VM_Type").val(row.find(".VM_Type").html());
-                                $("#OS").val(row.find(".OS").html());
-                                $("#Machine_Size").val(row.find(".Hard_Disk").html());
-                                $("#Networked").val(row.find(".Networked").html());
-
-                                $("#overlay").toggle();
-                                $("#create-lab-form-content").fadeIn(function () {
-                                    $("#create-lab-form-tabs li.active-lab-form-tab").removeClass("active-lab-form-tab");
-                                    $("#show-create-lab-form-tab").addClass("active-lab-form-tab");
-                                });
-                                return false;
-                            });
-                            tr.find(".delete-lab").not(".inactive-lab-action").click(function (e) {
-                                e.preventDefault();
-                                $("#delete-lab-id").val($(this).parent().parent().parent().attr("id").slice(4));
-                                $("#overlay").fadeIn();
-                                $("#delete-lab-form-content").fadeIn();
-                                return false;
-                            });
                             tbody.append(tr);
                             if (hasSubgrid) {
                                 var subgridCols = config.subgridColumns;
@@ -381,6 +326,76 @@ var Grids = {
             VM_Type: { title: "VM Type" },
             Hard_Disk: { title: "Machine Size" },
             labActions: { title: "Actions" }
+        },
+        labActions: {
+            extendLab: {
+                policy: "Disallow",
+                title: "Extend Lab Duration",
+                method: function(id){
+                    $("#overlay").fadeIn();
+                    var row = $("#lab-" + id);
+                    $("#reschedule-lab-start-time").val(row.find(".Start_Time").html());
+                    $("#reschedule-lab-end-time").val(row.find(".End_Time").html());
+                    $("#reschedule-lab-id").val(id);
+                    $("#extend-lab-form-content").fadeIn();
+                }
+            },
+            deleteLab: {
+                policy: "Disallow",
+                title: "Remove Lab With Assets",
+                method: function (id) {
+                    $("#delete-lab-id").val(id );
+                    $("#overlay").fadeIn();
+                    $("#delete-lab-form-content").fadeIn();
+                }
+            },
+            editLab: {
+                policy: "Disallow",
+                title: "Edit Lab Particulars",
+                method: function(id){
+                    Grid.LoadSubgrid("lab-" + id, "LabGrid", "populateEditLabParticipantList");
+
+                    $("#create-lab-form").trigger("reset");
+                    var row = $("#lab-" + id);
+                    $("#Lab_ID_for_edit").val(id);
+                    $("#Name").val(row.find(".Name").html());
+                    $("#Time_Zone").val(row.find(".Time_Zone").html());
+                    $("#Start_Time").val(row.find(".Start_Time").html());
+                    $("#End_Time").val(row.find(".End_Time").html());
+                    $("#VM_Count").val(row.find(".VM_Count").html().split(" / ")[1]);
+                    $("#VM_Type").val(row.find(".VM_Type").html());
+                    $("#OS").val(row.find(".OS").html());
+                    $("#Machine_Size").val(row.find(".Hard_Disk").html());
+                    $("#Networked").val(row.find(".Networked").html());
+
+                    $("#overlay").toggle();
+                    $("#create-lab-form-content").fadeIn(function () {
+                        $("#create-lab-form-tabs li.active-lab-form-tab").removeClass("active-lab-form-tab");
+                        $("#show-create-lab-form-tab").addClass("active-lab-form-tab");
+                    });
+                }
+            },
+            editParticipant: {
+                policy: "Disallow",
+                title: "Add or Remove Participants",
+                method: function (id) {
+                    $("#overlay").fadeIn();
+                    $("#edit-participants-form-content").fadeIn();
+                    $("#edit-participants-lab-id").val(id);
+                    Grid.LoadSubgrid("lab-" + id, "LabGrid", "populateEditParticipantList");
+                }
+            },
+            refreshParticipantList: {
+                policy: "Disallow",
+                title: "Refresh participant list of this Lab",
+                method: function(id){
+                    var rowId = "#lab" + id;
+                    $(rowId + "-subgrid-row .load-screen").css("display", "block");
+                    AjaxLoader.show(rowId + " .expander");
+                    $(rowId + "-subgrid-row .subgrid-data").fadeTo(500, 0.3);
+                    Grid.LoadSubgrid("lab-" + id, conf);
+                }
+            }
         },
         subgrid: true,
         subgridClassPrefix: "participant",
@@ -542,13 +557,6 @@ var Lib = {
 var AppData = {
     LoggedIn: 0,
     Load: function () {
-        Grid.Init("#lab-list", "LabGrid");
-    }
-}
-App = {
-    Init: function () {
-        App.setPage();
-        App.setNav("top-nav");
         App.getLabList();
         $("#close-edit-participant-form").click(App.closeEditParticipantForm);
         $("#clear-participant-particulars").trigger("reset");
@@ -557,6 +565,25 @@ App = {
         $("#cancel-participant-deletion").click(App.closeDeleteParticipantForm);
         $("#close-get-machine-link-form").click(App.closeGetMachineLinkForm);
         $("#cancel-get-machine-link").click(App.closeGetMachineLinkForm);
+        Grid.Init("#lab-list", "LabGrid");
+        $("#Start_Time").datetimepicker({
+            format: 'd/M/Y H:i'
+        });
+        $("#End_Time").datetimepicker({
+            format: 'd/M/Y H:i'
+        });
+        $("#reschedule-lab-start-time").datetimepicker({
+            format: 'd/M/Y H:i'
+        });
+        $("#reschedule-lab-end-time").datetimepicker({
+            format: 'd/M/Y H:i'
+        });
+    }
+}
+App = {
+    Init: function () {
+        App.setPage();
+        App.setNav("top-nav");
     },
     LabList: [],
     getLabList: function () {
@@ -620,6 +647,9 @@ App = {
     },
     deleteParticipantFormSuccess: function(data){
         if (data.Status == 0) {
+            AjaxLoader.show("#" + data.Lab + " .expander");
+            $("#" + data.Lab + "-subgrid-row .load-screen")
+            $("#" + data.Lab + "-subgrid-row .subgrid-data").fadeTo(500, 0.3);
             Grid.LoadSubgrid(data.Lab, "LabGrid");
             App.closeDeleteParticipantForm();
         }
@@ -846,8 +876,12 @@ var NewLabForm = {
             $("#overlay").fadeOut(200);
         })
     },
-    editParticipantFormSuccess: function(){
+    editParticipantFormSuccess: function (data) {
+        AjaxLoader.show("#" + data.Lab + " .expander");
+        $("#" + data.Lab + "-subgrid-row .load-screen")
+        $("#" + data.Lab + "-subgrid-row .subgrid-data").fadeTo(500, 0.3);
         NewLabForm.closeEditParticipantForm();
+        Grid.LoadSubgrid(data.Lab, "LabGrid")
     },
     closeCreateLabForm: function () {
         $("#create-lab-form-content").fadeOut(function () {
@@ -877,13 +911,17 @@ var NewLabForm = {
         var First_Name = (options.First_Name) ? options.First_Name : "";
         var Last_Name = (options.Last_Name) ? options.Last_Name : "";
         var Selected = (options.Role) ? options.Role : "Guest";
-        var delBtn = $("<a/>").attr("id", "delete-participant-row").attr("href", "#").html("Delete");
+        var delBtn = $("<a/>").attr("class", "delete-participant-row").attr("href", "#").html("Delete");
         delBtn.css({ position: "absolute", right: "10px", top: "5px", color: "#3399ff" });
         delBtn.click(function (e) {
             $(this).parent().remove();
             var index = 0;
-            $("#create-lab-form-add-participant").attr("count", Number($("#create-lab-form-add-participant").attr("count")) - 1);
-            $("#create-lab-participant-list .participant-row").each(function () {
+            if (container == "edit-participants-form-list") {
+                $("#edit-lab-participants-add-participant").attr("count", Number($("#edit-lab-participants-add-participant").attr("count")) - 1);
+            } else {
+                $("#create-lab-form-add-participant").attr("count", Number($("#create-lab-form-add-participant").attr("count")) - 1);
+            }
+            $("#" + container + " .participant-row").each(function () {
                 var newParticipantId = "LabParticipants[" + index + "].";
                 var fields = { username: "Username", role: "Role", "first-name": "First_Name", "last-name": "Last_Name" }
                 var row = $(this);
@@ -975,7 +1013,8 @@ var NewLabForm = {
     }
 }
 $(function () {
-    $(document.body).css("display", "block")
+    $(document.body).css("display", "block");
+    App.Init();
     if (AppData.LoggedIn == 1) {
         AppData.XS = $("#logout-form input[name='__RequestVerificationToken']").val();
         $.ajaxSetup({
@@ -1013,25 +1052,9 @@ $(function () {
         Notification.Init();
         AppData.Load();
     }
-    App.Init();
     //Message.show(false, false, "glyphicon-info-sign", false, false)
     $(window).resize(App.setPage);
-    $("#Start_Time").datetimepicker({
-        format: 'd/M/Y H:i'
-    });
-    $("#End_Time").datetimepicker({
-        format: 'd/M/Y H:i'
-    });
-    $("#reschedule-lab-start-time").datetimepicker({
-        format: 'd/M/Y H:i'
-    });
-    $("#reschedule-lab-end-time").datetimepicker({
-        format: 'd/M/Y H:i'
-    });
 })
-$.validator.dateTime = function (value, element) {
-    alert(value)
-}
 function getToken() {
     $.ajax({
         url: "/Account/getToken",

@@ -23,6 +23,7 @@
             <div id="header-right">
                 <div class="navbar-collapse collapse pull-right" id="header-right">
                     <ul class="nav navbar-nav" id="top-nav">
+                        <li>@Html.ActionLink("Admin", "Index", "Home", null, new { @id = "admin-tab-btn" })</li>
                         <li>@Html.ActionLink("Dashboard", "Index", "Home", null, new { @id = "dashboard-tab-btn" })</li>
                         <li>@Html.ActionLink("Statistics", "Index", "Home", null, new { @id = "stats-tab-btn" })</li>
                         <li>@Html.ActionLink("Labs", "Index", "Home", null, new { @id = "lab-tab-btn", @class = "selected-tab-btn" })</li>

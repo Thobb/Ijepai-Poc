@@ -40,7 +40,6 @@ namespace Ijepai.Web.Controllers
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<JsonResult> Login(LoginViewModel model, string returnUrl)
         {
             JsonResult result = Json(new { Status = 2, MessageTitle = "An error occured.", MessageBody = "Please try again, Contact administrator if error persists." });;
@@ -103,7 +102,7 @@ namespace Ijepai.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser() { UserName = model.UserName, OrganizationID = 1 };
+                var user = new ApplicationUser() { UserName = model.UserName };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

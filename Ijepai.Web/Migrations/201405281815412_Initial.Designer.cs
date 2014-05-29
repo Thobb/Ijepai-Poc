@@ -13,7 +13,7 @@ namespace Ijepai.Web.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201405181548002_Initial"; }
+            get { return "201405281815412_Initial"; }
         }
         
         string IMigrationMetadata.Source

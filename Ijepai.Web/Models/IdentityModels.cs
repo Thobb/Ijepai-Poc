@@ -19,8 +19,6 @@ namespace Ijepai.Web.Models
         public string Email_Address { get; set; }
         public string Credit_Card_Number { get; set; }
 
-        public int OrganizationID { get; set; }
-        public virtual Organization Organization { get; set; }
         public virtual ICollection<Lab> Labs { get; set; }
     }
 
@@ -30,7 +28,6 @@ namespace Ijepai.Web.Models
             : base("DefaultConnection")
         {
         }
-        public DbSet<Organization> Organization { get; set; }
         public DbSet<Lab> Labs { get; set; }
         public DbSet<LabParticipant> LabParticipants { get; set; }
         public DbSet<LabConfiguration> LabConfiguration { get; set; }

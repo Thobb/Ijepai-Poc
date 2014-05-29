@@ -50,12 +50,9 @@ namespace Ijepai.Web.Migrations
                         Last_Name = c.String(),
                         Email_Address = c.String(),
                         Credit_Card_Number = c.String(),
-                        OrganizationID = c.Int(),
                         Discriminator = c.String(nullable: false, maxLength: 128),
                     })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Organizations", t => t.OrganizationID, cascadeDelete: true)
-                .Index(t => t.OrganizationID);
+                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.AspNetUserClaims",
@@ -103,15 +100,6 @@ namespace Ijepai.Web.Migrations
                         Name = c.String(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.Organizations",
-                c => new
-                    {
-                        ID = c.Int(nullable: false, identity: true),
-                        OrganizationName = c.String(),
-                    })
-                .PrimaryKey(t => t.ID);
             
             CreateTable(
                 "dbo.LabSoftwareCustoms",
@@ -271,7 +259,6 @@ namespace Ijepai.Web.Migrations
             DropForeignKey("dbo.LabConfigurations", "LabID", "dbo.Labs");
             DropForeignKey("dbo.LabSoftwareCustoms", "LabID", "dbo.Labs");
             DropForeignKey("dbo.Billings", "LabID", "dbo.Labs");
-            DropForeignKey("dbo.AspNetUsers", "OrganizationID", "dbo.Organizations");
             DropForeignKey("dbo.Labs", "ApplicationUserID", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "User_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
@@ -288,7 +275,6 @@ namespace Ijepai.Web.Migrations
             DropIndex("dbo.LabConfigurations", new[] { "LabID" });
             DropIndex("dbo.LabSoftwareCustoms", new[] { "LabID" });
             DropIndex("dbo.Billings", new[] { "LabID" });
-            DropIndex("dbo.AspNetUsers", new[] { "OrganizationID" });
             DropIndex("dbo.Labs", new[] { "ApplicationUserID" });
             DropIndex("dbo.AspNetUserClaims", new[] { "User_Id" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
@@ -305,7 +291,6 @@ namespace Ijepai.Web.Migrations
             DropTable("dbo.LabParticipants");
             DropTable("dbo.LabConfigurations");
             DropTable("dbo.LabSoftwareCustoms");
-            DropTable("dbo.Organizations");
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetUserLogins");
