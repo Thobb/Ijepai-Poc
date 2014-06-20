@@ -57,7 +57,6 @@ namespace Ijepai.Web.Controllers.Labs
         public JsonResult GetLabParticipants(int ID)
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            System.Threading.Thread.Sleep(5000);
             var participants = db.Labs.Where(l => l.ID == ID).ToList().Select(l => l.LabParticipants.Select(p => new {
                 p.ID,
                 Email_Address = p.Email_Address ?? "",

@@ -1,11 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Web
-VisualStudioVersion = 12.0.30110.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ijepai.Web", "Ijepai.Web\Ijepai.Web.csproj", "{4CC6C7BA-19DB-4188-9DE7-FCBFFD104020}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ijepai.Web.Tests", "Ijepai.Web.Tests\Ijepai.Web.Tests.csproj", "{0AC5E833-004A-46EA-9378-8ECAC41EE1D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Processor", "Processor\Processor.csproj", "{BF2B7262-ED21-490B-8E71-7D78E9F48A25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thobb.Ijepai.Messaging", "Thobb.Ijepai.Messaging\Thobb.Ijepai.Messaging.csproj", "{5E654F4C-5C15-4B38-BCBE-24295A4A4692}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thobb.Ijepai.ConfigManager", "Thobb.Ijepai.ConfigManager\Thobb.Ijepai.ConfigManager.csproj", "{B1D88F21-04FC-4B4F-8ADE-929131EBD0A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessVM", "ProcessVM\ProcessVM.csproj", "{A3593D69-73D8-4119-AB7C-90843A0381C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thobb.Ijepai.Logging", "Thobb.Ijepai.Logging\Thobb.Ijepai.Logging.csproj", "{1C593B45-AFF5-41C4-8494-D534A4BF6C10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +29,26 @@ Global
 		{0AC5E833-004A-46EA-9378-8ECAC41EE1D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AC5E833-004A-46EA-9378-8ECAC41EE1D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AC5E833-004A-46EA-9378-8ECAC41EE1D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF2B7262-ED21-490B-8E71-7D78E9F48A25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF2B7262-ED21-490B-8E71-7D78E9F48A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF2B7262-ED21-490B-8E71-7D78E9F48A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF2B7262-ED21-490B-8E71-7D78E9F48A25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E654F4C-5C15-4B38-BCBE-24295A4A4692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E654F4C-5C15-4B38-BCBE-24295A4A4692}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E654F4C-5C15-4B38-BCBE-24295A4A4692}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E654F4C-5C15-4B38-BCBE-24295A4A4692}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1D88F21-04FC-4B4F-8ADE-929131EBD0A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1D88F21-04FC-4B4F-8ADE-929131EBD0A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1D88F21-04FC-4B4F-8ADE-929131EBD0A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1D88F21-04FC-4B4F-8ADE-929131EBD0A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3593D69-73D8-4119-AB7C-90843A0381C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3593D69-73D8-4119-AB7C-90843A0381C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3593D69-73D8-4119-AB7C-90843A0381C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3593D69-73D8-4119-AB7C-90843A0381C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C593B45-AFF5-41C4-8494-D534A4BF6C10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C593B45-AFF5-41C4-8494-D534A4BF6C10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C593B45-AFF5-41C4-8494-D534A4BF6C10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C593B45-AFF5-41C4-8494-D534A4BF6C10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
