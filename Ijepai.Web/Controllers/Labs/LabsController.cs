@@ -7,6 +7,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using SMLibrary;
+using System.Configuration;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace Ijepai.Web.Controllers.Labs
 {
@@ -32,9 +36,10 @@ namespace Ijepai.Web.Controllers.Labs
                 VM_Type = (l.LabConfig == null)? "" : l.LabConfig.VM_Type,
                 Hard_Disk = (l.LabConfig == null)? 0 : l.LabConfig.Hard_Disk
             });
+            
             return Json(new { Status = 0, TotalItems = labData.Count(), rows = labData });
         }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -50,6 +55,7 @@ namespace Ijepai.Web.Controllers.Labs
         {
             return Content(subdomain);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -67,6 +73,7 @@ namespace Ijepai.Web.Controllers.Labs
             return Json(new { Status = 0, TotalItems = participants.Count(), rows = participants, org = Session["org"] });
         }
 
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -110,7 +117,6 @@ namespace Ijepai.Web.Controllers.Labs
             {
                 string message = ex.ToString();
             }
-
             result = Json(new { Status = 0, ModelState = a, Lab = "lab-" + Lab_ID });
             return result;
         }

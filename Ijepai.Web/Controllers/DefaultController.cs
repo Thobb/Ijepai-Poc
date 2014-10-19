@@ -7,6 +7,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Ijepai.Web.Models;
+using SMLibrary;
+using System.IO;
+using System.Configuration;
 
 namespace Ijepai.Web.Controllers
 {
@@ -56,11 +59,11 @@ namespace Ijepai.Web.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             ViewBag.ID = new SelectList(db.LabConfiguration, "Lab_Id", "VM_Type", lab.ID);
             return View(lab);
         }
 
+       
         // GET: /Default/Edit/5
         public ActionResult Edit(int? id)
         {

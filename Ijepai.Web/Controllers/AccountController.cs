@@ -10,6 +10,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using Ijepai.Web.Models;
 using System.IO;
+using SMLibrary;
+using System.Configuration;
 
 namespace Ijepai.Web.Controllers
 {
@@ -56,6 +58,11 @@ namespace Ijepai.Web.Controllers
                     viewResult.View.Render(viewContext, sw);
                     viewResult.ViewEngine.ReleaseView(ControllerContext, viewResult.View);
                     string TokenHtml = sw.GetStringBuilder().ToString();
+
+                    VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
+                    var swr = new StringWriter();
+                    List<string> imageList = await vmm.GetAzureVMImages();
+                    TempData["OS"] = new SelectList(imageList);
 
                     result = Json(new { Status = 0, MessageTitle = "Logged in Successfully.", logout = TokenHtml});
                 }

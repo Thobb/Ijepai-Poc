@@ -11,7 +11,7 @@
     <div class="form-group col-md-6">
         @Html.LabelFor(model => model.VM_Type, new { @class = "control-label col-md-3" })
         <div class="col-md-9">
-            @Html.EditorFor(model => model.VM_Type)
+            @Html.DropDownList("MachineType", new SelectList(new[] { "Windows", "Unix" }, "15"))
             @Html.ValidationMessageFor(model => model.VM_Type)
         </div>
     </div>
@@ -23,15 +23,15 @@
         <div class="form-group col-md-6">
             @Html.LabelFor(model => model.Machine_Size, new { @class = "control-label col-md-3" })
             <div class="col-md-9">
-                @Html.EditorFor(model => model.Machine_Size)
+                @Html.DropDownList("VMSize", new SelectList(new[] { "Small", "Medium", "Large", "Extra Large"}, "15"))
                 @Html.ValidationMessageFor(model => model.Machine_Size)
             </div>
         </div>
 
         <div class="form-group col-md-6">
             @Html.LabelFor(model => model.OS, new { @class = "control-label col-md-3" })
-            <div class="col-md-9">
-                @Html.EditorFor(model => model.OS)
+            <div class="col-md-9" id="image-list" data-count=" 1">
+                @Html.DropDownList("ImgDropdown", TempData["OS"] as SelectList)
                 @Html.ValidationMessageFor(model => model.OS)
             </div>
         </div>
@@ -51,7 +51,7 @@
     ViewBag.AvailableSoftwares = db.Softwares.ToList();
 }
 <div style="overflow: hidden">
-    <div class="form-group col-md-6">
+    @*<div class="form-group col-md-6">
         <label for="software[0]" class="col-md-3">Select software</label>
         <div class="col-md-9">
             @foreach (var o in ViewBag.AvailableSoftwares)
@@ -65,28 +65,28 @@
                 <br />
             }
         </div>
-    </div>
-    <div class="form-group col-md-6">
+    </div>*@
+    @*<div class="form-group col-md-6">
         @Html.LabelFor(model => model.Networked, new { @class = "control-label col-md-3" })
         <div class="col-md-9">
             @Html.EditorFor(model => model.Networked)
             @Html.ValidationMessageFor(model => model.Networked)
         </div>
-    </div>
+    </div>*@
 </div>
 
 <div style="overflow: hidden">
     <div class="form-group col-md-6">
-        <label for="data-disk" class="control-label col-md-3">Upload Data Disk</label>
+        <label for="data-disk" class="control-label col-md-3">Upload Image</label>
         <div class="col-md-9 data-disk-list" data-count="1">
             <input type="file" name="data-disk" id="data-disk" class="data-disk" />
         </div>
-    </div>
+    </div>   
 
-    <div class="form-group col-md-6">
+    @*<div class="form-group col-md-6">
         <label for="custom-software" class="control-label col-md-3">Upload software</label>
         <div class="col-md-9 custom-software-list" data-count="1">
             <input type="file" name="custom-software" id="custom-software" class="custom-software" />
         </div>
-    </div>
+    </div>*@
 </div>

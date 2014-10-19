@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ijepai.Web", "Ijepai.Web\Ijepai.Web.csproj", "{4CC6C7BA-19DB-4188-9DE7-FCBFFD104020}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ijepai.Web.Tests", "Ijepai.Web.Tests\Ijepai.Web.Tests.csproj", "{0AC5E833-004A-46EA-9378-8ECAC41EE1D7}"
@@ -14,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessVM", "ProcessVM\ProcessVM.csproj", "{A3593D69-73D8-4119-AB7C-90843A0381C5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thobb.Ijepai.Logging", "Thobb.Ijepai.Logging\Thobb.Ijepai.Logging.csproj", "{1C593B45-AFF5-41C4-8494-D534A4BF6C10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMLibrary", "..\SMLibrary\SMLibrary.csproj", "{88C5F787-E4A6-4C76-8C24-E38116F0317E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +53,10 @@ Global
 		{1C593B45-AFF5-41C4-8494-D534A4BF6C10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C593B45-AFF5-41C4-8494-D534A4BF6C10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C593B45-AFF5-41C4-8494-D534A4BF6C10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88C5F787-E4A6-4C76-8C24-E38116F0317E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88C5F787-E4A6-4C76-8C24-E38116F0317E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88C5F787-E4A6-4C76-8C24-E38116F0317E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88C5F787-E4A6-4C76-8C24-E38116F0317E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

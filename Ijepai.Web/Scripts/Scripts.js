@@ -638,6 +638,23 @@ App = {
             App.closeEditParticipantForm();
         }
     },
+    UpdateVMStatus: function (data) {
+        $.ajax({
+            url: "/Dashboard/GetVMStatus",
+            type: "POST",
+            data: { id: rowId.slice(4) },
+            success: function (data, status, xhr) {
+                if (data.Status == "0") {
+                    var Data = data.rows[0];
+                    fn(rowId, conf, Data);
+                } else {
+                    alert("Some error occured")
+                }
+                $("#" + rowId + "-subgrid-row .subgrid-data").fadeTo(500, 1);
+                $("#" + rowId + "-subgrid-row .load-screen").css("display", "none");
+            }
+        })
+    },
     moveParticipantFormSuccess: function(data){
         if (data.Status == 0) {
             Grid.LoadSubgrid(data.prevLab, "LabGrid");

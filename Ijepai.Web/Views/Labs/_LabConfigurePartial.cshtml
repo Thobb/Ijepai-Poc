@@ -1,4 +1,4 @@
-﻿@model Ijepai.Web.Models.newLabModel
+﻿@model Ijepai.Web.Models.LabCreate
 
 <div class="form-group col-md-6">
     @Html.LabelFor(model => model.VM_Count, new { @class = "control-label col-md-3" })
@@ -25,17 +25,17 @@
 </div>
 
 <div class="form-group col-md-6">
-    @Html.LabelFor(model => model.OS, new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model, new { @class = "control-label col-md-3" })
     <div class="col-md-9">
-        @Html.EditorFor(model => model.OS)
+        @Html.DropDownList("image", (SelectList)ViewData["OS"])
         @Html.ValidationMessageFor(model => model.OS)
     </div>
 </div>
 
-<div class="form-group">
+@*<div class="form-group">
     @Html.LabelFor(model => model.Networked, new { @class = "control-label col-md-2" })
     <div class="col-md-10">
         @Html.EditorFor(model => model.Networked)
         @Html.ValidationMessageFor(model => model.Networked)
     </div>
-</div>
+</div>*@
