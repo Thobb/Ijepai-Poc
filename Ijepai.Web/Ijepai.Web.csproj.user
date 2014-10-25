@@ -9,6 +9,11 @@
     <ProjectView>ShowAllFiles</ProjectView>
     <WebStackScaffolding_DbContextTypeFullName>Ijepai.Web.Models.ApplicationDbContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsViewGenerationSelected>True</WebStackScaffolding_IsViewGenerationSelected>
+<<<<<<< HEAD
+=======
+    <WebStackScaffolding_ViewDialogWidth>600</WebStackScaffolding_ViewDialogWidth>
+    <NameOfLastUsedPublishProfile>ijepai</NameOfLastUsedPublishProfile>
+>>>>>>> ee8c46859c6cb69b28db50634ea3e2b8d74ed451
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
