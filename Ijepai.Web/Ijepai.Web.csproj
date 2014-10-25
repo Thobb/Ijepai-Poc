@@ -42,6 +42,9 @@
     <Reference Include="Ijepai.LabScheduler">
       <HintPath>..\Ijepai.LabScheduler\bin\Debug\Ijepai.LabScheduler.dll</HintPath>
     </Reference>
+    <Reference Include="IjepaiMailer">
+      <HintPath>..\Ijepai.Mailer\bin\Debug\IjepaiMailer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="SMLibrary">
       <HintPath>..\SMLibrary\bin\Debug\SMLibrary.dll</HintPath>
