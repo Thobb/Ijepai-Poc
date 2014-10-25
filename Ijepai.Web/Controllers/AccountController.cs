@@ -59,10 +59,7 @@ namespace Ijepai.Web.Controllers
                     viewResult.ViewEngine.ReleaseView(ControllerContext, viewResult.View);
                     string TokenHtml = sw.GetStringBuilder().ToString();
 
-                    VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
                     var swr = new StringWriter();
-                    List<string> imageList = await vmm.GetAzureVMImages();
-                    TempData["OS"] = new SelectList(imageList);
 
                     result = Json(new { Status = 0, MessageTitle = "Logged in Successfully.", logout = TokenHtml});
                 }

@@ -9,22 +9,6 @@
 </div>
 
 <div class="form-group col-md-6">
-    @Html.LabelFor(model => model.VM_Type, new { @class = "control-label col-md-3" })
-    <div class="col-md-9">
-        @Html.EditorFor(model => model.VM_Type)
-        @Html.ValidationMessageFor(model => model.VM_Type)
-    </div>
-</div>
-
-<div class="form-group col-md-6">
-    @Html.LabelFor(model => model.Hard_Disk, new { @class = "control-label col-md-3" })
-    <div class="col-md-9">
-        @Html.EditorFor(model => model.Hard_Disk)
-        @Html.ValidationMessageFor(model => model.Hard_Disk)
-    </div>
-</div>
-
-<div class="form-group col-md-6">
     @Html.LabelFor(model => model, new { @class = "control-label col-md-3" })
     <div class="col-md-9">
         @Html.DropDownList("image", (SelectList)ViewData["OS"])

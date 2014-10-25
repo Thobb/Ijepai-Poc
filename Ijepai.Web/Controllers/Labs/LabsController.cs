@@ -137,7 +137,6 @@ namespace Ijepai.Web.Controllers.Labs
             newLabConfig.Networked = newLabData.Networked;
             newLabConfig.OS = newLabData.OS;
             newLabConfig.VM_Count = newLabData.VM_Count;
-            newLabConfig.VM_Type = newLabData.VM_Type;
             newLabConfig.Hard_Disk = newLabData.Machine_Size;
             if (config == null)
             {

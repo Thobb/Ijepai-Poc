@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessVM", "ProcessVM\Proc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thobb.Ijepai.Logging", "Thobb.Ijepai.Logging\Thobb.Ijepai.Logging.csproj", "{1C593B45-AFF5-41C4-8494-D534A4BF6C10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMLibrary", "..\SMLibrary\SMLibrary.csproj", "{88C5F787-E4A6-4C76-8C24-E38116F0317E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMLibrary", "SMLibrary\SMLibrary.csproj", "{88C5F787-E4A6-4C76-8C24-E38116F0317E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
