@@ -218,8 +218,14 @@ namespace Ijepai.Utilities
         {
             //Get MailTemplate
             MailTemplate mailTemplate = new MailTemplate();            
-            string body = MailTemplate.ResolveTokens(mailTemplate.BodyContent, messageTokenValues);
-            string subject = MailTemplate.ResolveTokens(mailTemplate.Subject, messageTokenValues);
+            string body = "Dear User";
+            body+= "<br/><br/>";
+            body += "<a href=" + mailTemplateCode + "</a> Please click this link to access your Virtual Machine</a><br/>";
+            body+= "Regards,<br/>";
+            body+="Ijepai";
+            body+="<br />";
+
+            string subject = "Your Ijepai Trial Virtual machine is ready";
             //all MailTemplate entity emails are HTML
             Compose(subject, body, toList, true, attachments, ccList, bccList);
            
