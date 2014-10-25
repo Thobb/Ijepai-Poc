@@ -152,8 +152,8 @@ UpgradeLog*.htm
 
 
 # SQL Server files
-App_Data/*.mdf
-App_Data/*.ldf
+Ijepai.Web/App_Data/*.mdf
+Ijepai.Web/App_Data/*.ldf
 
 # =========================
 # Windows detritus
@@ -205,3 +205,7 @@ WebPortal/Content/
 # Ignore Release documentation and Debug info
 lib/Release/*.xml
 lib/Release/*.pdb
+
+
+# Ignore binaries
+Ijepai.Web/bin/Ijepai.Web.*

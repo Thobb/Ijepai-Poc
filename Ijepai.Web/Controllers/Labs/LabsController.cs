@@ -137,7 +137,6 @@ namespace Ijepai.Web.Controllers.Labs
             newLabConfig.Networked = newLabData.Networked;
             newLabConfig.OS = newLabData.OS;
             newLabConfig.VM_Count = newLabData.VM_Count;
-            newLabConfig.VM_Type = newLabData.VM_Type;
             newLabConfig.Hard_Disk = newLabData.Machine_Size;
             if (config == null)
             {
@@ -257,6 +256,21 @@ namespace Ijepai.Web.Controllers.Labs
         }
 
         public JsonResult GetMachineLink(int Participant_ID, int Lab_ID)
+        {
+            return Json(new { Status = 0, Message = "http://example.com/participant=" + Participant_ID + "&lab=" + Lab_ID });
+        }
+
+        public JsonResult SendMachineLink(int Participant_ID, int Lab_ID)
+        {
+            return Json(new { Status = 0});
+        }
+
+        public JsonResult StartMachine(int Participant_ID, int Lab_ID)
+        {
+            return Json(new { Status = 0 });
+        }
+
+        public JsonResult StopMachine(int Participant_ID, int Lab_ID)
         {
             return Json(new { Status = 0 });
         }

@@ -25,7 +25,7 @@ namespace Ijepai.Web.Controllers.Dashboard
         [HttpPost]
         // GET: /Dashboard/
         public ActionResult Index()
-        {       
+        {
             return PartialView("_DashboardPartial");
         }
 
@@ -41,25 +41,17 @@ namespace Ijepai.Web.Controllers.Dashboard
 
         // POST: /Dashboard/Create
         [HttpPost]
-        public ActionResult QuickCreate(DashBoardModel model)
-        {        
-            GenerateVMConfig(model);
-            return View();
+        public Task<JsonResult> QuickCreate(DashBoardModel model)
+        {
+            var status = GenerateVMConfig(model);
+            return status;
         }
 
-        public async Task<JsonResult> GetVMStatus()
+        public async Task<JsonResult> GetVMStatus(string ServiceName, string VMName)
         {
             VMManager vmm = GetVMM();
-            String requestID = Request.QueryString["requestid"];
-            XElement status = await vmm.GetOperationStatus(requestID);
-            String strStatus = status.Element(vmm.ns + "Status").Value;
-            String strMessage = String.Empty;
-            if (status.Descendants(vmm.ns + "Message").FirstOrDefault() != null)
-                strMessage = status.Descendants(vmm.ns + "Message").FirstOrDefault().Value;
-
-            String osStatus = String.Format("Status: {0}, Message: {1}", strStatus, strMessage);
-            return Json(new { Status = osStatus, MessageTitle = "Success" });
-
+            XDocument vmXML = await vmm.GetAzureVM(ServiceName, VMName);
+            return Json(new {Status=0, InstanceStatus = (string)vmXML.Element(vmm.ns + "InstanceStatus"), PowerState = (string)vmXML.Element(vmm.ns + "PowerState")});
         }
 
 
@@ -69,7 +61,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             return PartialView("_DashboardPartial");
         }
 
-        async public Task<OperationStatus> GenerateVMConfig(DashBoardModel model)
+        async public Task<JsonResult> GenerateVMConfig(DashBoardModel model)
         {
                       
            
@@ -80,7 +72,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             if (await vmm.IsServiceNameAvailable(serviceName).ConfigureAwait(continueOnCapturedContext:false) == false)
             {
                 //lblStatus.Text = "Service Name is not available. Must be unique";
-                return OperationStatus.Failed;
+                return Json(new { Status=OperationStatus.Failed});
             }
             
 
@@ -121,19 +113,21 @@ namespace Ijepai.Web.Controllers.Dashboard
             String requestID_cloudService = await vmm.NewAzureCloudService(serviceName, "West US", String.Empty).ConfigureAwait(continueOnCapturedContext: false);
 
             OperationResult result = await vmm.PollGetOperationStatus(requestID_cloudService, 5, 120).ConfigureAwait(continueOnCapturedContext: false); ;
-
+            String requestID_createDeployment;
                 if (result.Status == OperationStatus.Succeeded)
                 {
                     // VM creation takes too long so we'll check it later
-                    String requestID_createDeployment = await vmm.NewAzureVMDeployment(serviceName, vmName, String.Empty, vm, null).ConfigureAwait(continueOnCapturedContext:false);
+                    requestID_createDeployment = await vmm.NewAzureVMDeployment(serviceName, vmName, String.Empty, vm, null).ConfigureAwait(continueOnCapturedContext:false);
 
                    // Response.Redirect("/GetOperationStatus.aspx?requestid=" + requestID_createDeployment);
                 }
                 else
                 {
+                    requestID_createDeployment = "";
                     //lblStatus.Text = String.Format("Creating Cloud Service Failed. Message: {0}", result.Message);
                 }
-                return result.Status;
+
+                return Json(new { Status = result.Status, ServiceName = serviceName , VMName = vmName});
         }
 
         private String GetOSDiskMediaLocation()

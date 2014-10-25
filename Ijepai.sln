@@ -17,7 +17,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessVM", "ProcessVM\Proc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thobb.Ijepai.Logging", "Thobb.Ijepai.Logging\Thobb.Ijepai.Logging.csproj", "{1C593B45-AFF5-41C4-8494-D534A4BF6C10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMLibrary", "..\SMLibrary\SMLibrary.csproj", "{88C5F787-E4A6-4C76-8C24-E38116F0317E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMLibrary", "SMLibrary\SMLibrary.csproj", "{88C5F787-E4A6-4C76-8C24-E38116F0317E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ijepai.LabScheduler", "Ijepai.LabScheduler\Ijepai.LabScheduler.csproj", "{CA1D9332-BF54-4FE5-8435-4D26B131782E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IjepaiMailer", "Ijepai.Mailer\IjepaiMailer.csproj", "{484F43F1-BE6E-4A25-9B6A-D6AEDBB2565B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,14 @@ Global
 		{88C5F787-E4A6-4C76-8C24-E38116F0317E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88C5F787-E4A6-4C76-8C24-E38116F0317E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88C5F787-E4A6-4C76-8C24-E38116F0317E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA1D9332-BF54-4FE5-8435-4D26B131782E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA1D9332-BF54-4FE5-8435-4D26B131782E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA1D9332-BF54-4FE5-8435-4D26B131782E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA1D9332-BF54-4FE5-8435-4D26B131782E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{484F43F1-BE6E-4A25-9B6A-D6AEDBB2565B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{484F43F1-BE6E-4A25-9B6A-D6AEDBB2565B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{484F43F1-BE6E-4A25-9B6A-D6AEDBB2565B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{484F43F1-BE6E-4A25-9B6A-D6AEDBB2565B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

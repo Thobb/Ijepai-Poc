@@ -7,14 +7,6 @@
             @Html.ValidationMessageFor(model => model.VM_Count)
         </div>
     </div>
-
-    <div class="form-group col-md-6">
-        @Html.LabelFor(model => model.VM_Type, new { @class = "control-label col-md-3" })
-        <div class="col-md-9">
-            @Html.DropDownList("MachineType", new SelectList(new[] { "Windows", "Unix" }, "15"))
-            @Html.ValidationMessageFor(model => model.VM_Type)
-        </div>
-    </div>
 </div>
 
 <div class="machine-size-os">
@@ -46,10 +38,10 @@
     </div>
 </div>
 
-@{  
+@*@{  
     Ijepai.Web.Models.ApplicationDbContext db = new Ijepai.Web.Models.ApplicationDbContext();
     ViewBag.AvailableSoftwares = db.Softwares.ToList();
-}
+}*@
 <div style="overflow: hidden">
     @*<div class="form-group col-md-6">
         <label for="software[0]" class="col-md-3">Select software</label>

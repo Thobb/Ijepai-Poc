@@ -41,9 +41,6 @@ namespace Ijepai.Web.Models
         public string Networked { get; set; }
 
         [Required(ErrorMessage = "Ram and processor specs are required.")]
-        [Display(Name = "Machine Type")]
-        public string VM_Type { get; set; }
-
         [Display(Name = "Machine Capacity")]
         public double Machine_Size { get; set; }
 

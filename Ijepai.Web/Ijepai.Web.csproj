@@ -39,7 +39,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ijepai.LabScheduler">
+      <HintPath>..\Ijepai.LabScheduler\bin\Debug\Ijepai.LabScheduler.dll</HintPath>
+    </Reference>
+    <Reference Include="IjepaiMailer">
+      <HintPath>..\Ijepai.Mailer\bin\Debug\IjepaiMailer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="SMLibrary">
+      <HintPath>..\SMLibrary\bin\Debug\SMLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -169,9 +178,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201405281815412_Initial.cs" />
-    <Compile Include="Migrations\201405281815412_Initial.Designer.cs">
-      <DependentUpon>201405281815412_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201410250626243_Initial.cs" />
+    <Compile Include="Migrations\201410250626243_Initial.Designer.cs">
+      <DependentUpon>201410250626243_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -279,15 +288,9 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201405281815412_Initial.resx">
-      <DependentUpon>201405281815412_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201410250626243_Initial.resx">
+      <DependentUpon>201410250626243_Initial.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\SMLibrary\SMLibrary.csproj">
-      <Project>{88c5f787-e4a6-4c76-8c24-e38116f0317e}</Project>
-      <Name>SMLibrary</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

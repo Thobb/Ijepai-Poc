@@ -905,6 +905,30 @@ body {
     padding: 4px 15px;
     border-bottom: 1px solid #ddd;
 }
+/**************************************** /Quick create tab *********************************/
+#qc-create-lab-form-content {
+    border: 2px solid #fff;
+    border-radius: 10px;
+    box-shadow: 3px 3px 5px #000;
+    margin-top: 15px;
+}
+#qc-create-lab-form-body {
+    padding: 15px 0;
+    overflow: hidden;
+    border-bottom: 2px solid #fff;
+}
+#qc-create-lab-form-content select {
+    border: 2px solid #999;
+    border-radius: 3px;
+    margin-top: 5px;
+    width: 100%;
+}
+#qc-create-lab-form-footer {
+    padding: 5px 10px;
+    background-color: #027C23;
+    border-radius: 0 0 10px 10px;
+}
+/**************************************** /Quick create tab *********************************/
 /**************************************** /New Lab Form *********************************/
 #overlay {
     background: #000;

@@ -607,8 +607,8 @@ namespace SMLibrary
             Uri uri = new Uri(String.Format(uriFormat, _subscriptionid, requestId));
             
             HttpClient http = GetHttpClient();
-            
-            Stream responseStream = await http.GetStreamAsync(uri);
+
+            Stream responseStream = await http.GetStreamAsync(uri).ConfigureAwait(continueOnCapturedContext: false);
             if (responseStream != null)
             {
                 StreamReader response = new StreamReader(responseStream);
