@@ -71,7 +71,6 @@ namespace Ijepai.Web.Controllers.Dashboard
 
             if (await vmm.IsServiceNameAvailable(serviceName).ConfigureAwait(continueOnCapturedContext:false) == false)
             {
-                //lblStatus.Text = "Service Name is not available. Must be unique";
                 return Json(new { Status=OperationStatus.Failed});
             }
             
@@ -80,19 +79,8 @@ namespace Ijepai.Web.Controllers.Dashboard
 
             vm = vmm.NewWindowsProvisioningConfig(vm, vmName, password);
             vm = vmm.NewNetworkConfigurationSet(vm);
-
-            //if (chkAddDataDisk.Checked == true)
-            //{
-            //    vm = vmm.AddNewDataDisk(vm, 10, 0, "MyDataDisk", GetDataDiskMediaLocation());
-            //}
-            //if (chkAddHTTPEndpoint.Checked == true)
-            //{
-                vm = vmm.AddNewInputEndpoint(vm, "web", "TCP", 80, 80);
-            //}
-            //if (chkAddRDPEndpoint.Checked == true)
-            //{
-                vm = vmm.AddNewInputEndpoint(vm, "rdp", "TCP", 3389, 3389);
-            //}
+            vm = vmm.AddNewInputEndpoint(vm, "web", "TCP", 80, 80);
+            vm = vmm.AddNewInputEndpoint(vm, "rdp", "TCP", 3389, 3389);
 
             var builder = new StringBuilder();
             var settings = new XmlWriterSettings()
@@ -104,12 +92,6 @@ namespace Ijepai.Web.Controllers.Dashboard
                 vm.WriteTo(writer);
             }
 
-            
-            //lblVMXML.Text = Server.HtmlEncode(builder.ToString());
-
-
-
-
             String requestID_cloudService = await vmm.NewAzureCloudService(serviceName, "West US", String.Empty).ConfigureAwait(continueOnCapturedContext: false);
 
             OperationResult result = await vmm.PollGetOperationStatus(requestID_cloudService, 5, 120).ConfigureAwait(continueOnCapturedContext: false); ;
@@ -118,13 +100,10 @@ namespace Ijepai.Web.Controllers.Dashboard
                 {
                     // VM creation takes too long so we'll check it later
                     requestID_createDeployment = await vmm.NewAzureVMDeployment(serviceName, vmName, String.Empty, vm, null).ConfigureAwait(continueOnCapturedContext:false);
-
-                   // Response.Redirect("/GetOperationStatus.aspx?requestid=" + requestID_createDeployment);
                 }
                 else
                 {
                     requestID_createDeployment = "";
-                    //lblStatus.Text = String.Format("Creating Cloud Service Failed. Message: {0}", result.Message);
                 }
 
                 return Json(new { Status = result.Status, ServiceName = serviceName , VMName = vmName});

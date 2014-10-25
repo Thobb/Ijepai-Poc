@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IjepaiMailer">
+      <HintPath>..\Ijepai.Mailer\bin\Debug\IjepaiMailer.dll</HintPath>
+    </Reference>
+    <Reference Include="SMLibrary">
+      <HintPath>..\SMLibrary\bin\Debug\SMLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />

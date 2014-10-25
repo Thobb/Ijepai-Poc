@@ -9,10 +9,9 @@ using System.Configuration;
 using System.Net;
 using System.IO;
 using IjepaiMailer.Interface;
-using IjepaiMailer;
 
 
-namespace Ijepai.Utilities
+namespace IjepaiMailer
 {
     
     public class Mailer
@@ -155,14 +154,14 @@ namespace Ijepai.Utilities
         {
             try
             {
-                _senderEmailAdress = ConfigurationManager.AppSettings["SenderEmailAddress"];
-                _replyTo = _fromEmailAddress = ConfigurationManager.AppSettings["FromAddress"];
-                _fromDisplayName = ConfigurationManager.AppSettings["FromEmailDisplayName"];
-                _smtp = ConfigurationManager.AppSettings["SmtpHost"];
-                _username = ConfigurationManager.AppSettings["UserName"];
-                _password = ConfigurationManager.AppSettings["Password"];
-                _ssl = ConfigurationManager.AppSettings["Ssl"].ToLower().Equals("true");
-                int.TryParse(ConfigurationManager.AppSettings["Port"], out _port);
+                _senderEmailAdress = "Service@Ijepai.com";
+                _replyTo = _fromEmailAddress = "Service@ijepai.com";
+                _fromDisplayName = "Ijepai";
+                _smtp = "smtp.gmail.com";
+                _username = "rahulkarn@gmail.com";
+                _password = "royalresidency";
+                _ssl = true;
+                _port = 465;
             }
             catch (Exception ex)
             {
@@ -183,7 +182,7 @@ namespace Ijepai.Utilities
         /// <param name="subjectTokenValues"></param>
         /// <param name="emailCC"></param>
         /// <param name="emailBcc"></param>
-        public void Compose( string mailTemplateCode, Hashtable messageTokenValues, string emailTo, string emailCC = null, string emailBcc = null, List<MailerAttachment> attachments = null)
+        public void Compose( string Link, string emailTo, string emailCC = null, string emailBcc = null, List<MailerAttachment> attachments = null)
         {
             MailerRecipient to = new MailerRecipient(emailTo);
             List<MailerRecipient> toList = new List<MailerRecipient>();
@@ -202,7 +201,7 @@ namespace Ijepai.Utilities
                 if (bccList == null) bccList = new List<MailerRecipient>();
                 bccList.Add(bcc);
             }
-            Compose(mailTemplateCode, messageTokenValues, toList, ccList, bccList, attachments);
+            Compose(Link, toList, ccList, bccList, attachments);
         }
 
         /// <summary>
@@ -214,12 +213,19 @@ namespace Ijepai.Utilities
         /// <param name="toList"></param>
         /// <param name="ccList"></param>
         /// <param name="bccList"></param>
-        public void Compose(string mailTemplateCode, Hashtable messageTokenValues, List<MailerRecipient> toList, List<MailerRecipient> ccList = null, List<MailerRecipient> bccList = null, List<MailerAttachment> attachments = null)
+        public void Compose(string Link, List<MailerRecipient> toList, List<MailerRecipient> ccList = null, List<MailerRecipient> bccList = null, List<MailerAttachment> attachments = null)
         {
             //Get MailTemplate
-            MailTemplate mailTemplate = new MailTemplate();            
-            string body = MailTemplate.ResolveTokens(mailTemplate.BodyContent, messageTokenValues);
-            string subject = MailTemplate.ResolveTokens(mailTemplate.Subject, messageTokenValues);
+            MailTemplate mailTemplate = new MailTemplate();
+            
+            string body = "Dear User";
+            body += "<br/><br/>";
+            body += "<a href=" + Link + "</a> Please click this link to access your Virtual Machine</a><br/>";
+            body += "Regards,<br/>";
+            body += "Ijepai";
+            body += "<br />";
+
+            string subject = "Your Ijepai Trial Virtual machine is ready";
             //all MailTemplate entity emails are HTML
             Compose(subject, body, toList, true, attachments, ccList, bccList);
            

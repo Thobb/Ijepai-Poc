@@ -159,11 +159,11 @@ body {
 /* tab 1 */
 
 #dashboard-tab-btn, #dashboard-tab {
-    background-color: #465653;
+    background-color: #68847F;
 }
 
 #dashboard-tab-btn.selected-tab-btn {
-    color: #004400;
+    color: #000000;
 }
 
 /* tab 2 */
@@ -909,13 +909,15 @@ body {
 #qc-create-lab-form-content {
     border: 2px solid #fff;
     border-radius: 10px;
-    box-shadow: 3px 3px 5px #000;
+    box-shadow: 3px 3px 5px #000, 0 0 3px;
     margin-top: 15px;
 }
 #qc-create-lab-form-body {
     padding: 15px 0;
     overflow: hidden;
     border-bottom: 2px solid #fff;
+    border-radius: 8px 8px 0 0;
+    background-color: #72968F;
 }
 #qc-create-lab-form-content select {
     border: 2px solid #999;
@@ -925,7 +927,7 @@ body {
 }
 #qc-create-lab-form-footer {
     padding: 5px 10px;
-    background-color: #027C23;
+    background-color: #394442;
     border-radius: 0 0 10px 10px;
 }
 /**************************************** /Quick create tab *********************************/
