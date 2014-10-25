@@ -257,6 +257,21 @@ namespace Ijepai.Web.Controllers.Labs
 
         public JsonResult GetMachineLink(int Participant_ID, int Lab_ID)
         {
+            return Json(new { Status = 0, Message = "http://example.com/participant=" + Participant_ID + "&lab=" + Lab_ID });
+        }
+
+        public JsonResult SendMachineLink(int Participant_ID, int Lab_ID)
+        {
+            return Json(new { Status = 0});
+        }
+
+        public JsonResult StartMachine(int Participant_ID, int Lab_ID)
+        {
+            return Json(new { Status = 0 });
+        }
+
+        public JsonResult StopMachine(int Participant_ID, int Lab_ID)
+        {
             return Json(new { Status = 0 });
         }
 

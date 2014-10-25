@@ -167,12 +167,14 @@ D:\Project\Ijepai\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.Migrations.Initial.
 D:\Project\Ijepai\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.csproj.GenerateResource.Cache
 D:\Project\Ijepai\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.dll
 D:\Project\Ijepai\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.pdb
+D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.csprojResolveAssemblyReference.cache
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Ijepai.Web.dll.config
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Ijepai.Web.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Ijepai.Web.pdb
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Antlr3.Runtime.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\EntityFramework.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\EntityFramework.SqlServer.dll
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Ijepai.LabScheduler.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.AspNet.Identity.Core.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.AspNet.Identity.EntityFramework.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.AspNet.Identity.Owin.dll
@@ -197,6 +199,7 @@ D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Web.WebPages.Deployment.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Web.WebPages.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Web.WebPages.Razor.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\WebGrease.dll
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Ijepai.LabScheduler.pdb
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\SMLibrary.pdb
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Web.Helpers.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Web.Mvc.xml
@@ -223,6 +226,5 @@ D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.Owin.Security.Twitter.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.pdb
-D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.csprojResolveAssemblyReference.cache
 D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.Migrations.Initial.resources
 D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.csproj.GenerateResource.Cache

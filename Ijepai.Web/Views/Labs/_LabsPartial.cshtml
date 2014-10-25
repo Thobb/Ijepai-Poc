@@ -343,13 +343,13 @@
         </ul>
     </div>
     @using (Ajax.BeginForm(
-        "GetMachineLink",
+        "SendMachineLink",
         "Labs",
         new { },
         new AjaxOptions
         {
             HttpMethod = "POST",
-            OnSuccess = "App.getMachineLinkFormSuccess"
+            OnSuccess = "App.sendMachineLinkFormSuccess"
         },
         new
         {
@@ -363,7 +363,7 @@
         <div id="get-machine-link-form-body">
         </div>
         <div id="get-machine-link-form-footer">
-            <input type="submit" name="get-link" value="Get Link" class="btn btn-default" />
+            <input type="submit" name="get-link" value="Send Link" class="btn btn-default" />
             <input type="button" value="cancel" id="cancel-get-machine-link" class="btn btn-default" />
         </div>
     }

@@ -51,10 +51,23 @@
                     var participantRow = $("<tr />").attr("id", "participant-" + Data[i].ID);
                     var vmControl = $("<td class='vm-status glyphicon glyphicon-play' title='Click to start the VM'>");
                     vmControl.click(function () {
+                        thisBtn = $(this);
                         if ($(this).hasClass("glyphicon-play")) {
-                            $(this).removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
+                            $.ajax({
+                                url: "/labs/StartMachine",
+                                data: "Participant_ID=" + $(this).parent().attr("id").slice(12) + "&Lab_ID=" + labId,
+                                success: function () {
+                                   thisBtn.removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
+                                }
+                            })
                         } else {
-                            $(this).removeClass("glyphicon-stop").addClass("glyphicon-play").attr("title", "Click to start the VM");
+                            $.ajax({
+                                url: "/labs/StopMachine",
+                                data: "Participant_ID=" + $(this).parent().attr("id").slice(12) + "&Lab_ID=" + labId,
+                                success: function () {
+                                    thisBtn.removeClass("glyphicon-stop").addClass("glyphicon-play").attr("title", "Click to start the VM");
+                                }
+                            })
                         }
                     });
                     participantRow.append(vmControl).append("<td>" + index + "</td>");
@@ -93,6 +106,13 @@
                     });
                     participantRow.find(".participant-machine-link").not(".inactive-action").click(function (e) {
                         e.preventDefault();
+                        $.ajax({
+                            url: "/labs/getMachineLink",
+                            data: "Participant_ID=" + $(this).parent().parent().parent().attr("id").slice(12) + "&Lab_ID=" + labId,
+                            success: function (data) {
+                                $("#get-machine-link-form-body").html(data.Message);
+                            }
+                        });
                         row = $(this).parent().parent().parent();
                         $("#lab-id-machine-link").val(labId);
                         $("#participant-id-machine-link").val(row.attr("id").slice(12));
@@ -625,7 +645,7 @@ App = {
         })
         return false;
     },
-    closeGetMachineLinkForm: function(){
+    closeGetMachineLinkForm: function () {
         $("#get-lab-link-form-container").fadeOut(function () {
             $("#get-machine-link-form").trigger("reset");
             $("#overlay").fadeOut();
@@ -674,8 +694,8 @@ App = {
             App.closeDeleteParticipantForm();
         }
     },
-    getMachineLinkFormSuccess: function(){
-
+    sendMachineLinkFormSuccess: function(){
+        App.closeGetMachineLinkForm();
     },
     showTab: function (el) {
         var tab = $("#" + el);

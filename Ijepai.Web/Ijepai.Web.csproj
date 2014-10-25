@@ -39,6 +39,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ijepai.LabScheduler">
+      <HintPath>..\Ijepai.LabScheduler\bin\Debug\Ijepai.LabScheduler.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="SMLibrary">
       <HintPath>..\SMLibrary\bin\Debug\SMLibrary.dll</HintPath>
@@ -172,9 +175,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201410241639219_Initial.cs" />
-    <Compile Include="Migrations\201410241639219_Initial.Designer.cs">
-      <DependentUpon>201410241639219_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201410250626243_Initial.cs" />
+    <Compile Include="Migrations\201410250626243_Initial.Designer.cs">
+      <DependentUpon>201410250626243_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -282,8 +285,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201410241639219_Initial.resx">
-      <DependentUpon>201410241639219_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201410250626243_Initial.resx">
+      <DependentUpon>201410250626243_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
