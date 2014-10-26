@@ -161,7 +161,7 @@ namespace IjepaiMailer
                 _username = "rahulkarn@gmail.com";
                 _password = "royalresidency";
                 _ssl = true;
-                _port = 465;
+                _port = 587;
             }
             catch (Exception ex)
             {
@@ -220,7 +220,7 @@ namespace IjepaiMailer
             
             string body = "Dear User";
             body += "<br/><br/>";
-            body += "<a href=" + Link + "</a> Please click this link to access your Virtual Machine</a><br/>";
+            body += "<a href='" + Link + "'>Click this link to access your Virtual Machine</a><br/>";
             body += "Regards,<br/>";
             body += "Ijepai";
             body += "<br />";

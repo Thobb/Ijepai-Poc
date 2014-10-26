@@ -86,8 +86,6 @@ namespace SMLibrary
             return imageList;
         }
 
-       
-
         async public Task<String> RebootVM(String ServiceName, String RoleName)
         {
             String requestID = String.Empty;
@@ -598,8 +596,6 @@ namespace SMLibrary
             return VMXML;
         }
 
-
-
         async public Task<XElement> GetOperationStatus(string requestId)
         {
             string uriFormat = "https://management.core.windows.net/{0}/operations/{1}";
@@ -706,7 +702,6 @@ namespace SMLibrary
             return certificate;
         }
         
-
         private static void ApplyNamespace(XElement parent, XNamespace nameSpace)
         {
             parent.Name = nameSpace + parent.Name.LocalName;

@@ -20,40 +20,56 @@ namespace Ijepai.LabScheduler
         {
             Timer checkLabUptime = new Timer();
             checkLabUptime.Elapsed += new ElapsedEventHandler(checkLabUptime_Elapsed);
-            checkLabUptime.Interval = 60000;
+            checkLabUptime.Interval = 600000;
             checkLabUptime.Enabled = true;
         }
-
         async void checkLabUptime_Elapsed(object sender, ElapsedEventArgs e)
         {
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = @"Data Source=(LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-Ijepai.Web-20140505095652.mdf;Initial Catalog=aspnet-Ijepai.Web-20140505095652;Integrated Security=True";
             conn.Open();
-            SqlCommand labs = new SqlCommand("Select * from Labs where ((datediff(minute, start_time, getdate()) <= 30) and (status = 'Scheduled'))");
+            SqlCommand labs = new SqlCommand("Select * from Labs where ((datediff(minute, start_time, getdate()) <= 30000) and (status = 'Scheduled'))", conn);
             SqlDataReader labsReader = labs.ExecuteReader();
             while (labsReader.Read())
             {
                 string labName = labsReader.GetString(1);
                 int labID = labsReader.GetInt32(0);
-                SqlCommand participantList = new SqlCommand("Select * from LabParticipants where LabID = " + labID);
+                SqlConnection conn3 = new SqlConnection();
+                conn3.ConnectionString = @"Data Source=(LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-Ijepai.Web-20140505095652.mdf;Initial Catalog=aspnet-Ijepai.Web-20140505095652;Integrated Security=True";
+                conn3.Open();
+                SqlCommand UserNameCmd = new SqlCommand("Select * from AspNetUsers where Id='" + labsReader.GetString(7) + "'", conn3);
+                SqlDataReader UserNameReader = UserNameCmd.ExecuteReader();
+                UserNameReader.Read();
+                string UserName = UserNameReader.GetString(1);
+                conn3.Close();
+                SqlConnection conn1 = new SqlConnection();
+                conn.ConnectionString = @"Data Source=(LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-Ijepai.Web-20140505095652.mdf;Initial Catalog=aspnet-Ijepai.Web-20140505095652;Integrated Security=True";
+                conn1.Open();
+                SqlCommand participantList = new SqlCommand("Select * from LabParticipants where LabID = " + labID, conn1);
                 SqlDataReader participantReader = participantList.ExecuteReader();
                 while (participantReader.Read())
                 {
                     string email = participantReader.GetString(1);
+                    string machineLink = "http://ijepai.azurewebsites.net/" + UserName + "/" + labName + "/" + email.Replace("@", "_");
                     Mailer mail = new Mailer("rahulkarn@gmail.com","Ijepai");
-                    mail.Compose(" ", "bhagwati.indoria@gmail.com");
+                    mail.Compose(machineLink, email);
                     mail.SendMail();
                     bool status = await CreateVM(labName, labName, "ijepai@1", "", "").ConfigureAwait(continueOnCapturedContext: false);
                 }
-                SqlCommand updateLabsStatus = new SqlCommand("update labs set status='Provisioning' where id = " + labID);
+                conn1.Close();
+                SqlConnection conn4 = new SqlConnection();
+                conn.ConnectionString = @"Data Source=(LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-Ijepai.Web-20140505095652.mdf;Initial Catalog=aspnet-Ijepai.Web-20140505095652;Integrated Security=True";
+                conn4.Open();
+                SqlCommand updateLabsStatus = new SqlCommand("update labs set status='Provisioning' where id = " + labID, conn);
                 updateLabsStatus.ExecuteNonQuery();
+                conn4.Close();
             }
             conn.Close();
         }
 
         async private Task<bool> CreateVM(string serviceName, string vmName, string password, string Machine_Size, string OS)
         {
-            VMManager vmm = new VMManager("195686de-146a-4f9a-96c5-cd4071185af8", "AADE7A7D7E4992425FF0E882A621D33B3AD160D5");
+            VMManager vmm = new VMManager("195686de-146a-4f9a-96c5-cd4071185af8", "AADE7A7D7E4992425FF0E882A621D33B3AD160D5-");
 
             if (await vmm.IsServiceNameAvailable(serviceName).ConfigureAwait(continueOnCapturedContext: false) == false)
             {

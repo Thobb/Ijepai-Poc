@@ -649,6 +649,7 @@ App = {
         $("#get-lab-link-form-container").fadeOut(function () {
             $("#get-machine-link-form").trigger("reset");
             $("#overlay").fadeOut();
+            $("#get-machine-link-form-body").html("");
         })
         return false;
     },

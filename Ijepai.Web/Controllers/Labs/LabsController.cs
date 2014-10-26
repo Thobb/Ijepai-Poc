@@ -9,8 +9,10 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using SMLibrary;
 using System.Configuration;
+using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using IjepaiMailer;
 
 namespace Ijepai.Web.Controllers.Labs
 {
@@ -191,7 +193,6 @@ namespace Ijepai.Web.Controllers.Labs
             lab.Start_Time = Start_Time;
             lab.End_Time = End_Time;
             db.SaveChanges();
-
             return Json(new { Status = 0 });
         }
 
@@ -257,11 +258,24 @@ namespace Ijepai.Web.Controllers.Labs
 
         public JsonResult GetMachineLink(int Participant_ID, int Lab_ID)
         {
-            return Json(new { Status = 0, Message = "http://example.com/participant=" + Participant_ID + "&lab=" + Lab_ID });
+            ApplicationDbContext db = new ApplicationDbContext();
+            LabParticipant participant = db.LabParticipants.Where(p => p.ID == Participant_ID && p.LabID == Lab_ID).FirstOrDefault();
+            Lab lab = db.Labs.Where(l => l.ID == Lab_ID).FirstOrDefault();
+            string UserName = User.Identity.Name;
+            string MachineLink = "http://ijepai.azurewebsites.net/" + UserName + "/" + lab.Name + "/" + participant.Email_Address.Replace("@", "_");
+            return Json(new { Status = 0, Message = MachineLink });
         }
 
         public JsonResult SendMachineLink(int Participant_ID, int Lab_ID)
         {
+            ApplicationDbContext db = new ApplicationDbContext();
+            LabParticipant participant = db.LabParticipants.Where(p => p.ID == Participant_ID && p.LabID == Lab_ID).FirstOrDefault();
+            Lab lab = db.Labs.Where(l => l.ID == Lab_ID).FirstOrDefault();
+            string UserName = User.Identity.Name;
+            string link = "http://ijepai.azurewebsites.net/" + UserName + "/" + lab.Name + "/" + participant.Email_Address.Replace("@", "_");
+            Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
+            mail.Compose(link, participant.Email_Address);
+            mail.SendMail();
             return Json(new { Status = 0});
         }
 
