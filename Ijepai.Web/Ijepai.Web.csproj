@@ -178,10 +178,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201410250626243_Initial.cs" />
-    <Compile Include="Migrations\201410250626243_Initial.Designer.cs">
-      <DependentUpon>201410250626243_Initial.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Billing.cs" />
@@ -198,6 +194,10 @@
     <Compile Include="Models\LabSoftwarePredefined.cs" />
     <Compile Include="Models\LabVM.cs" />
     <Compile Include="Models\LabVMFromPublicStorage.cs" />
+    <Compile Include="Models\QuickCreate.cs" />
+    <Compile Include="Models\QuickCreateFiles.cs" />
+    <Compile Include="Models\QuickCreateSoftwaresCustom.cs" />
+    <Compile Include="Models\QuickCreateSoftwaresPredefined.cs" />
     <Compile Include="Models\Software.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -286,11 +286,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201410250626243_Initial.resx">
-      <DependentUpon>201410250626243_Initial.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

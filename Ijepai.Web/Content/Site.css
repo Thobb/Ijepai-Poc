@@ -178,6 +178,10 @@ body {
 
 #basic-lab-actions {
     overflow: hidden;
+    padding: 10px;
+    background: rgba(6, 110, 214, 0.3)/*#066ED6*/;
+    border-radius: 5px;
+    box-shadow: 0 0 3px #fff inset, 0 0 3px #000;
 }
 
 #basic-lab-actions li {

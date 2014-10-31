@@ -15,7 +15,7 @@ namespace Thobb.Ijepai.ProcessVM
 {
     public sealed class SingletonVMProcessor
     {
-        static readonly SingletonVMProcessor _instance = new SingletonVMProcessor();
+        /*static readonly SingletonVMProcessor _instance = new SingletonVMProcessor();
         private string _id;
         private int _threadCount = 10;
         private int _waveHandEvery = 50;
@@ -640,7 +640,7 @@ namespace Thobb.Ijepai.ProcessVM
             {
                 Log.Write(EventKind.Error, string.Format("Error in sending email : {0}", Log.FormatExceptionInfo(ex)));
             }
-        }
+        }*/
       }
     }
 

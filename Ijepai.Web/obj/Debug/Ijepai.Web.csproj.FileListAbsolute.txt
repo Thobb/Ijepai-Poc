@@ -226,7 +226,5 @@ D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.Owin.Security.Google.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.Owin.Security.Twitter.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.csprojResolveAssemblyReference.cache
-D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.Migrations.Initial.resources
-D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.csproj.GenerateResource.Cache
 D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.pdb
