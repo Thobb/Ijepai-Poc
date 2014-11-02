@@ -41,8 +41,9 @@ namespace Ijepai.Web.Controllers.Dashboard
 
         // POST: /Dashboard/Create
         [HttpPost]
-        public Task<JsonResult> QuickCreate(DashBoardModel model)
+        public Task<JsonResult> QuickCreate(QuickCreateModel model)
         {
+            ApplicationDbContext db = new ApplicationDbContext();
             var status = GenerateVMConfig(model);
             return status;
         }
@@ -61,12 +62,8 @@ namespace Ijepai.Web.Controllers.Dashboard
             return PartialView("_DashboardPartial");
         }
 
-        async public Task<JsonResult> GenerateVMConfig(DashBoardModel model)
+        async public Task<JsonResult> GenerateVMConfig(QuickCreateModel model)
         {
-                      
-           
-            //lblStatus.Text = "";
-
             VMManager vmm = GetVMM();
 
             if (await vmm.IsServiceNameAvailable(serviceName).ConfigureAwait(continueOnCapturedContext:false) == false)

@@ -178,10 +178,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201410312022593_Initial.cs" />
+    <Compile Include="Migrations\201410312022593_Initial.Designer.cs">
+      <DependentUpon>201410312022593_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Billing.cs" />
-    <Compile Include="Models\DashBoardModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LabConfiguration.cs" />
     <Compile Include="Models\Lab.cs" />
@@ -286,6 +289,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201410312022593_Initial.resx">
+      <DependentUpon>201410312022593_Initial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

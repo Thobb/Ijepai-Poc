@@ -10,6 +10,6 @@ namespace Ijepai.Web.Models
         public int ID { get; set; }
 
         public int QuickCreateID { get; set; }
-        public virtual QuickCreate QuickCreate { get; set; }
+        public virtual QuickCreateModel QuickCreate { get; set; }
     }
 }

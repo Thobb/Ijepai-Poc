@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace Ijepai.Web.Models
 {
-    public class QuickCreate
+    public class QuickCreateModel
     {
-        public QuickCreate()
+        public QuickCreateModel()
         {
             this.PredefinedSoftwares = new HashSet<QuickCreateSoftwaresPredefined>();
             this.CustomSoftwares = new HashSet<QuickCreateSoftwaresCustom>();
@@ -16,8 +19,13 @@ namespace Ijepai.Web.Models
         public int ID;
         public string RecepientEmail;
         public string VMPath;
-        public string VM_Type;
-        public string VM_Size;
+        [Required]
+        [Display(Name = "Machine Size")]
+        public string Machine_Size { get; set; }
+
+        [Required]
+        [Display(Name = "Configuration")]
+        public string OS { get; set; }   
 
         public string ApplicationUserID { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
