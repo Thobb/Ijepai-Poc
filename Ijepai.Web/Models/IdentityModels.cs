@@ -38,6 +38,10 @@ namespace Ijepai.Web.Models
         public DbSet<LabVM> LabVM { get; set; }
         public DbSet<Billing> Bills { get; set; }
         public DbSet<Software> Softwares { get; set; }
+        public DbSet<QuickCreateModel> QuickCreates { get; set; }
+        public DbSet<QuickCreateSoftwaresPredefined> QuickCreatePredefinedSoftwares { get; set; }
+        public DbSet<QuickCreateSoftwaresCustom> QuickCreateCustomSoftwares { get; set; }
+        public DbSet<QuickCreateFiles> QuickCreateFiles { get; set; }
 
         public System.Data.Entity.DbSet<Ijepai.Web.Models.LabCreate> LabCreates { get; set; }
     }

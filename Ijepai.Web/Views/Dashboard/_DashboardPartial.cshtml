@@ -17,7 +17,7 @@
     }
 }
 <div id="qc-create-lab-form-content">
-@model Ijepai.Web.Models.DashBoardModel
+@model Ijepai.Web.Models.QuickCreateModel
 @using (Ajax.BeginForm(
         "QuickCreate",
         "Dashboard",
@@ -35,18 +35,18 @@
     <div class="form-horizontal">
         <div id="qc-create-lab-form-body" class="col">
             <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.OS, new { @class = "control-label col-md-3" })
+                <div class="col-md-9" id="q-image-list" data-count=" 1">
+                    @Html.DropDownListFor(model => model.OS, osImageList, "Select Image")
+                    @Html.ValidationMessageFor(model => model.OS)
+                </div>
+            </div>
+            <div class="form-group col-md-6">
                 @Html.LabelFor(model => model.Machine_Size, new { @class = "control-label col-md-3" })
                 <div class="col-md-9">
                     @*@Html.DropDownListFor(model => model.Machine_Size, new SelectList(new[] { "Small", "Medium", "Large", "Extra Large" }, "15"), "Select Size")*@
                     @Html.DropDownListFor(model => model.Machine_Size, machine_sizes, "Select Size")
                     @Html.ValidationMessageFor(model => model.Machine_Size)
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                @Html.LabelFor(model => model.OS, new { @class = "control-label col-md-3" })
-                <div class="col-md-9" id="q-image-list" data-count=" 1">
-                    @Html.DropDownListFor(model => model.OS, osImageList, "Select Image")
-                    @Html.ValidationMessageFor(model => model.OS)
                 </div>
             </div>
         </div>

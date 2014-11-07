@@ -11,6 +11,7 @@ using System.Text;
 using System.Xml;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 
 namespace Ijepai.Web.Controllers.Dashboard
 {
@@ -44,6 +45,11 @@ namespace Ijepai.Web.Controllers.Dashboard
         public Task<JsonResult> QuickCreate(QuickCreateModel model)
         {
             ApplicationDbContext db = new ApplicationDbContext();
+            model.ApplicationUserID = User.Identity.GetUserId();
+            var user = db.Users.Where(u => u.Id == model.ApplicationUserID).FirstOrDefault();
+            model.RecepientEmail = model.RecepientEmail ?? user.Email_Address;
+            db.QuickCreates.Add(model);
+            db.SaveChanges();
             var status = GenerateVMConfig(model);
             return status;
         }

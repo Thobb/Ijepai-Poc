@@ -16,9 +16,9 @@ namespace Ijepai.Web.Models
             this.CustomSoftwares = new HashSet<QuickCreateSoftwaresCustom>();
         }
 
-        public int ID;
-        public string RecepientEmail;
-        public string VMPath;
+        public int ID { get; set; }
+        public string RecepientEmail { get; set;}
+        public string VMPath { get; set;}
         [Required]
         [Display(Name = "Machine Size")]
         public string Machine_Size { get; set; }
