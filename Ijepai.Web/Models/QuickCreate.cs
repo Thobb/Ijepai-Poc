@@ -17,6 +17,7 @@ namespace Ijepai.Web.Models
         }
 
         public int ID { get; set; }
+        public int Name { get; set; }
         public string RecepientEmail { get; set;}
         public string VMPath { get; set;}
         [Required]
