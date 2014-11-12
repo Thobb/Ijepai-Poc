@@ -46,7 +46,8 @@
       <HintPath>..\Ijepai.Mailer\bin\Debug\IjepaiMailer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="SMLibrary">
+    <Reference Include="SMLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SMLibrary\bin\Debug\SMLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -178,9 +179,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201411052304529_Initial.cs" />
-    <Compile Include="Migrations\201411052304529_Initial.Designer.cs">
-      <DependentUpon>201411052304529_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201411091804222_initial.cs" />
+    <Compile Include="Migrations\201411091804222_initial.Designer.cs">
+      <DependentUpon>201411091804222_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -291,8 +292,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201411052304529_Initial.resx">
-      <DependentUpon>201411052304529_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201411091804222_initial.resx">
+      <DependentUpon>201411091804222_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

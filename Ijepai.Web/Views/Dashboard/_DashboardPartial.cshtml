@@ -9,12 +9,12 @@
     machine_sizes.Add(new SelectListItem {Value="Large", Text="Large"});
     machine_sizes.Add(new SelectListItem {Value="Extra Large", Text="Extra Large"});
 
-    var imageList = (SelectList)TempData["OS"];
-    var osImageList = new List<SelectListItem>();
-    foreach (var item in imageList)
-    {
-        osImageList.Add(new SelectListItem { Value = item.Text, Text = item.Text });        
-    }
+    List<SelectListItem> imageList = (List<SelectListItem>)TempData["OS"];
+    //var osImageList = new List<SelectListItem>();
+    //foreach (var item in imageList)
+    //{
+    //    osImageList.Add(new SelectListItem { Value = item.Text, Text = item.Text });        
+    //}
 }
 <div id="qc-create-lab-form-content">
 @model Ijepai.Web.Models.QuickCreateModel
@@ -37,7 +37,7 @@
             <div class="form-group col-md-6">
                 @Html.LabelFor(model => model.OS, new { @class = "control-label col-md-3" })
                 <div class="col-md-9" id="q-image-list" data-count=" 1">
-                    @Html.DropDownListFor(model => model.OS, osImageList, "Select Image")
+                    @Html.DropDownListFor(model => model.OS, imageList, "Select Image")
                     @Html.ValidationMessageFor(model => model.OS)
                 </div>
             </div>
@@ -49,6 +49,19 @@
                     @Html.ValidationMessageFor(model => model.Machine_Size)
                 </div>
             </div>
+            <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.SendLink, new { @class = "control-label col-md-3" })
+             <div class="col-md-9">
+               @Html.CheckBoxFor(model => model.SendLink)
+             </div>
+          </div>
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.RecepientEmail, new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.RecepientEmail, new { type = "text", autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.RecepientEmail)
+            </div>
+        </div>
         </div>
         <div id="qc-create-lab-form-footer">
             <input type="submit" value="Create" id="q-create-lab-btn" class="btn btn-default" />

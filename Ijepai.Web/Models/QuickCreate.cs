@@ -18,6 +18,11 @@ namespace Ijepai.Web.Models
 
         public int ID { get; set; }
         public int Name { get; set; }
+        [Required]
+        [Display(Name = "Send Link")]
+        public bool SendLink { get; set; }
+        [Required]
+        [Display(Name = "Email Address")]
         public string RecepientEmail { get; set;}
         public string VMPath { get; set;}
         [Required]

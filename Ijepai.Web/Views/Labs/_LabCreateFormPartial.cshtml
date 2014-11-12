@@ -1,4 +1,7 @@
 ﻿@model Ijepai.Web.Models.LabCreate
+@{
+    List<SelectListItem> imageList = (List<SelectListItem>)TempData["OS"];
+}
 <div style="overflow:hidden">
     <div class="form-group col-md-6">
         @Html.LabelFor(model => model.VM_Count, new { @class = "control-label col-md-3" })
@@ -23,7 +26,7 @@
         <div class="form-group col-md-6">
             @Html.LabelFor(model => model.OS, new { @class = "control-label col-md-3" })
             <div class="col-md-9" id="image-list" data-count=" 1">
-                @Html.DropDownList("ImgDropdown", TempData["OS"] as SelectList)
+                @Html.DropDownListFor(model => model.OS, imageList, "Select Image")
                 @Html.ValidationMessageFor(model => model.OS)
             </div>
         </div>

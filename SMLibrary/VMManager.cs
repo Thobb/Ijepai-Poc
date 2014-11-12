@@ -55,10 +55,9 @@ namespace SMLibrary
             return subXML;
         }
 
-        async public Task<List<String>> GetAzureVMImages()
+        async public Task<Dictionary<String, String>> GetAzureVMImages()
         {
-
-                List<String> imageList = new List<String>();
+                Dictionary<String, String> imageList = new Dictionary<String, String>();
                 String uri = String.Format("https://management.core.windows.net/{0}/services/images", _subscriptionid);
                 try
                 {
@@ -71,8 +70,9 @@ namespace SMLibrary
                     var images = xml.Root.Descendants(ns + "OSImage").Where(i => i.Element(ns + "OS").Value == "Windows");
                     foreach (var image in images)
                     {
-                        string img = image.Element(ns + "Name").Value;
-                        imageList.Add(img);
+                        string imgName = image.Element(ns + "Name").Value;
+                        string imgLabel = image.Element(ns + "Label").Value;
+                        imageList.Add(imgName, imgLabel);
                     }
                 }
             }
@@ -300,8 +300,8 @@ namespace SMLibrary
             {
                 srcTree.Add(new XElement("VirtualNetworkName", VNETName));
             }
-            
-            if(DNSXML != null)
+
+            if (DNSXML != null)
             {
                 srcTree.Add(new XElement("DNS", new XElement("DNSServers", DNSXML)));
             }
@@ -310,13 +310,13 @@ namespace SMLibrary
             ApplyNamespace(srcTree, ns);
 
             deploymentXML.Descendants(ns + "RoleList").FirstOrDefault().Add(VMXML.Root);
-                       
+
 
             String fixedXML = deploymentXML.ToString().Replace(" xmlns=\"\"", "");
             HttpContent content = new StringContent(fixedXML);
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/xml");
 
-            HttpResponseMessage responseMsg = await http.PostAsync(uri, content).ConfigureAwait(continueOnCapturedContext:false);
+            HttpResponseMessage responseMsg = await http.PostAsync(uri, content);
             if (responseMsg != null)
             {
                 requestID = responseMsg.Headers.GetValues("x-ms-request-id").FirstOrDefault();
@@ -324,6 +324,7 @@ namespace SMLibrary
 
             return requestID;
         }
+
 
         async public Task<String> UpdateAzureVM(String ServiceName, String VMName, XDocument VMXML)
         {

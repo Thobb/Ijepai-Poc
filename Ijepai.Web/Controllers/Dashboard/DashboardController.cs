@@ -12,13 +12,14 @@ using System.Xml;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
+using IjepaiMailer;
 
 namespace Ijepai.Web.Controllers.Dashboard
 {
     public class DashboardController : Controller
     {
         static string guid = Guid.NewGuid().ToString();
-        string serviceName = "Ijepai" + guid;
+        string serviceName = "Ijepai"+guid;
         string vmName = "VM1";
         string password = "1234Test!";
 
@@ -30,12 +31,25 @@ namespace Ijepai.Web.Controllers.Dashboard
             return PartialView("_DashboardPartial");
         }
 
+        Dictionary<string, string> imageList = new Dictionary<string,string>();
         public async Task<JsonResult> Getimages()
         {
             VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
             var swr = new StringWriter();
-            List<string> imageList = await vmm.GetAzureVMImages();
-            TempData["OS"] = new SelectList(imageList);
+            imageList = await vmm.GetAzureVMImages();
+            List<string> imageListRest = new List<string>();
+            //imageList.TryGetValue("")
+            //imageListRest.Add(;
+            //imageListRest.Add(imageList[185]);
+            //imageListRest.Add(imageList[186]);
+            //imageListRest.Add(imageList[187]);
+            var imgLst = new List<SelectListItem>();
+            foreach (KeyValuePair<string, string> entry in imageList)
+            {
+                imgLst.Add(new SelectListItem{ Value =entry.Key, Text =entry.Value});
+            }
+
+            TempData["OS"] = imgLst;
 
             return Json(new { Status = 0, MessageTitle = "Success" });
         }
@@ -51,6 +65,14 @@ namespace Ijepai.Web.Controllers.Dashboard
             db.QuickCreates.Add(model);
             db.SaveChanges();
             var status = GenerateVMConfig(model);
+            if (model.SendLink)
+            {
+                Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
+                string link = "http://vmengine.azurewebsites.net/?" + "QC" + "/" + model.RecepientEmail.Replace("@", "_");
+                mail.Compose(link, model.RecepientEmail);
+                mail.SendMail();
+            }
+
             return status;
         }
 

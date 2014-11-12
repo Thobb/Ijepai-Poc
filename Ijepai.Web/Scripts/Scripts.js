@@ -320,7 +320,7 @@
                             })
                         })
                     } else {
-                        alert("No data");
+                       // Do Nothing
                     }
                 } else {
                     alert("An error occured");
