@@ -17,7 +17,10 @@ namespace Ijepai.Web.Models
         }
 
         public int ID { get; set; }
-        public int Name { get; set; }
+        public string ServiceName { get; set; }
+        [Required]
+        [Display(Name = "VM Name")]
+        public string Name { get; set; }
         [Required]
         [Display(Name = "Send Link")]
         public bool SendLink { get; set; }

@@ -19,7 +19,7 @@ namespace Ijepai.Web.Controllers.Dashboard
     public class DashboardController : Controller
     {
         static string guid = Guid.NewGuid().ToString();
-        string serviceName = "Ijepai"+guid;
+        string serviceName = "Ijepaitest";
         string vmName = "VM1";
         string password = "1234Test!";
 
@@ -54,6 +54,23 @@ namespace Ijepai.Web.Controllers.Dashboard
             return Json(new { Status = 0, MessageTitle = "Success" });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public JsonResult GetLabParticipants(int ID)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var QCVM = db.QuickCreates.Select(p => new
+            {
+                p.ID,
+                VmName = p.Name ?? "",
+                OS = p.OS ?? "",
+                EmailAddress = p.RecepientEmail ?? "",
+                
+            });
+            return Json(new { Status = 0, TotalItems = QCVM.Count(), rows = QCVM, org = Session["org"] });
+        }
+
         // POST: /Dashboard/Create
         [HttpPost]
         public Task<JsonResult> QuickCreate(QuickCreateModel model)
@@ -68,7 +85,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             if (model.SendLink)
             {
                 Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
-                string link = "http://vmengine.azurewebsites.net/?" + "QC" + "/" + model.RecepientEmail.Replace("@", "_");
+                string link = "http://vmengine.azurewebsites.net/?" + serviceName + ".cloudapp.net" + "/" + "administrator" + "/" + password;
                 mail.Compose(link, model.RecepientEmail);
                 mail.SendMail();
             }

@@ -10,11 +10,6 @@
     machine_sizes.Add(new SelectListItem {Value="Extra Large", Text="Extra Large"});
 
     List<SelectListItem> imageList = (List<SelectListItem>)TempData["OS"];
-    //var osImageList = new List<SelectListItem>();
-    //foreach (var item in imageList)
-    //{
-    //    osImageList.Add(new SelectListItem { Value = item.Text, Text = item.Text });        
-    //}
 }
 <div id="qc-create-lab-form-content">
 @model Ijepai.Web.Models.QuickCreateModel
@@ -50,9 +45,10 @@
                 </div>
             </div>
             <div class="form-group col-md-6">
-            @Html.LabelFor(model => model.SendLink, new { @class = "control-label col-md-3" })
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
              <div class="col-md-9">
-               @Html.CheckBoxFor(model => model.SendLink)
+              @Html.TextBoxFor(model => model.Name, new { type = "text", autocomplete = "off" })
+              @Html.ValidationMessageFor(model => model.Name)
              </div>
           </div>
         <div class="form-group col-md-6">
@@ -67,6 +63,7 @@
             <input type="submit" value="Create" id="q-create-lab-btn" class="btn btn-default" />
             <input type="button" value="Reset" id="q-reset-lab-btn" class="btn btn-default" />
         </div>
+        <table id="QC-list"></table>
 
     </div>
 }

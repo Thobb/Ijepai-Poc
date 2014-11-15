@@ -307,6 +307,78 @@ body {
     display: none;
 }
 
+/* QC Grid*/
+
+#QC-list tbody > tr {
+    border: 1px solid #fff;
+}
+
+#QC-list tbody tr.open-subgrid {
+    border-bottom: 1px solid transparent;
+    background-position-x: -374px;
+}
+
+#QC-list tbody tr.open-subgrid td.expander {
+    background-position: -373px -56px;
+}
+
+#QC-list tbody tr.subgrid-container-row {
+    border-top: none;
+    display: none;
+}
+
+#QC-list tbody tr.lab-row:hover {
+    background-color: #fff;
+    color: #333;
+}
+
+#QC-list tbody td.expander {
+    top: -1px;
+    line-height: 24px;
+}
+
+#QC-list tbody td.expander:hover {
+    cursor: pointer;
+}
+
+#QC-list tbody tr:focus {
+    background-color: #4286f4;
+}
+
+#QC-list td, #lab-list th {
+    padding: 2px 5px;
+}
+
+.subgrid-table {
+    color: #333;
+}
+
+#QC-list .subgrid-table tbody tr {
+    border: 1px solid #000;
+}
+
+#QC-list .participant-index {
+    width: 45px;
+}
+
+#QC-list .vm-status {
+    width: 20px;
+    cursor: pointer;
+}
+
+#QC-list .no-data-found {
+    text-align: center;
+    color: #ff2200;
+    padding-top: 10px;
+}
+
+#QC-list .carved-box {
+    background: #b5e7fe;
+    position: relative;
+}
+
+/* QC Grid Ends*/
+
 /* tab 3 */
 
 #bill-tab-btn, #bill-tab {
