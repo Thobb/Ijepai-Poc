@@ -57,17 +57,10 @@ namespace Ijepai.Web.Controllers.Dashboard
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public JsonResult GetLabParticipants(int ID)
+        public JsonResult GetQC()
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            var QCVM = db.QuickCreates.Select(p => new
-            {
-                p.ID,
-                VmName = p.Name ?? "",
-                OS = p.OS ?? "",
-                EmailAddress = p.RecepientEmail ?? "",
-                
-            });
+            var QCVM = db.QuickCreates.Select(l => new { l.ID, l.Name, l.Machine_Size, l.OS, l.RecepientEmail }).ToList();
             return Json(new { Status = 0, TotalItems = QCVM.Count(), rows = QCVM, org = Session["org"] });
         }
 
@@ -82,7 +75,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             db.QuickCreates.Add(model);
             db.SaveChanges();
             var status = GenerateVMConfig(model);
-            if (model.SendLink)
+           // if (model.SendLink)
             {
                 Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
                 string link = "http://vmengine.azurewebsites.net/?" + serviceName + ".cloudapp.net" + "/" + "administrator" + "/" + password;

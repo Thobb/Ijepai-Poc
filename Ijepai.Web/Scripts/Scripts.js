@@ -213,7 +213,7 @@
     },
     Load: function (el, conf) {
         var config = Grids[conf];
-        var labActions = config.labActions;
+        var actions = config.actions;
         $.ajax({
             url: config.url,
             type: "POST",
@@ -223,7 +223,6 @@
                 if (data.Status == "0") {
                     if (rows.length != 0) {
                         var cols = config.columns;
-                        var colNum = 7;
                         var classes = ["odd", "even"];
                         var hasSubgrid = config.subgrid;
                         var tbody = $("<tbody />");
@@ -231,37 +230,37 @@
                         var serialNum = 0;
                         for (i in rows) {
                             serialNum = Number(i) + 1;
-                            tr = $("<tr />").attr("id", "lab-" + rows[i][config.id]);
+                            tr = $("<tr />").attr("id", config.classPrefix + "-" + rows[i][config.id]);
                             if (hasSubgrid) {
                                 tr.append("<td class=\"expander collapsed-lab-row glyphicon glyphicon-plus\" />");
                             }
-                            tr.append("<td>" + serialNum + "</td>").addClass("lab-row " + classes[i % 2]);
-                            var actionsNode = $("#lab-actions-template").clone();
+                            tr.append("<td>" + serialNum + "</td>").addClass(config.classPrefix + "-row " + classes[i % 2]);
+                            var actionsNode = $("#" + config.classPrefix + "-actions-template").clone();
                             rows[i]["VM_Count"] = rows[i]["Participant_Count"] + " / " + rows[i]["VM_Count"];
                             var status = rows[i]["Status"];
                             if (status == "Scheduled") {
-                                labActions.deleteLab.policy = "Permit";
-                                labActions.editParticipant.policy = "Permit";
-                                labActions.editLab.policy = "Permit";
-                                labActions.refreshParticipantList.policy = "Permit";
+                                actions.deleteLab.policy = "Permit";
+                                actions.editParticipant.policy = "Permit";
+                                actions.editLab.policy = "Permit";
+                                actions.refreshParticipantList.policy = "Permit";
                             } else if (status == "Starting") {
-                                labActions.extendLab = "Permit";
-                                labActions.editParticipant = "Permit";
-                                labActions.refreshParticipantList.policy = "Permit";
+                                actions.extendLab = "Permit";
+                                actions.editParticipant = "Permit";
+                                actions.refreshParticipantList.policy = "Permit";
                             } else if (status == "Available") {
-                                labActions.extendLab = "Permit";
-                                labActions.editParticipant = "Permit";
-                                labActions.deleteLab = "Permit";
-                                labActions.refreshParticipantList.policy = "Permit";
+                                actions.extendLab = "Permit";
+                                actions.editParticipant = "Permit";
+                                actions.deleteLab = "Permit";
+                                actions.refreshParticipantList.policy = "Permit";
                             } else if (status == "Stopping") {
-                                labActions.refreshParticipantList.policy = "Permit";
+                                actions.refreshParticipantList.policy = "Permit";
                             } else if (status == "Exhausted") {
-                                labActions.deleteLab.policy = "Permit";
-                                labActions.refreshParticipantList.policy = "Permit";
+                                actions.deleteLab.policy = "Permit";
+                                actions.refreshParticipantList.policy = "Permit";
                             }
                             $.each(actionsNode.find("li"), function () {
                                 var id = rows[i].ID;
-                                var actionOb = labActions[$(this).data("role")];
+                                var actionOb = actions[$(this).data("role")];
                                 $(this).attr("title", actionOb.title);
                                 if (actionOb.policy == "Disallow"){
                                     $(this).addClass("inactive-action").attr("title", "The action is not appropriate in current context");
@@ -271,12 +270,13 @@
                                     });
                                 }
                             });
-                            rows[i]["labActions"] = actionsNode.children();
+                            rows[i][config.classPrefix + "Actions"] = actionsNode.children();
                             for (field in cols) {
                                 tr.append($("<td>").addClass(field).append(rows[i][field]));
                             }
                             tbody.append(tr);
                             if (hasSubgrid) {
+                                var colNum = 7;
                                 var subgridCols = config.subgridColumns;
                                 var subgridClassPrefix = config.subgridClassPrefix;
                                 var row = $("<tr id=\"lab-" + rows[i][config.id] + "-subgrid-row\" class=\"subgrid-container-row\" />");
@@ -347,7 +347,7 @@ var Grids = {
             Hard_Disk: { title: "Machine Size" },
             labActions: { title: "Actions" }
         },
-        labActions: {
+        actions: {
             extendLab: {
                 policy: "Disallow",
                 title: "Extend Lab Duration",
