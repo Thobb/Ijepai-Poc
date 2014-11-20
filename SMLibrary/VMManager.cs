@@ -13,6 +13,13 @@ using System.Xml.Linq;
 
 namespace SMLibrary
 {
+    public class VirtualMachineCaptureVMImageParameters
+    {
+        public string OSState;
+        public string VMImageName;
+        public string VMImageLabel;
+
+    }
     public class VMManager
     {
         private String _subscriptionid { get; set; }
@@ -347,6 +354,141 @@ namespace SMLibrary
 
             return requestID;
         }
+
+        async public Task<String> DeleteService(String ServiceName)
+        {
+            String requestID = String.Empty;
+
+            
+            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}/roles/{3}", _subscriptionid, ServiceName);
+
+            HttpClient http = GetHttpClient();
+            
+            HttpResponseMessage responseMsg = await http.DeleteAsync(uri);
+            if (responseMsg != null)
+            {
+                requestID = responseMsg.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+            }
+
+            return requestID;
+        }
+
+        async public Task<string>BeginCapturingVMImageAsync(string serviceName, string deploymentName, string virtualMachineName, VirtualMachineCaptureVMImageParameters parameters, CancellationToken cancellationToken)
+        {
+            // Validate
+            if (serviceName == null)
+            {
+                throw new ArgumentNullException("serviceName");
+            }
+            if (deploymentName == null)
+            {
+                throw new ArgumentNullException("deploymentName");
+            }
+            if (virtualMachineName == null)
+            {
+                throw new ArgumentNullException("virtualMachineName");
+            }
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }          
+           
+            // Construct URL
+            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}/roles/{3}", _subscriptionid, serviceName);
+            HttpClient http = GetHttpClient();         
+
+            // Create HTTP transport objects
+            HttpRequestMessage httpRequest = null;
+            try
+            {
+                httpRequest = new HttpRequestMessage();
+                httpRequest.Method = HttpMethod.Post;
+                httpRequest.RequestUri = new Uri(uri);
+
+                // Set Headers
+                httpRequest.Headers.Add("x-ms-version", "2014-06-01");
+
+                // Set Credentials
+                cancellationToken.ThrowIfCancellationRequested();
+                await http.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+
+                // Serialize Request
+                string requestContent = null;
+                XDocument requestDoc = new XDocument();
+
+                XElement captureRoleAsVMImageOperationElement = new XElement(XName.Get("CaptureRoleAsVMImageOperation", "http://schemas.microsoft.com/windowsazure"));
+                requestDoc.Add(captureRoleAsVMImageOperationElement);
+
+                XElement operationTypeElement = new XElement(XName.Get("OperationType", "http://schemas.microsoft.com/windowsazure"));
+                operationTypeElement.Value = "CaptureRoleAsVMImageOperation";
+                captureRoleAsVMImageOperationElement.Add(operationTypeElement);
+
+                if (parameters.OSState != null)
+                {
+                    XElement oSStateElement = new XElement(XName.Get("OSState", "http://schemas.microsoft.com/windowsazure"));
+                    oSStateElement.Value = parameters.OSState;
+                    captureRoleAsVMImageOperationElement.Add(oSStateElement);
+                }
+
+                if (parameters.VMImageName != null)
+                {
+                    XElement vMImageNameElement = new XElement(XName.Get("VMImageName", "http://schemas.microsoft.com/windowsazure"));
+                    vMImageNameElement.Value = parameters.VMImageName;
+                    captureRoleAsVMImageOperationElement.Add(vMImageNameElement);
+                }
+
+                if (parameters.VMImageLabel != null)
+                {
+                    XElement vMImageLabelElement = new XElement(XName.Get("VMImageLabel", "http://schemas.microsoft.com/windowsazure"));
+                    vMImageLabelElement.Value = parameters.VMImageLabel;
+                    captureRoleAsVMImageOperationElement.Add(vMImageLabelElement);
+                }
+
+                requestContent = requestDoc.ToString();
+                httpRequest.Content = new StringContent(requestContent, Encoding.UTF8);
+                httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
+
+                // Send Request
+                HttpResponseMessage httpResponse = null;
+                try
+                {
+                    
+                    cancellationToken.ThrowIfCancellationRequested();
+                    httpResponse = await http.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+                   
+                    HttpStatusCode statusCode = httpResponse.StatusCode;
+                    if (statusCode != HttpStatusCode.Accepted)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();                        
+                    }
+
+                    string RequestId = string.Empty;
+                    // Create Result
+                    if (httpResponse.Headers.Contains("x-ms-request-id"))
+                    {
+                        RequestId = httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+                    }
+
+
+                    return RequestId;
+                }
+                finally
+                {
+                    if (httpResponse != null)
+                    {
+                        httpResponse.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (httpRequest != null)
+                {
+                    httpRequest.Dispose();
+                }
+            }
+        }
+
 
         async public Task<byte[]> GetRDPFile(String ServiceName, String vmName)
         {
