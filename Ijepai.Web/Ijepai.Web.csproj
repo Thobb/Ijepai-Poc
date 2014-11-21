@@ -179,9 +179,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201411091804222_initial.cs" />
-    <Compile Include="Migrations\201411091804222_initial.Designer.cs">
-      <DependentUpon>201411091804222_initial.cs</DependentUpon>
+    <Compile Include="Migrations\201411201800313_initial.cs" />
+    <Compile Include="Migrations\201411201800313_initial.Designer.cs">
+      <DependentUpon>201411201800313_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -218,6 +218,7 @@
     <Content Include="Content\jquery.datetimepicker.css" />
     <None Include="Properties\PublishProfiles\ijepai.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Dashboard.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -292,8 +293,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201411091804222_initial.resx">
-      <DependentUpon>201411091804222_initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201411201800313_initial.resx">
+      <DependentUpon>201411201800313_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

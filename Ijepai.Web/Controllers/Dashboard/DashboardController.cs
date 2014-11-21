@@ -31,7 +31,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             return PartialView("_DashboardPartial");
         }
 
-        Dictionary<string, string> imageList = new Dictionary<string,string>();
+        public static Dictionary<string, string> imageList {get; set;}
         public async Task<JsonResult> Getimages()
         {
             VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
@@ -54,36 +54,57 @@ namespace Ijepai.Web.Controllers.Dashboard
             return Json(new { Status = 0, MessageTitle = "Success" });
         }
 
+        string label { get; set; }
+        public async Task<string> GetVMLabel(string imgName)
+        {
+            string Label;
+            VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
+            imageList = await vmm.GetAzureVMImages();
+            imageList.TryGetValue(imgName, out Label);
+            label = Label;
+            return label;
+
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
         public JsonResult GetQC()
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            var QCVM = db.QuickCreates.Select(l => new { l.ID, l.Name, l.Machine_Size, l.OS, l.RecepientEmail }).ToList();
+            var QCVM = db.QuickCreates.Select(l => new { l.ID, l.Name, l.Machine_Size, l.OSLabel, l.RecepientEmail }).ToList();
             return Json(new { Status = 0, TotalItems = QCVM.Count(), rows = QCVM, org = Session["org"] });
         }
 
         // POST: /Dashboard/Create
         [HttpPost]
-        public Task<JsonResult> QuickCreate(QuickCreateModel model)
+        async public Task<JsonResult> QuickCreate(QuickCreateModel model)
         {
             ApplicationDbContext db = new ApplicationDbContext();
             model.ApplicationUserID = User.Identity.GetUserId();
             var user = db.Users.Where(u => u.Id == model.ApplicationUserID).FirstOrDefault();
             model.RecepientEmail = model.RecepientEmail ?? user.Email_Address;
+            var status = GenerateVMConfig(model);
+            await GetVMLabel(model.OS);
+            model.OSLabel = label;
+            model.ServiceName = serviceName;
             db.QuickCreates.Add(model);
             db.SaveChanges();
-            var status = GenerateVMConfig(model);
-           // if (model.SendLink)
-            {
-                Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
-                string link = "http://vmengine.azurewebsites.net/?" + serviceName + ".cloudapp.net" + "/" + "administrator" + "/" + password;
-                mail.Compose(link, model.RecepientEmail);
-                mail.SendMail();
-            }
+            Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
+            string link = "http://vmengine.azurewebsites.net/?" + serviceName + ".cloudapp.net" + "/" + "administrator" + "/" + password;
+            mail.Compose(link, model.RecepientEmail);
+            mail.SendMail();
+            return Json(new { Status = 0 });
+        }
 
-            return status;
+        async public Task <JsonResult> DeleteQCVM(int id)
+        {
+            VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
+            ApplicationDbContext db = new ApplicationDbContext();
+            var cloudService = db.QuickCreates.Where(l => l.ID == id ).FirstOrDefault();
+            vmm.DeleteRoleInstance(cloudService.Name, cloudService.ServiceName);
+            await vmm.DeleteService(cloudService.ServiceName);
+            return Json(new { Status = 0 });
+
         }
 
         public async Task<JsonResult> GetVMStatus(string ServiceName, string VMName)

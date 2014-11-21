@@ -5,17 +5,24 @@
     columns: {
         Name: { title: "VM Name" },
         Machine_Size: { title: "Machine Size" },
-        OS: { title: "OS", style: "width: 185px" },
+        OSLabel: { title: "OS", style: "width: 185px" },
         RecepientEmail: { title: "Email Address", style: "width: 185px" },
         Status: { title: "Status", style: "width: 100px" },
         QCActions: { title: "Actions"}
     },
     actions: {
         QC_act: {
-            policy: "Disallow",
-            title: "Extend Lab Duration",
+            policy: "Allow",
+            title: "Delete VM",
             method: function (id) {
-                alert("id");
+                 $.ajax({
+                     url: "/Dashboard/DeleteQCVM",
+                     type: "POST",
+                     data: "id="+id,
+                    success: function () {
+                                   //thisBtn.removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
+                     }
+                   })
             }
         }
     },

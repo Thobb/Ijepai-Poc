@@ -17,6 +17,7 @@ namespace Ijepai.Web.Models
         }
 
         public int ID { get; set; }
+        public string OSLabel { get; set; }
         public string ServiceName { get; set; }
         [Required]
         [Display(Name = "VM Name")]

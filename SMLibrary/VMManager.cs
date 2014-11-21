@@ -359,8 +359,8 @@ namespace SMLibrary
         {
             String requestID = String.Empty;
 
-            
-            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}/roles/{3}", _subscriptionid, ServiceName);
+
+            String uri = string.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/production/roleinstances/?comp=delete", _subscriptionid, ServiceName);
 
             HttpClient http = GetHttpClient();
             
@@ -371,6 +371,50 @@ namespace SMLibrary
             }
 
             return requestID;
+        }
+
+        public void DeleteRoleInstance(string roleInstanceNames, string cloudServiceName)
+        {
+            string endpoint = string.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/production/roleinstances/?comp=delete", _subscriptionid, cloudServiceName);
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(endpoint);
+            String CertThumbprint = _certthumbprint;
+            X509Certificate2 managementCert = FindX509Certificate(CertThumbprint);
+            req.ClientCertificates.Add(managementCert);//cert is the X509Certificate2 object representing management certificate
+            req.ContentType = "application/xml";
+            req.Headers.Add("x-ms-version", "2013-08-01");
+            req.Method = "POST";
+            string requestBodyFormat = @"<RoleInstances xmlns=""http://schemas.microsoft.com/windowsazure"" xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"">{0}</RoleInstances>";
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendFormat("<Name>{0}</Name>", roleInstanceNames);
+            
+            var requestBody = Encoding.UTF8.GetBytes(string.Format(requestBodyFormat, sb.ToString()));
+            using (var stream = req.GetRequestStream())
+            {
+                stream.Write(requestBody, 0, requestBody.Length);
+            }
+            try
+            {
+                using (var resp = req.GetResponse())
+                {
+                    using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+                    {
+                        var responseData = sr.ReadToEnd();
+                        Console.WriteLine(responseData);
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+                using (var resp = webEx.Response)
+                {
+                    using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+                    {
+                        var errorDetails = sr.ReadToEnd();
+                        Console.WriteLine(errorDetails);
+                    }
+                }
+            }
         }
 
         async public Task<string>BeginCapturingVMImageAsync(string serviceName, string deploymentName, string virtualMachineName, VirtualMachineCaptureVMImageParameters parameters, CancellationToken cancellationToken)
