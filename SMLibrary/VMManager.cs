@@ -360,10 +360,58 @@ namespace SMLibrary
             String requestID = String.Empty;
 
 
-            String uri = string.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/production/roleinstances/?comp=delete", _subscriptionid, ServiceName);
+            String uri = string.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}", _subscriptionid, ServiceName);
 
             HttpClient http = GetHttpClient();
             
+            HttpResponseMessage responseMsg = await http.DeleteAsync(uri);
+            if (responseMsg != null)
+            {
+                requestID = responseMsg.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+            }
+
+            return requestID;
+        }
+
+        async public Task<String> SuspendDeploymentStatus(String ServiceName)
+        {
+            String requestID = String.Empty;
+            String deployment = await GetAzureDeploymentName(ServiceName);
+
+            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}", _subscriptionid, ServiceName, deployment);
+            XElement srcTree = new XElement("UpdateDeploymentStatus",
+                       new XAttribute(XNamespace.Xmlns + "i", ns1),
+                       new XElement("Status", "Suspended")                       
+                   );
+
+            
+            XDocument deploymentXML = new XDocument(srcTree);
+            ApplyNamespace(srcTree, ns);        
+            
+            String fixedXML = deploymentXML.ToString().Replace(" xmlns=\"\"", "");
+            HttpContent content = new StringContent(fixedXML);
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/xml");
+
+            HttpClient http = GetHttpClient();
+
+            HttpResponseMessage responseMsg = await http.PostAsync(uri,content);
+            if (responseMsg != null)
+            {
+                requestID = responseMsg.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+            }
+
+            return requestID;
+        }
+
+        async public Task<String> DeleteDeployment(String ServiceName)
+        {
+            String requestID = String.Empty;
+
+
+            String uri = string.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/production/?comp=delete", _subscriptionid, ServiceName);
+
+            HttpClient http = GetHttpClient();
+
             HttpResponseMessage responseMsg = await http.DeleteAsync(uri);
             if (responseMsg != null)
             {

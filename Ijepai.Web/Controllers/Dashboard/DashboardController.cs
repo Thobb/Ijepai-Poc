@@ -19,8 +19,8 @@ namespace Ijepai.Web.Controllers.Dashboard
     public class DashboardController : Controller
     {
         static string guid = Guid.NewGuid().ToString();
-        string serviceName = "Ijepaitest";
-        string vmName = "VM1";
+        string serviceName = "Ijepai" + guid;
+        string vmName = string.Empty;
         string password = "1234Test!";
 
         
@@ -83,6 +83,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             model.ApplicationUserID = User.Identity.GetUserId();
             var user = db.Users.Where(u => u.Id == model.ApplicationUserID).FirstOrDefault();
             model.RecepientEmail = model.RecepientEmail ?? user.Email_Address;
+            vmName = model.Name;
             var status = GenerateVMConfig(model);
             await GetVMLabel(model.OS);
             model.OSLabel = label;
@@ -101,7 +102,9 @@ namespace Ijepai.Web.Controllers.Dashboard
             VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
             ApplicationDbContext db = new ApplicationDbContext();
             var cloudService = db.QuickCreates.Where(l => l.ID == id ).FirstOrDefault();
-            vmm.DeleteRoleInstance(cloudService.Name, cloudService.ServiceName);
+            //vmm.DeleteRoleInstance(cloudService.Name, cloudService.ServiceName);
+            await vmm.UpdateAzureVM(cloudService.ServiceName);
+            await vmm.DeleteDeployment(cloudService.ServiceName);
             await vmm.DeleteService(cloudService.ServiceName);
             return Json(new { Status = 0 });
 
