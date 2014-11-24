@@ -13,6 +13,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using IjepaiMailer;
+using System.Management.Automation.Runspaces;
+using System.Collections.ObjectModel;
+using System.Management.Automation;
+
 
 namespace Ijepai.Web.Controllers.Dashboard
 {
@@ -23,6 +27,25 @@ namespace Ijepai.Web.Controllers.Dashboard
         string vmName = string.Empty;
         string password = "1234Test!";
 
+        private void RunPowershellScript(string scriptFile, string scriptParameters)
+        {
+            RunspaceConfiguration runspaceConfiguration = RunspaceConfiguration.Create();
+            Runspace runspace = RunspaceFactory.CreateRunspace(runspaceConfiguration);
+            runspace.Open();
+            System.Management.Automation.RunspaceInvoke scriptInvoker = new System.Management.Automation.RunspaceInvoke(runspace);
+            Pipeline pipeline = runspace.CreatePipeline();
+            Command scriptCommand = new Command(scriptFile);
+            Collection<CommandParameter> commandParameters = new Collection<CommandParameter>();
+            foreach (string scriptParameter in scriptParameters.Split(' '))
+            {
+                CommandParameter commandParm = new CommandParameter(null, scriptParameter);
+                commandParameters.Add(commandParm);
+                scriptCommand.Parameters.Add(commandParm);
+            }
+            pipeline.Commands.Add(scriptCommand);
+            Collection<PSObject> psObjects;
+            psObjects = pipeline.Invoke();
+        }
         
         [HttpPost]
         // GET: /Dashboard/
@@ -97,15 +120,22 @@ namespace Ijepai.Web.Controllers.Dashboard
             return Json(new { Status = 0 });
         }
 
+
+        private static void ApplyNamespace(XElement parent, XNamespace nameSpace)
+        {
+            parent.Name = nameSpace + parent.Name.LocalName;
+            foreach (XElement child in parent.Elements())
+            {
+                ApplyNamespace(child, nameSpace);
+            }
+        }
         async public Task <JsonResult> DeleteQCVM(int id)
         {
+            XNamespace ns1 = "http://www.w3.org/2001/XMLSchema-instance";
             VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
             ApplicationDbContext db = new ApplicationDbContext();
             var cloudService = db.QuickCreates.Where(l => l.ID == id ).FirstOrDefault();
-            //vmm.DeleteRoleInstance(cloudService.Name, cloudService.ServiceName);
-            await vmm.UpdateAzureVM(cloudService.ServiceName);
-            await vmm.DeleteDeployment(cloudService.ServiceName);
-            await vmm.DeleteService(cloudService.ServiceName);
+            await vmm.DeleteVM(cloudService.ServiceName);
             return Json(new { Status = 0 });
 
         }

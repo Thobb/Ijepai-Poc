@@ -24,7 +24,23 @@
                      }
                    })
             }
+        },
+        QC_act: {
+            policy: "Allow",
+            title: "Capture VM",
+            method: function (id) {
+                $.ajax({
+                    url: "/Dashboard/CaptureQCVM",
+                    type: "POST",
+                    data: "id=" + id,
+                    success: function () {
+                        //thisBtn.removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
+                    }
+                })
+            }
+
         }
+
     },
     subgrid: false
 }

@@ -147,6 +147,17 @@ namespace SMLibrary
 
             return requestID;
         }
+        private HttpWebRequest CreateHttpWebRequest(Uri uri, String httpWebRequestMethod)
+        {
+            X509Certificate2 x509Certificate2 = FindX509Certificate(_certthumbprint);
+            HttpWebRequest httpWebRequest =(HttpWebRequest)HttpWebRequest.Create(uri);
+            httpWebRequest.Method = httpWebRequestMethod;
+            httpWebRequest.Headers.Add("x-ms-version", "2012-03-01");
+            httpWebRequest.ClientCertificates.Add(x509Certificate2);
+            httpWebRequest.ContentType = "application/xml";
+            return httpWebRequest;
+ }       
+        
 
         async public Task<XDocument> GetAzureVMs()
         {
@@ -355,72 +366,60 @@ namespace SMLibrary
             return requestID;
         }
 
-        async public Task<String> DeleteService(String ServiceName)
+        async public Task<HttpResponseMessage> DeleteDeployment(string serviceName)
         {
-            String requestID = String.Empty;
-
-
-            String uri = string.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}", _subscriptionid, ServiceName);
-
+            string xml = string.Empty;
+            string deploymentName = await GetAzureDeploymentName(serviceName);
+            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}", _subscriptionid, deploymentName, deploymentName);
             HttpClient http = GetHttpClient();
-            
-            HttpResponseMessage responseMsg = await http.DeleteAsync(uri);
-            if (responseMsg != null)
-            {
-                requestID = responseMsg.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-            }
-
-            return requestID;
+            HttpResponseMessage responseMessage = await http.DeleteAsync(uri);
+            return responseMessage;
         }
 
-        async public Task<String> SuspendDeploymentStatus(String ServiceName)
+        async public Task<HttpResponseMessage> DeleteService(string serviceName)
         {
-            String requestID = String.Empty;
-            String deployment = await GetAzureDeploymentName(ServiceName);
-
-            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}", _subscriptionid, ServiceName, deployment);
-            XElement srcTree = new XElement("UpdateDeploymentStatus",
-                       new XAttribute(XNamespace.Xmlns + "i", ns1),
-                       new XElement("Status", "Suspended")                       
-                   );
-
-            
-            XDocument deploymentXML = new XDocument(srcTree);
-            ApplyNamespace(srcTree, ns);        
-            
-            String fixedXML = deploymentXML.ToString().Replace(" xmlns=\"\"", "");
-            HttpContent content = new StringContent(fixedXML);
-            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/xml");
-
+            string xml = string.Empty;
+            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}", _subscriptionid, serviceName);
+            //Log.Info("Windows Azure URI (http DELETE verb): " + uri, typeof(VMManager));
             HttpClient http = GetHttpClient();
+            HttpResponseMessage responseMessage = await http.DeleteAsync(uri);
+            return responseMessage;
+        } 
 
-            HttpResponseMessage responseMsg = await http.PostAsync(uri,content);
-            if (responseMsg != null)
-            {
-                requestID = responseMsg.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-            }
-
-            return requestID;
-        }
-
-        async public Task<String> DeleteDeployment(String ServiceName)
+        async public Task<string> DeleteVM(string ServiceName)
         {
-            String requestID = String.Empty;
+            string responseString = string.Empty;
 
-
-            String uri = string.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/production/?comp=delete", _subscriptionid, ServiceName);
-
+            // as a convention here in this post, a unified name used for service, deployment and VM instance to make it easy to manage VMs           
             HttpClient http = GetHttpClient();
+            HttpResponseMessage responseMessage = await DeleteDeployment(ServiceName);
 
-            HttpResponseMessage responseMsg = await http.DeleteAsync(uri);
-            if (responseMsg != null)
+            if (responseMessage != null)
             {
-                requestID = responseMsg.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+
+                string requestID = responseMessage.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+                OperationResult result = await PollGetOperationStatus(requestID, 5, 120);
+                if (result.Status == OperationStatus.Succeeded)
+                {
+                    responseString = result.Message;
+                    HttpResponseMessage sResponseMessage = await DeleteService(ServiceName);
+                    if (sResponseMessage != null)
+                    {
+                        OperationResult sResult = await PollGetOperationStatus(requestID, 5, 120);
+                        responseString += sResult.Message;
+                    }
+                }
+                else
+                {
+                    responseString = result.Message;
+                }
             }
+            return responseString;
+        } 
 
-            return requestID;
-        }
-
+       
+       
+       
         public void DeleteRoleInstance(string roleInstanceNames, string cloudServiceName)
         {
             string endpoint = string.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/production/roleinstances/?comp=delete", _subscriptionid, cloudServiceName);
