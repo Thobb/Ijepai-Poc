@@ -25,7 +25,7 @@
                    })
             }
         },
-        QC_act: {
+        QC_Capt: {
             policy: "Allow",
             title: "Capture VM",
             method: function (id) {

@@ -130,14 +130,31 @@ namespace Ijepai.Web.Controllers.Dashboard
             }
         }
         async public Task <JsonResult> DeleteQCVM(int id)
-        {
-            XNamespace ns1 = "http://www.w3.org/2001/XMLSchema-instance";
+        {           
             VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
             ApplicationDbContext db = new ApplicationDbContext();
             var cloudService = db.QuickCreates.Where(l => l.ID == id ).FirstOrDefault();
             await vmm.DeleteVM(cloudService.ServiceName);
+            db.QuickCreates.Remove(cloudService);
+            db.SaveChanges();
             return Json(new { Status = 0 });
+        }
 
+        async public Task<JsonResult> CaptureQCVM(int id)
+        {
+            VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
+            ApplicationDbContext db = new ApplicationDbContext();
+            var cloudService = db.QuickCreates.Where(l => l.ID == id).FirstOrDefault();
+            await vmm.ShutDownVM(cloudService.ServiceName, cloudService.Name);
+            VirtualMachineCaptureVMImageParameters param = new VirtualMachineCaptureVMImageParameters();
+            param.VMImageLabel = "TestImage";
+            param.VMImageName = "TestImage";
+            param.OSState = "Specialized";
+            System.Threading.CancellationToken token = new System.Threading.CancellationToken(false);
+            await vmm.CaptureVM(cloudService.ServiceName, cloudService.Name, param.VMImageName);
+           // await vmm.BeginCapturingVMImageAsync(cloudService.ServiceName, cloudService.ServiceName, cloudService.Name, param, token);
+            await vmm.RebootVM(cloudService.ServiceName, cloudService.Name);
+            return Json(new { Status = 0 });
         }
 
         public async Task<JsonResult> GetVMStatus(string ServiceName, string VMName)
