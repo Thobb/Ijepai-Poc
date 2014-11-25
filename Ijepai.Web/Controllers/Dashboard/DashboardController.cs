@@ -149,7 +149,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             VirtualMachineCaptureVMImageParameters param = new VirtualMachineCaptureVMImageParameters();
             param.VMImageLabel = "TestImage";
             param.VMImageName = "TestImage";
-            param.OSState = "Specialized";
+            param.OSState = "Generalized";
             System.Threading.CancellationToken token = new System.Threading.CancellationToken(false);
             await vmm.CaptureVM(cloudService.ServiceName, cloudService.Name, param.VMImageName);
            // await vmm.BeginCapturingVMImageAsync(cloudService.ServiceName, cloudService.ServiceName, cloudService.Name, param, token);

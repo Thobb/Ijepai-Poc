@@ -42,7 +42,7 @@ namespace SMLibrary
             {
                 handler.ClientCertificates.Add(managementCert);
                 HttpClient httpClient = new HttpClient(handler);
-                httpClient.DefaultRequestHeaders.Add("x-ms-version", "2014-02-01");
+                httpClient.DefaultRequestHeaders.Add("x-ms-version", "2014-05-01");
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
                 return httpClient;
             }
@@ -82,7 +82,29 @@ namespace SMLibrary
                         imageList.Add(imgName, imgLabel);
                     }
                 }
-            }
+                uri = String.Format("https://management.core.windows.net/{0}/services/vmimages", _subscriptionid);
+                
+                Stream responseStreamCustom = await http.GetStreamAsync(uri);
+
+                if (responseStreamCustom != null)
+                {
+                    XDocument xml = XDocument.Load(responseStreamCustom);
+                    var images = xml.Root.Descendants(ns + "VMImage").Where(i => i.Element(ns + "Category").Value == "User");
+                    foreach (var image in images)
+                    {
+                        string imgName = image.Element(ns + "Name").Value;
+                        string imgLabel = image.Element(ns + "Label").Value;
+                        imageList.Add(imgName, imgLabel);
+                    }
+                    images = xml.Root.Descendants(ns + "VMImage").Where(i => i.Element(ns + "Category").Value == "Public");
+                    foreach (var image in images)
+                    {
+                        string imgName = image.Element(ns + "Name").Value;
+                        string imgLabel = image.Element(ns + "Label").Value;
+                        imageList.Add(imgName, imgLabel);
+                    }
+                }
+            }            
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
@@ -119,6 +141,8 @@ namespace SMLibrary
             }
             return requestID;
         }
+
+
 
         async public Task<String> CaptureVM(String ServiceName, String RoleName, string imageName)
         {
