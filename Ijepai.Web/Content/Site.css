@@ -171,6 +171,13 @@ body {
     color: #000000;
 }
 
+#QC-list .QC-actions {
+    margin-bottom: 0;
+}
+
+#QC-list .QC-actions li {
+    cursor: pointer;
+}
 /* tab 2 */
 
 #lab-tab-btn, #lab-tab {
@@ -181,7 +188,7 @@ body {
     color: #1133ef;
 }
 
-#basic-lab-actions {
+#basic-lab-actions, #basic-QC-actions {
     overflow: hidden;
     padding: 10px;
     background: rgba(6, 110, 214, 0.3)/*#066ED6*/;
@@ -190,15 +197,15 @@ body {
     border-bottom: 1px solid #000;
 }
 
-#basic-lab-actions li {
+#basic-lab-actions li, #basic-QC-actions li {
     float: left;
 }
 
-#basic-lab-actions li+li {
+#basic-lab-actions li+li, #basic-QC-actions li+li {
     margin-left: 15px;
 }
 
-#basic-lab-actions a {
+#basic-lab-actions a, #basic-QC-actions a {
     color: #1133ef;
     padding: 5px 7px;
     display: block;
@@ -701,18 +708,18 @@ body {
 }
 /****************************************** /Work arounds ****************************************************/
 
-.lab-actions {
+.lab-actions, .QC-actions {
     display: inline;
     overflow: hidden;
 }
-.lab-actions li {
+.lab-actions li, .QC-actions li {
     cursor: pointer;
     padding: 5px;
     float: left;
     top: -1px;
 }
 
-.lab-actions li+li {
+.lab-actions li+li, .QC-actions li+li {
     margin-left: 10px;
 }
 
@@ -721,12 +728,17 @@ body {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
 }
 
-.lab-actions li.inactive-action {
+.QC-actions li:hover {
+    color: #1B2B28;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.lab-actions li.inactive-action, .QC-actions li.inactive-action {
     cursor: not-allowed;
     opacity: 0.3;
 }
 
-.lab-actions li.inactive-action:hover {
+.lab-actions li.inactive-action:hover, .QC-actions li.inactive-action:hover {
     color: #000;
     text-shadow: none;
 }
@@ -762,7 +774,7 @@ body {
 }
 
 /**************************************** +New Lab Form *********************************/
-#create-lab-form-content {
+#create-lab-form-content, #QC-VM-capture {
     position: absolute;
     left: 1%;
     top: 80px;
@@ -894,7 +906,8 @@ body {
 #edit-participants-form-content, #extend-lab-form-content,
 #delete-lab-form-content, #edit-participant-form-container,
 #move-participant-form-container, #delete-participant-form-container,
-#get-lab-link-form-container {
+#get-lab-link-form-container, #QC-form-content,
+#QC-VM-capture, #QC-VM-delete {
     position: absolute;
     left: 1%;
     top: 80px;
@@ -908,7 +921,8 @@ body {
 #edit-participants-form-header, #extend-lab-form-header,
 #delete-lab-form-header, #edit-participant-form-header,
 #move-participant-form-header, #delete-participant-form-header,
-#get-machine-link-form-header {
+#get-machine-link-form-header, #QC-form-content-header,
+#QC-VM-capture-header, #QC-VM-delete-header {
     border-bottom: 2px solid #fff;
     background: #222;
     border-radius: 5px 5px 0 0;
@@ -918,14 +932,16 @@ body {
 #edit-participants-form-tab-list, #extend-lab-form-tabs,
 #delete-lab-form-tabs, #edit-participant-form-tabs,
 #move-participant-form-tabs, #delete-participant-from-tabs,
-#get-machine-link-form-tabs {
+#get-machine-link-form-tabs, #QC-form-content-tabs,
+#QC-VM-capture-tabs, #QC-VM-delete-tabs {
     float: left;
     margin-bottom: 0;
 }
 #edit-participants-form-tab-list li, #extend-lab-form-tabs li,
 #delete-lab-form-tabs li, #edit-participant-form-tabs li,
 #move-participant-form-tabs li, #delete-participant-from-tabs li,
-#get-machine-link-form-tabs li {
+#get-machine-link-form-tabs li, #QC-form-content-tabs li,
+#QC-VM-capture-tabs li, #QC-VM-delete-tabs li {
     padding: 2px 40px;
 }
 #edit-participants-list, #edit-lab-schedule,
@@ -937,28 +953,32 @@ body {
 #edit-participants-form-actions, #extend-lab-form-actions,
 #delete-lab-form-actions, #edit-participant-form-actions,
 #move-participant-form-actions, #delete-participant-form-actions,
-#get-machine-link-form-actions {
+#get-machine-link-form-actions, #QC-form-content-actions,
+#QC-VM-capture-actions, #QC-VM-delete-actions {
     float: right;
     margin-bottom: 0;
 }
 #close-participants-form, #close-extend-lab-form,
 #close-delete-lab-form, #close-edit-participant-form,
 #close-move-participant-form, #close-delete-participant-form,
-#close-get-machine-link-form {
+#close-get-machine-link-form, #QC-form-content-close,
+#QC-VM-capture-close, #QC-VM-delete-close {
     padding: 5px;
     top: -1px;
     float: left;
 }
 #close-participants-form:hover, #close-extend-lab-form:hover,
 #close-delete-lab-form:hover, #close-edit-participant-form:hover,
-#close-move-participant-form:hover, #close-delete-participant-form:hover ,
-#close-get-machine-link-form:hover {
+#close-move-participant-form:hover, #close-delete-participant-form:hover,
+#close-get-machine-link-form:hover, #QC-form-content-close:hover,
+#QC-VM-capture-close:hover, #QC-VM-delete-close:hover {
     cursor: pointer;
 }
 #edit-participants-form-body, #extend-lab-form-body,
 #delete-lab-form-body, #edit-participant-form-body,
 #move-participant-form-body, #delete-participant-form-body,
-#get-machine-link-form-body {
+#get-machine-link-form-body, #QC-form-body,
+#QC-VM-capture-form-body, #QC-VM-delete-form-body {
     overflow-y: auto;
     max-height: 400px;
     padding: 25px 0 15px 10px;
@@ -969,7 +989,8 @@ body {
 #edit-participants-form-footer, #extend-lab-form-footer,
 #delete-lab-form-footer, #edit-participant-form-footer,
 #move-participant-form-footer, #delete-participant-form-footer,
-#get-machine-link-form-footer {
+#get-machine-link-form-footer, #QC-form-footer,
+#QC-VM-capture-form-footer, #QC-VM-delete-form-footer {
     border-top: 2px solid #fff;
     background: #222;
     border-radius: 0 0 5px 5px;
@@ -988,30 +1009,6 @@ body {
     border-bottom: 1px solid #ddd;
 }
 /**************************************** /Quick create tab *********************************/
-#qc-create-lab-form-content {
-    border: 2px solid #fff;
-    border-radius: 10px;
-    box-shadow: 3px 3px 5px #000, 0 0 3px;
-    margin-top: 15px;
-}
-#qc-create-lab-form-body {
-    padding: 15px 0;
-    overflow: hidden;
-    border-bottom: 2px solid #fff;
-    border-radius: 8px 8px 0 0;
-    background-color: #72968F;
-}
-#qc-create-lab-form-content select {
-    border: 2px solid #999;
-    border-radius: 3px;
-    margin-top: 5px;
-    width: 100%;
-}
-#qc-create-lab-form-footer {
-    padding: 5px 10px;
-    background-color: #394442;
-    border-radius: 0 0 10px 10px;
-}
 /**************************************** /Quick create tab *********************************/
 /**************************************** /New Lab Form *********************************/
 #overlay {

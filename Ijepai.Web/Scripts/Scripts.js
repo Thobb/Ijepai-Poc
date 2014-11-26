@@ -659,26 +659,6 @@ App = {
             App.closeEditParticipantForm();
         }
     },
-    UpdateVMStatus: function (data) {
-        $("#vmCreateStatus").html(data.Status);
-        var statusTimerHandle = setInterval(function () {
-            $.ajax({
-                url: "/Dashboard/GetVMStatus",
-                type: "POST",
-                data: "ServiceName=" + data.ServiceName + "&VMName=" + data.VMName,
-                success: function (data, status, xhr) {
-                    if (data.Status == "0") {
-                        $("#vmCreateStatus").html("<b>Machine state : <b>" + data.InstanceStatus + "<br><b>Power state : </b>" + data.PowerState);
-                    } else {
-                        alert("Some error occured")
-                    }
-                    if ((data.InstanceStatus == "ReadyRole") && (data.PowerState == "Started")) { //data.Message
-                        clearInterval(statusTimerHandle)
-                    }
-                }
-            })
-        }, 10000);
-    },
     moveParticipantFormSuccess: function(data){
         if (data.Status == 0) {
             Grid.LoadSubgrid(data.prevLab, "LabGrid");

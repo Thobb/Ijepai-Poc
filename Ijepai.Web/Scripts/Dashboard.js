@@ -15,35 +15,109 @@
             policy: "Allow",
             title: "Delete VM",
             method: function (id) {
-                 $.ajax({
-                     url: "/Dashboard/DeleteQCVM",
-                     type: "POST",
-                     data: "id="+id,
-                    success: function () {
-                                   //thisBtn.removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
-                     }
-                   })
+                Dashboard.showDeleteQCVMForm();
             }
         },
         QC_Capt: {
             policy: "Allow",
             title: "Capture VM",
             method: function (id) {
-                $.ajax({
-                    url: "/Dashboard/CaptureQCVM",
-                    type: "POST",
-                    data: "id=" + id,
-                    success: function () {
-                        //thisBtn.removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
-                    }
-                })
+                Dashboard.showCaptureQCVMForm(id);
             }
-
         }
 
     },
     subgrid: false
 }
+
+var Dashboard = {
+    deleteQCVM: function(id){
+        $.ajax({
+            url: "/Dashboard/DeleteQCVM",
+            type: "POST",
+            data: "id="+id,
+            success: function () {
+                //thisBtn.removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
+            }
+        })
+    },
+    showDeleteQCVMForm: function (id) {
+        $("#overlay").fadeIn(function () {
+            $("#QC-VM-delete").fadeIn(200);
+        });
+    },
+    hideDeleteQCVMForm: function () {
+        $("#QC-VM-delete").fadeOut(function () {
+            $("#overlay").fadeOut(200);
+        })
+    },
+    showCaptureQCVMForm: function (id) {
+        $("#overlay").fadeIn( function () {
+            $("#QC-VM-capture").fadeIn(200);
+        });
+    },
+    hideCaptureQCVMForm: function (id) {
+        $("#QC-VM-capture").fadeOut(function () {
+            $("#overlay").fadeOut(200);
+        })
+    },
+    showQCForm: function() {
+        $("#overlay").fadeIn(function () {
+            $("#QC-form-content").fadeIn(200);
+        });
+    },
+    hideQCForm: function() {
+        $("#QC-form-content").fadeOut(function () {
+            $("#overlay").fadeOut(200);
+            $("#qc-create-form").reset();
+        });
+    },
+    captureQCVM: function(id) {
+        $.ajax({
+            url: "/Dashboard/CaptureQCVM",
+            type: "POST",
+            data: "id=" + id,
+            success: function () {
+                //thisBtn.removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
+            }
+        })
+    }
+}
+
+App.UpdateVMStatus = function (data) {
+    Dashboard.hideQCForm();
+    var statusTimerHandle = setInterval(function () {
+        $.ajax({
+            url: "/Dashboard/GetVMStatus",
+            type: "POST",
+            data: "ServiceName=" + data.ServiceName + "&VMName=" + data.VMName,
+            success: function (data, status, xhr) {
+                if (data.Status == "0") {
+                    alert("<b>Machine state : <b>" + data.InstanceStatus + "<br><b>Power state : </b>" + data.PowerState);
+                } else {
+                    alert("Some error occured")
+                }
+                if ((data.InstanceStatus == "ReadyRole") && (data.PowerState == "Started")) { //data.Message
+                    clearInterval(statusTimerHandle)
+                }
+            }
+        })
+    }, 10000);
+}
 $(function () {
-    Grid.Init("#QC-list","QuickCreateGrid")
+    Grid.Init("#QC-list", "QuickCreateGrid");
+    $("#QC-form-content-close").click(function () {
+        Dashboard.hideQCForm();
+    });
+    $("#open-QC-form").click(function (e) {
+        e.preventDefault();
+        Dashboard.showQCForm();
+        return false;
+    });
+    $("#QC-VM-capture-close").click(function () {
+        Dashboard.hideCaptureQCVMForm();
+    })
+    $("#QC-VM-delete-close").click(function () {
+        Dashboard.hideDeleteQCVMForm();
+    })
 })

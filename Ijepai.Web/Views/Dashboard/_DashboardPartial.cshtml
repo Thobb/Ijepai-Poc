@@ -11,9 +11,55 @@
 
     List<SelectListItem> imageList = (List<SelectListItem>)TempData["OS"];
 }
-<div id="qc-create-lab-form-content">
 @model Ijepai.Web.Models.QuickCreateModel
-@using (Ajax.BeginForm(
+<ul id="basic-QC-actions">
+    <li><a href="#" id="open-QC-form">Quick Create</a></li>
+</ul>
+<table id="QC-list"></table>
+<div id="QC-VM-capture">
+    <div id="QC-VM-capture-header">
+        <ul id="QC-VM-capture-tabs">
+            <li class="active-lab-form-tab"></li>
+        </ul>
+        <ul id="QC-VM-capture-actions">
+            <li id="QC-VM-capture-close" class="glyphicon glyphicon-remove"></li>
+        </ul>
+    </div>
+    <form id="QC-VM-capture-form">
+        <div id="QC-VM-capture-form-body">
+        </div>
+        <div id="QC-VM-capture-form-footer">
+
+        </div>
+    </form>
+</div>
+<div id="QC-VM-delete">
+    <div id="QC-VM-delete-header">
+        <ul id="QC-VM-delete-tabs">
+            <li class="active-lab-form-tab"></li>
+        </ul>
+        <ul id="QC-VM-delete-actions">
+            <li id="QC-VM-delete-close" class="glyphicon glyphicon-remove"></li>
+        </ul>
+    </div>
+    <form id="QC-VM-delete-form">
+        <div id="QC-VM-delete-form-body">
+        </div>
+        <div id="QC-VM-delete-form-footer">
+
+        </div>
+    </form>
+</div>
+<div id="QC-form-content">
+    <div id="QC-form-content-header">
+        <ul id="QC-form-content-tabs">
+            <li class="active-lab-form-tab"></li>
+        </ul>
+        <ul id="QC-form-content-actions">
+            <li id="QC-form-content-close" class="glyphicon glyphicon-remove"></li>
+        </ul>
+    </div>
+        @using (Ajax.BeginForm(
         "QuickCreate",
         "Dashboard",
         new { },
@@ -22,57 +68,50 @@
             HttpMethod = "POST",
             OnSuccess = "App.UpdateVMStatus",
         },
-        new {id="qc-create-form" }
+        new { id = "qc-create-form" }
     ))
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <div id="qc-create-lab-form-body" class="col">
-            <div class="form-group col-md-6">
-                @Html.LabelFor(model => model.OS, new { @class = "control-label col-md-3" })
-                <div class="col-md-9" id="q-image-list" data-count=" 1">
-                    @Html.DropDownListFor(model => model.OS, imageList, "Select Image")
-                    @Html.ValidationMessageFor(model => model.OS)
+        {
+            @Html.AntiForgeryToken()
+            <div id="QC-form-body" class="col">
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.OS, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9" id="q-image-list" data-count=" 1">
+                        @Html.DropDownListFor(model => model.OS, imageList, "Select Image")
+                        @Html.ValidationMessageFor(model => model.OS)
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.Machine_Size, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @*@Html.DropDownListFor(model => model.Machine_Size, new SelectList(new[] { "Small", "Medium", "Large", "Extra Large" }, "15"), "Select Size")*@
+                        @Html.DropDownListFor(model => model.Machine_Size, machine_sizes, "Select Size")
+                        @Html.ValidationMessageFor(model => model.Machine_Size)
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Name, new { type = "text", autocomplete = "off" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.RecepientEmail, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.RecepientEmail, new { type = "text", autocomplete = "off" })
+                        @Html.ValidationMessageFor(model => model.RecepientEmail)
+                    </div>
                 </div>
             </div>
-            <div class="form-group col-md-6">
-                @Html.LabelFor(model => model.Machine_Size, new { @class = "control-label col-md-3" })
-                <div class="col-md-9">
-                    @*@Html.DropDownListFor(model => model.Machine_Size, new SelectList(new[] { "Small", "Medium", "Large", "Extra Large" }, "15"), "Select Size")*@
-                    @Html.DropDownListFor(model => model.Machine_Size, machine_sizes, "Select Size")
-                    @Html.ValidationMessageFor(model => model.Machine_Size)
-                </div>
+            <div id="QC-form-footer">
+                <input type="submit" value="Create" id="q-create-lab-btn" class="btn btn-default" />
+                <input type="button" value="Reset" id="q-reset-lab-btn" class="btn btn-default" />
             </div>
-            <div class="form-group col-md-6">
-            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
-             <div class="col-md-9">
-              @Html.TextBoxFor(model => model.Name, new { type = "text", autocomplete = "off" })
-              @Html.ValidationMessageFor(model => model.Name)
-             </div>
-          </div>
-        <div class="form-group col-md-6">
-            @Html.LabelFor(model => model.RecepientEmail, new { @class = "control-label col-md-3" })
-            <div class="col-md-9">
-                @Html.TextBoxFor(model => model.RecepientEmail, new { type = "text", autocomplete = "off" })
-                @Html.ValidationMessageFor(model => model.RecepientEmail)
-            </div>
-        </div>
-        </div>
-        <div id="qc-create-lab-form-footer">
-            <input type="submit" value="Create" id="q-create-lab-btn" class="btn btn-default" />
-            <input type="button" value="Reset" id="q-reset-lab-btn" class="btn btn-default" />
-        </div>       
-    </div>
-    
-    
-}
+        }
 </div>
-<div id="vmCreateStatus"></div>
-<table id="QC-list"></table>
 <div id="QC-actions-template" style="display: none;">
     <ul class="QC-actions">
-        <li data-role="QC_act" class="glyphicon glyphicon-resize-full reschedule-lab"></li>
-        <li data-role="QC_Capt" class="glyphicon glyphicon-resize-full reschedule-lab"></li>
+        <li data-role="QC_act" class="glyphicon glyphicon-trash reschedule-lab"></li>
+        <li data-role="QC_Capt" class="glyphicon glyphicon-hdd reschedule-lab"></li>
     </ul>
 </div>
