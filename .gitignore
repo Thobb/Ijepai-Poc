@@ -206,6 +206,9 @@ WebPortal/Content/
 lib/Release/*.xml
 lib/Release/*.pdb
 
+# Debug libraries
+Ijepai.Web/obj/Debug/*.pdb
+Ijepai.Web/obj/Debug/*.dll
 
 # Ignore binaries
 Ijepai.Web/bin/Ijepai.Web.*

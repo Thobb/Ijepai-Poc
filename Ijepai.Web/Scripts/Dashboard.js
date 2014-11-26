@@ -15,7 +15,7 @@
             policy: "Allow",
             title: "Delete VM",
             method: function (id) {
-                Dashboard.showDeleteQCVMForm();
+                Dashboard.showDeleteQCVMForm(id);
             }
         },
         QC_Capt: {
@@ -25,7 +25,6 @@
                 Dashboard.showCaptureQCVMForm(id);
             }
         }
-
     },
     subgrid: false
 }
@@ -41,24 +40,19 @@ var Dashboard = {
             }
         })
     },
+    deleteQCVMSuccess: function(data){
+
+    },
     showDeleteQCVMForm: function (id) {
         $("#overlay").fadeIn(function () {
+            $("#delete_QCVM_id").val(id);
             $("#QC-VM-delete").fadeIn(200);
         });
     },
     hideDeleteQCVMForm: function () {
         $("#QC-VM-delete").fadeOut(function () {
             $("#overlay").fadeOut(200);
-        })
-    },
-    showCaptureQCVMForm: function (id) {
-        $("#overlay").fadeIn( function () {
-            $("#QC-VM-capture").fadeIn(200);
-        });
-    },
-    hideCaptureQCVMForm: function (id) {
-        $("#QC-VM-capture").fadeOut(function () {
-            $("#overlay").fadeOut(200);
+            $("#QC-VM-delete-form").trigger("reset");
         })
     },
     showQCForm: function() {
@@ -69,8 +63,20 @@ var Dashboard = {
     hideQCForm: function() {
         $("#QC-form-content").fadeOut(function () {
             $("#overlay").fadeOut(200);
-            $("#qc-create-form").reset();
+            $("#qc-create-form").trigger("reset");
         });
+    },
+    showCaptureQCVMForm: function (id) {
+        $("#overlay").fadeIn(function () {
+            $("#QCVM_capture_id").val(id);
+            $("#QC-VM-capture").fadeIn(200);
+        });
+    },
+    hideCaptureQCVMForm: function (id) {
+        $("#QC-VM-capture").fadeOut(function () {
+            $("#overlay").fadeOut(200);
+            $("#QC-VM-capture-form").trigger("reset");
+        })
     },
     captureQCVM: function(id) {
         $.ajax({
@@ -81,6 +87,9 @@ var Dashboard = {
                 //thisBtn.removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
             }
         })
+    },
+    captureQCVMSuccess: function (data) {
+
     }
 }
 
@@ -117,7 +126,13 @@ $(function () {
     $("#QC-VM-capture-close").click(function () {
         Dashboard.hideCaptureQCVMForm();
     })
+    $("#QC-VM-capture-cancel").click(function () {
+        Dashboard.hideCaptureQCVMForm();
+    });
     $("#QC-VM-delete-close").click(function () {
         Dashboard.hideDeleteQCVMForm();
-    })
+    });
+    $("#cancel-QCVM-deletion").click(function () {
+        Dashboard.hideDeleteQCVMForm();
+    });
 })

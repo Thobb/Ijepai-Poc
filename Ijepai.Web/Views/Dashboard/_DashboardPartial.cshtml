@@ -19,36 +19,68 @@
 <div id="QC-VM-capture">
     <div id="QC-VM-capture-header">
         <ul id="QC-VM-capture-tabs">
-            <li class="active-lab-form-tab"></li>
+            <li id="QCVM-capture">Capture/Clone this Machine</li>
         </ul>
         <ul id="QC-VM-capture-actions">
             <li id="QC-VM-capture-close" class="glyphicon glyphicon-remove"></li>
         </ul>
     </div>
-    <form id="QC-VM-capture-form">
+    @using (Ajax.BeginForm(
+        "CaptureQCVM",
+        "Dashboard",
+        new { },
+        new AjaxOptions
+        {
+            HttpMethod = "POST",
+            OnSuccess = "Dashboard.CaptureQCVMSuccess"
+        },
+        new { id = "QC-VM-capture-form" }
+    ))
+    {
+        @Html.AntiForgeryToken()
         <div id="QC-VM-capture-form-body">
+            <span class="glyphicon glyphicon-info-sign" style="color: yellow; font-size: 1.5em"></span>
+            The cloned machine would be available as template for new <em>Quick Create</em> machines.
+            <input type="hidden" name="id" id="QCVM_capture_id" />
         </div>
         <div id="QC-VM-capture-form-footer">
-
+            <input type="submit" value="Capture" class="btn btn-default" />
+            <input type="button" value="Cancel" class="btn btn-default" id="QC-VM-capture-cancel"/>
         </div>
-    </form>
+    }
 </div>
 <div id="QC-VM-delete">
     <div id="QC-VM-delete-header">
         <ul id="QC-VM-delete-tabs">
-            <li class="active-lab-form-tab"></li>
+            <li id="QCVM-delete">Delete Machine</li>
         </ul>
         <ul id="QC-VM-delete-actions">
             <li id="QC-VM-delete-close" class="glyphicon glyphicon-remove"></li>
         </ul>
     </div>
-    <form id="QC-VM-delete-form">
+    @using (Ajax.BeginForm(
+            "DeleteQCVM",
+            "Dashboard",
+            new { },
+            new AjaxOptions
+            {
+                HttpMethod = "POST",
+                OnSuccess = "Dashboard.deleteQCVMSuccess"
+            },
+            new { id = "QC-VM-delete-form" }
+            ))
+    {
+        @Html.AntiForgeryToken()
         <div id="QC-VM-delete-form-body">
+            <span class="glyphicon glyphicon-warning-sign" style="color: red; font-size: 1.5em"></span>
+            The Machine and its related resources (files on its file system, new programs installed etc.) will be deleted permanently. You can not undo this action. Do you wish to proceed?
+            <input type="hidden" name="id" id="delete_QCVM_id" />
         </div>
         <div id="QC-VM-delete-form-footer">
-
+            <input type="submit" value="Delete" class="btn btn-default"/>
+            <input type="button" value="Cancel" class="btn btn-default" id="cancel-QCVM-deletion" />
         </div>
-    </form>
+    }
 </div>
 <div id="QC-form-content">
     <div id="QC-form-content-header">
@@ -105,7 +137,7 @@
             </div>
             <div id="QC-form-footer">
                 <input type="submit" value="Create" id="q-create-lab-btn" class="btn btn-default" />
-                <input type="button" value="Reset" id="q-reset-lab-btn" class="btn btn-default" />
+                <input type="reset" value="Reset" id="q-reset-lab-btn" class="btn btn-default" />
             </div>
         }
 </div>

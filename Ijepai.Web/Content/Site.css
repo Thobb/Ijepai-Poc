@@ -196,7 +196,9 @@ body {
     box-shadow: 0 2px 3px #fff inset, 0 0 3px #000 inset, 0 0 3px #000;
     border-bottom: 1px solid #000;
 }
-
+#basic-QC-actions {
+    background: rgba(62, 107, 98, 0.3)/*#729991*/;
+}
 #basic-lab-actions li, #basic-QC-actions li {
     float: left;
 }
@@ -947,7 +949,8 @@ body {
 #edit-participants-list, #edit-lab-schedule,
 #delete-lab, #edit-participant-particulars,
 #move-lab-participant, #delete-participant,
-#get-machine-link {
+#get-machine-link, #QCVM-delete,
+#QCVM-capture {
     background: #1133ff;
 }
 #edit-participants-form-actions, #extend-lab-form-actions,

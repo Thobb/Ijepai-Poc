@@ -161,7 +161,13 @@ namespace Ijepai.Web.Controllers.Dashboard
         {
             VMManager vmm = GetVMM();
             XDocument vmXML = await vmm.GetAzureVM(ServiceName, VMName);
-            return Json(new {Status=0, InstanceStatus = (string)vmXML.Element(vmm.ns + "InstanceStatus"), PowerState = (string)vmXML.Element(vmm.ns + "PowerState")});
+            return Json(new {
+                Status=0,
+                InstanceStatus = (string)vmXML.Element(vmm.ns + "InstanceStatus"),
+                PowerState = (string)vmXML.Element(vmm.ns + "PowerState"),
+                VMName = VMName,
+                ServiceName = ServiceName
+            });
         }
 
 
