@@ -360,6 +360,8 @@ namespace SMLibrary
 
             String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments", _subscriptionid, ServiceName);
             HttpClient http = GetHttpClient();
+            http.DefaultRequestHeaders.Remove("x-ms-version");
+            http.DefaultRequestHeaders.Add("x-ms-version", "2012-03-01");
             XElement srcTree = new XElement("Deployment",
                         new XAttribute(XNamespace.Xmlns + "i", ns1),
                         new XElement("Name", ServiceName),
