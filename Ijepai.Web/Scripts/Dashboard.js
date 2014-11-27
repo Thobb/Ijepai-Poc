@@ -106,7 +106,7 @@ App.UpdateVMStatus = function (data) {
                 } else {
                     alert("Some error occured")
                 }
-                if ((data.InstanceStatus == "ReadyRole") && (data.PowerState == "Started")) { //data.Message
+                if ((data.InstanceStatus == "ReadyRole") && (data.PowerState == "Started")) {
                     clearInterval(statusTimerHandle)
                 }
             }

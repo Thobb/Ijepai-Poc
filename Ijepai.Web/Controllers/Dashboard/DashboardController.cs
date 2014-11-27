@@ -140,15 +140,15 @@ namespace Ijepai.Web.Controllers.Dashboard
             return Json(new { Status = 0 });
         }
 
-        async public Task<JsonResult> CaptureQCVM(int id)
+        async public Task<JsonResult> CaptureQCVM(int id, string ImageName)
         {
             VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
             ApplicationDbContext db = new ApplicationDbContext();
             var cloudService = db.QuickCreates.Where(l => l.ID == id).FirstOrDefault();
             await vmm.ShutDownVM(cloudService.ServiceName, cloudService.Name);
             VirtualMachineCaptureVMImageParameters param = new VirtualMachineCaptureVMImageParameters();
-            param.VMImageLabel = "TestImage";
-            param.VMImageName = "TestImage";
+            param.VMImageLabel = ImageName;
+            param.VMImageName = ImageName;
             param.OSState = "Generalized";
             System.Threading.CancellationToken token = new System.Threading.CancellationToken(false);
             await vmm.CaptureVM(cloudService.ServiceName, cloudService.Name, param.VMImageName);
