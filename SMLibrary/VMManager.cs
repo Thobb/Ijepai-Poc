@@ -62,6 +62,27 @@ namespace SMLibrary
             return subXML;
         }
 
+        public string GetSubscriptionId()
+        {
+            return _subscriptionid;
+        }
+
+        
+        async public Task<XDocument> GetUserVMImages()
+        {
+            HttpClient http = GetHttpClient();
+            string uri = String.Format("https://management.core.windows.net/{0}/services/vmimages", _subscriptionid);
+            XDocument xml = new XDocument();
+                
+            Stream responseStreamCustom = await http.GetStreamAsync(uri);
+
+            if (responseStreamCustom != null)
+            {
+                  xml = XDocument.Load(responseStreamCustom);
+            }
+            return xml;
+        }
+        
         async public Task<Dictionary<String, String>> GetAzureVMImages()
         {
                 Dictionary<String, String> imageList = new Dictionary<String, String>();
@@ -278,7 +299,7 @@ namespace SMLibrary
             String deployment = await GetAzureDeploymentName(ServiceName);
             XDocument vmXML = new XDocument();
 
-            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}/roles/{3}", _subscriptionid, ServiceName, deployment, VMName);
+            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}", _subscriptionid, ServiceName, deployment);
 
             HttpClient http = GetHttpClient();
             Stream responseStream = await http.GetStreamAsync(uri);
@@ -353,16 +374,23 @@ namespace SMLibrary
             return requestID;
         }
 
-        async public Task<String> NewAzureVMDeployment(String ServiceName, String VMName, String VNETName, XDocument VMXML, XDocument DNSXML)
+        async public Task<String> NewAzureVMDeployment(String ServiceName, String VMName, String VNETName, XDocument VMXML, XDocument DNSXML, bool isVMImage = false)
         {
             String requestID = String.Empty;
 
 
             String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments", _subscriptionid, ServiceName);
             HttpClient http = GetHttpClient();
-
-            http.DefaultRequestHeaders.Remove("x-ms-version");
-            http.DefaultRequestHeaders.Add("x-ms-version", "2012-03-01");
+            if (isVMImage)
+            {
+                http.DefaultRequestHeaders.Remove("x-ms-version");
+                http.DefaultRequestHeaders.Add("x-ms-version", "2014-09-01");
+            }
+            else
+            {
+                http.DefaultRequestHeaders.Remove("x-ms-version");
+                http.DefaultRequestHeaders.Add("x-ms-version", "2012-03-01");
+            }
 
             XElement srcTree = new XElement("Deployment",
                         new XAttribute(XNamespace.Xmlns + "i", ns1),
@@ -391,8 +419,9 @@ namespace SMLibrary
             String fixedXML = deploymentXML.ToString().Replace(" xmlns=\"\"", "");
             HttpContent content = new StringContent(fixedXML);
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/xml");
-
+            
             HttpResponseMessage responseMsg = await http.PostAsync(uri, content);
+            string x = await responseMsg.Content.ReadAsStringAsync();
             if (responseMsg != null)
             {
                 requestID = responseMsg.Headers.GetValues("x-ms-request-id").FirstOrDefault();
@@ -609,7 +638,8 @@ namespace SMLibrary
             return DeploymentName;
         }
 
-        public XDocument NewAzureVMConfig(String RoleName, String VMSize, String ImageName, String MediaLocation, bool InitialDeployment = false)
+        public XDocument NewAzureVMConfig(String RoleName, String VMSize, String ImageName, String MediaLocation, bool InitialDeployment = false,
+                                            bool isVMImage = false, string VMimage = "", string VMImagePath = "")
         {
             System.Text.ASCIIEncoding ae = new System.Text.ASCIIEncoding();
             byte[] roleNameBytes = ae.GetBytes(RoleName);
@@ -635,19 +665,33 @@ namespace SMLibrary
             }
             else
             {
-                srcTree = new XElement("Role",
-                        new XAttribute(ns1 + "type", "PersistentVMRole"),
-                        new XElement("RoleName", RoleName),
-                        new XElement("OsVersion", new XAttribute(ns1 + "nil", true)),
-                        new XElement("RoleType", "PersistentVMRole"),
-                        new XElement("ConfigurationSets", null),
-                        new XElement("DataVirtualHardDisks", null),
-                        new XElement("Label", Convert.ToBase64String(roleNameBytes)),
-                        new XElement("OSVirtualHardDisk",
-                            new XElement("MediaLink", MediaLocation),
-                            new XElement("SourceImageName", ImageName)),
-                        new XElement("RoleSize", VMSize)
-                    );
+                if (isVMImage)
+                {
+                    srcTree = new XElement("Role",
+                            new XAttribute(ns1 + "type", "PersistentVMRole"),
+                            new XElement("RoleName", RoleName),
+                            new XElement("RoleType", "PersistentVMRole"),
+                            new XElement("VMImageName", VMimage),
+                            new XElement("RoleSize", VMSize)
+                        );
+
+                }
+                else
+                {
+                    srcTree = new XElement("Role",
+                            new XAttribute(ns1 + "type", "PersistentVMRole"),
+                            new XElement("RoleName", RoleName),
+                            new XElement("OsVersion", new XAttribute(ns1 + "nil", true)),
+                            new XElement("RoleType", "PersistentVMRole"),
+                            new XElement("ConfigurationSets", null),
+                            new XElement("DataVirtualHardDisks", null),
+                            new XElement("Label", Convert.ToBase64String(roleNameBytes)),
+                            new XElement("OSVirtualHardDisk",
+                                new XElement("MediaLink", MediaLocation),
+                                new XElement("SourceImageName", ImageName)),
+                            new XElement("RoleSize", VMSize)
+                        );
+                }
 
                 ApplyNamespace(srcTree, ns);
             }
