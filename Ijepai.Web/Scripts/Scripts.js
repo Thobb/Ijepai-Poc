@@ -127,6 +127,13 @@
                         $("#participant-id-delete-participant").val(row.attr("id").slice(12))
                         $("#overlay").fadeIn();
                         $("#delete-participant-form-container").fadeIn();
+                        $.ajax({
+                            url: "/labs/DeleteParticipant",
+                            data: "Participant_ID=" + $(this).parent().parent().parent().attr("id").slice(12) + "&Lab_ID=" + labId,
+                            success: function (data) {
+                               
+                            }
+                        });
                         return false;
                     })
                     tbody.append(participantRow);

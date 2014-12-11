@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,6 +11,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Windows.Forms;
+
 
 namespace SMLibrary
 {
@@ -26,7 +29,22 @@ namespace SMLibrary
         private String _certthumbprint { get; set; }
         public XNamespace ns = "http://schemas.microsoft.com/windowsazure";
         XNamespace ns1 = "http://www.w3.org/2001/XMLSchema-instance";
-        
+        string sSource;
+			string sLog;
+			string sEvent;
+
+			
+
+        public void initLog()
+        {
+            sSource = "Ijepai";
+			sLog = "Application";
+			
+
+			if (!EventLog.SourceExists(sSource))
+				EventLog.CreateEventSource(sSource,sLog);
+
+        }
         public VMManager(String SubscriptionID, String CertThumbPrint)
         {
             _subscriptionid = SubscriptionID;
@@ -34,18 +52,22 @@ namespace SMLibrary
         }
 
         public HttpClient GetHttpClient()
-        {
+        {                     
             WebRequestHandler handler = new WebRequestHandler();
             String CertThumbprint = _certthumbprint;
             X509Certificate2 managementCert = FindX509Certificate(CertThumbprint);
             if (managementCert != null)
-            {
+            {                
                 handler.ClientCertificates.Add(managementCert);
                 HttpClient httpClient = new HttpClient(handler);
                 httpClient.DefaultRequestHeaders.Add("x-ms-version", "2014-05-01");
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
                 return httpClient;
             }
+            else
+            {                
+                //EventLog.WriteEntry(sSource, "Certificate Not Found "+ CertThumbprint, EventLogEntryType.Error);
+            }            
             return null;
         }
         
@@ -473,7 +495,7 @@ namespace SMLibrary
             return responseMessage;
         } 
 
-        async public Task<string> DeleteVM(string ServiceName)
+        async public Task<string> DeleteQCVM(string ServiceName)
         {
             string responseString = string.Empty;
 
@@ -899,28 +921,34 @@ namespace SMLibrary
 
         private static X509Certificate2 FindX509Certificate(string thumbprint)
         {
-            X509Store certificateStore = null;
-            X509Certificate2 certificate = null;
-
-            try
+            List<StoreLocation> locations = new List<StoreLocation>
+            { 
+                StoreLocation.CurrentUser, 
+                StoreLocation.LocalMachine
+            };
+            foreach (var location in locations)
             {
-                certificateStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-
-                certificateStore.Open(OpenFlags.ReadOnly);
-
-                var certificates = certificateStore.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
-                if (certificates.Count > 0)
+                X509Store store = new X509Store("My", location);
+                try
                 {
-                    certificate = certificates[0];
+                    store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+                    X509Certificate2Collection certificates = store.Certificates.Find(
+                        X509FindType.FindByThumbprint, thumbprint, false);
+                    if (certificates.Count == 1)
+                    {
+                        return certificates[0];
+                    }
+                }
+                finally
+                {
+                    store.Close();
                 }
             }
-            finally
-            {
-                if (certificateStore != null) certificateStore.Close();
-            }
-
-            return certificate;
+            throw new ArgumentException(string.Format("A Certificate with Thumbprint '{0}' could not be located.",thumbprint));
         }
+  
+
+        
         
         private static void ApplyNamespace(XElement parent, XNamespace nameSpace)
         {
