@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,6 +11,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Windows.Forms;
+
 
 namespace SMLibrary
 {
@@ -26,7 +29,22 @@ namespace SMLibrary
         private String _certthumbprint { get; set; }
         public XNamespace ns = "http://schemas.microsoft.com/windowsazure";
         XNamespace ns1 = "http://www.w3.org/2001/XMLSchema-instance";
-        
+        string sSource;
+			string sLog;
+			string sEvent;
+
+			
+
+        public void initLog()
+        {
+            sSource = "Ijepai";
+			sLog = "Application";
+			
+
+			if (!EventLog.SourceExists(sSource))
+				EventLog.CreateEventSource(sSource,sLog);
+
+        }
         public VMManager(String SubscriptionID, String CertThumbPrint)
         {
             _subscriptionid = SubscriptionID;
@@ -34,18 +52,22 @@ namespace SMLibrary
         }
 
         public HttpClient GetHttpClient()
-        {
+        {                     
             WebRequestHandler handler = new WebRequestHandler();
             String CertThumbprint = _certthumbprint;
             X509Certificate2 managementCert = FindX509Certificate(CertThumbprint);
             if (managementCert != null)
-            {
+            {                
                 handler.ClientCertificates.Add(managementCert);
                 HttpClient httpClient = new HttpClient(handler);
                 httpClient.DefaultRequestHeaders.Add("x-ms-version", "2014-05-01");
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
                 return httpClient;
             }
+            else
+            {                
+                //EventLog.WriteEntry(sSource, "Certificate Not Found "+ CertThumbprint, EventLogEntryType.Error);
+            }            
             return null;
         }
         
@@ -62,6 +84,27 @@ namespace SMLibrary
             return subXML;
         }
 
+        public string GetSubscriptionId()
+        {
+            return _subscriptionid;
+        }
+
+        
+        async public Task<XDocument> GetUserVMImages()
+        {
+            HttpClient http = GetHttpClient();
+            string uri = String.Format("https://management.core.windows.net/{0}/services/vmimages", _subscriptionid);
+            XDocument xml = new XDocument();
+                
+            Stream responseStreamCustom = await http.GetStreamAsync(uri);
+
+            if (responseStreamCustom != null)
+            {
+                  xml = XDocument.Load(responseStreamCustom);
+            }
+            return xml;
+        }
+        
         async public Task<Dictionary<String, String>> GetAzureVMImages()
         {
                 Dictionary<String, String> imageList = new Dictionary<String, String>();
@@ -278,7 +321,7 @@ namespace SMLibrary
             String deployment = await GetAzureDeploymentName(ServiceName);
             XDocument vmXML = new XDocument();
 
-            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}/roles/{3}", _subscriptionid, ServiceName, deployment, VMName);
+            String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}", _subscriptionid, ServiceName, deployment);
 
             HttpClient http = GetHttpClient();
             Stream responseStream = await http.GetStreamAsync(uri);
@@ -353,16 +396,23 @@ namespace SMLibrary
             return requestID;
         }
 
-        async public Task<String> NewAzureVMDeployment(String ServiceName, String VMName, String VNETName, XDocument VMXML, XDocument DNSXML)
+        async public Task<String> NewAzureVMDeployment(String ServiceName, String VMName, String VNETName, XDocument VMXML, XDocument DNSXML, bool isVMImage = false)
         {
             String requestID = String.Empty;
 
 
             String uri = String.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments", _subscriptionid, ServiceName);
             HttpClient http = GetHttpClient();
-
-            http.DefaultRequestHeaders.Remove("x-ms-version");
-            http.DefaultRequestHeaders.Add("x-ms-version", "2012-03-01");
+            if (isVMImage)
+            {
+                http.DefaultRequestHeaders.Remove("x-ms-version");
+                http.DefaultRequestHeaders.Add("x-ms-version", "2014-09-01");
+            }
+            else
+            {
+                http.DefaultRequestHeaders.Remove("x-ms-version");
+                http.DefaultRequestHeaders.Add("x-ms-version", "2012-03-01");
+            }
 
             XElement srcTree = new XElement("Deployment",
                         new XAttribute(XNamespace.Xmlns + "i", ns1),
@@ -391,8 +441,9 @@ namespace SMLibrary
             String fixedXML = deploymentXML.ToString().Replace(" xmlns=\"\"", "");
             HttpContent content = new StringContent(fixedXML);
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/xml");
-
+            
             HttpResponseMessage responseMsg = await http.PostAsync(uri, content);
+            string x = await responseMsg.Content.ReadAsStringAsync();
             if (responseMsg != null)
             {
                 requestID = responseMsg.Headers.GetValues("x-ms-request-id").FirstOrDefault();
@@ -444,7 +495,7 @@ namespace SMLibrary
             return responseMessage;
         } 
 
-        async public Task<string> DeleteVM(string ServiceName)
+        async public Task<string> DeleteQCVM(string ServiceName)
         {
             string responseString = string.Empty;
 
@@ -609,7 +660,8 @@ namespace SMLibrary
             return DeploymentName;
         }
 
-        public XDocument NewAzureVMConfig(String RoleName, String VMSize, String ImageName, String MediaLocation, bool InitialDeployment = false)
+        public XDocument NewAzureVMConfig(String RoleName, String VMSize, String ImageName, String MediaLocation, bool InitialDeployment = false,
+                                            bool isVMImage = false, string VMimage = "", string VMImagePath = "")
         {
             System.Text.ASCIIEncoding ae = new System.Text.ASCIIEncoding();
             byte[] roleNameBytes = ae.GetBytes(RoleName);
@@ -635,19 +687,33 @@ namespace SMLibrary
             }
             else
             {
-                srcTree = new XElement("Role",
-                        new XAttribute(ns1 + "type", "PersistentVMRole"),
-                        new XElement("RoleName", RoleName),
-                        new XElement("OsVersion", new XAttribute(ns1 + "nil", true)),
-                        new XElement("RoleType", "PersistentVMRole"),
-                        new XElement("ConfigurationSets", null),
-                        new XElement("DataVirtualHardDisks", null),
-                        new XElement("Label", Convert.ToBase64String(roleNameBytes)),
-                        new XElement("OSVirtualHardDisk",
-                            new XElement("MediaLink", MediaLocation),
-                            new XElement("SourceImageName", ImageName)),
-                        new XElement("RoleSize", VMSize)
-                    );
+                if (isVMImage)
+                {
+                    srcTree = new XElement("Role",
+                            new XAttribute(ns1 + "type", "PersistentVMRole"),
+                            new XElement("RoleName", RoleName),
+                            new XElement("RoleType", "PersistentVMRole"),
+                            new XElement("VMImageName", VMimage),
+                            new XElement("RoleSize", VMSize)
+                        );
+
+                }
+                else
+                {
+                    srcTree = new XElement("Role",
+                            new XAttribute(ns1 + "type", "PersistentVMRole"),
+                            new XElement("RoleName", RoleName),
+                            new XElement("OsVersion", new XAttribute(ns1 + "nil", true)),
+                            new XElement("RoleType", "PersistentVMRole"),
+                            new XElement("ConfigurationSets", null),
+                            new XElement("DataVirtualHardDisks", null),
+                            new XElement("Label", Convert.ToBase64String(roleNameBytes)),
+                            new XElement("OSVirtualHardDisk",
+                                new XElement("MediaLink", MediaLocation),
+                                new XElement("SourceImageName", ImageName)),
+                            new XElement("RoleSize", VMSize)
+                        );
+                }
 
                 ApplyNamespace(srcTree, ns);
             }
@@ -855,28 +921,34 @@ namespace SMLibrary
 
         private static X509Certificate2 FindX509Certificate(string thumbprint)
         {
-            X509Store certificateStore = null;
-            X509Certificate2 certificate = null;
-
-            try
+            List<StoreLocation> locations = new List<StoreLocation>
+            { 
+                StoreLocation.CurrentUser, 
+                StoreLocation.LocalMachine
+            };
+            foreach (var location in locations)
             {
-                certificateStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-
-                certificateStore.Open(OpenFlags.ReadOnly);
-
-                var certificates = certificateStore.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
-                if (certificates.Count > 0)
+                X509Store store = new X509Store("My", location);
+                try
                 {
-                    certificate = certificates[0];
+                    store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+                    X509Certificate2Collection certificates = store.Certificates.Find(
+                        X509FindType.FindByThumbprint, thumbprint, false);
+                    if (certificates.Count == 1)
+                    {
+                        return certificates[0];
+                    }
+                }
+                finally
+                {
+                    store.Close();
                 }
             }
-            finally
-            {
-                if (certificateStore != null) certificateStore.Close();
-            }
-
-            return certificate;
+            throw new ArgumentException(string.Format("A Certificate with Thumbprint '{0}' could not be located.",thumbprint));
         }
+  
+
+        
         
         private static void ApplyNamespace(XElement parent, XNamespace nameSpace)
         {

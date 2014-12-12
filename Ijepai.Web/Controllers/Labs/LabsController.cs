@@ -95,8 +95,9 @@ namespace Ijepai.Web.Controllers.Labs
                 newLab.Name = newLabData.Name;
                 newLab.Status = "Scheduled";
                 newLab.Time_Zone = newLabData.Time_Zone;
-                newLab.Start_Time = newLabData.Start_Time;
-                newLab.End_Time = newLabData.End_Time;
+                TimeZoneInfo hwZone = TimeZoneInfo.FindSystemTimeZoneById(newLabData.Time_Zone);
+                newLab.Start_Time = TimeZoneInfo.ConvertTime(newLabData.Start_Time, hwZone, TimeZoneInfo.Local);
+                newLab.End_Time = TimeZoneInfo.ConvertTime(newLabData.End_Time, hwZone, TimeZoneInfo.Local);
                 if (Lab_ID == 0)
                 {
                     db.Labs.Add(newLab);
@@ -292,6 +293,8 @@ namespace Ijepai.Web.Controllers.Labs
         public JsonResult DeleteParticipant(int Participant_ID, int Lab_ID)
         {
             ApplicationDbContext db = new ApplicationDbContext();
+            var cloudService = db.Labs.Where(l => l.ID == Lab_ID).FirstOrDefault();
+            var VMName = db.Labs.Where(l => l.ID == Participant_ID).FirstOrDefault();
             var participant = db.LabParticipants.Where(p => p.ID == Participant_ID && p.LabID == Lab_ID).FirstOrDefault();
             db.LabParticipants.Remove(participant);
             db.SaveChanges();

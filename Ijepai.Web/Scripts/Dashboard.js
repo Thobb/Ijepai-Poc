@@ -87,6 +87,7 @@ var Dashboard = {
                 //thisBtn.removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
             }
         })
+        Dashboard.hideQCForm();
     },
     captureQCVMSuccess: function (data) {
 

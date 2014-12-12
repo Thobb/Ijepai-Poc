@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="Ijepai.Web.Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2014-06.2.4">
+  <Role name="Ijepai.Web">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="StorageConnectionString" value="DefaultEndpointsProtocol=https;AccountName=ijepai;AccountKey=SLauSIwrFe1raj4oK7MUD+8GFUYIkvhIuPQouR8qjgK7xehDvcgoM1ucX7xyO7xq4KVYxkKVPJ9vtCIHRS3IRw==" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="ijepai" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBnQYJKoZIhvcNAQcDoIIBjjCCAYoCAQAxggFOMIIBSgIBADAyMB4xHDAaBgNVBAMME1dpbmRvd3MgQXp1cmUgVG9vbHMCEBrquT9prvKCQSDMVMABSGAwDQYJKoZIhvcNAQEBBQAEggEAiu2plppYSuzB6NkUfCo4LaCa4TW0s1x3OR0snkPIbryEgL3m7Xm8pJYVsOJUWtp1+9lrMRsn/d81Sg4nBLuHoxlRU2loShJniFWtwXwCupXMRONosnzTRpbNAqgoR41RDHG07YebIkLsVqjkUR0yGLzIrvruCqgcTYsisqJLmXAjfcDgFdS+Vz2dNzjzzNfv8h87Q+7nUeKOdGMXGhVk0VFaMA9kS9GfgM9/dmxf8zGOlcPqW/Ap0Kee6jtASABVDVI+rR3MagRKgWKS1uE6CQ+8CT+3x1e+pyAu7nnuz8Gcx9FeSOUJrpeIb6KDqoClNxkvcgPtDZcU21NBh6UzVTAzBgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECCiRT5JOfasagBABV9KiDlR9TXa9uO0spjXL" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2015-12-31T23:59:59.0000000+05:30" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="B5D5883A85706348F69BACD8713515B86417D8EF" thumbprintAlgorithm="sha1" />
+      <!--<Certificate name="Ijepai" thumbprint="AADE7A7D7E4992425FF0E882A621D33B3AD160D5" thumbprintAlgorithm="sha1" />
+      <Certificate name="Ijepai Development Root CA" thumbprint="171A4E7107ED578928D668EDD9228944E95FA27B" thumbprintAlgorithm="sha1" />-->
+      <Certificate name="IjepaiLatest" thumbprint="2A82DC33E49F9CB2C7F12DE64859868387A7C69C" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  </Role>
+</ServiceConfiguration>

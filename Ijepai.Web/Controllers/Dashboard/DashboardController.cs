@@ -16,6 +16,7 @@ using IjepaiMailer;
 using System.Management.Automation.Runspaces;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
+using System.Windows.Forms;
 
 
 namespace Ijepai.Web.Controllers.Dashboard
@@ -26,26 +27,9 @@ namespace Ijepai.Web.Controllers.Dashboard
         string serviceName = "Ijepai" + guid;
         string vmName = string.Empty;
         string password = "1234Test!";
-
-        private void RunPowershellScript(string scriptFile, string scriptParameters)
-        {
-            RunspaceConfiguration runspaceConfiguration = RunspaceConfiguration.Create();
-            Runspace runspace = RunspaceFactory.CreateRunspace(runspaceConfiguration);
-            runspace.Open();
-            System.Management.Automation.RunspaceInvoke scriptInvoker = new System.Management.Automation.RunspaceInvoke(runspace);
-            Pipeline pipeline = runspace.CreatePipeline();
-            Command scriptCommand = new Command(scriptFile);
-            Collection<CommandParameter> commandParameters = new Collection<CommandParameter>();
-            foreach (string scriptParameter in scriptParameters.Split(' '))
-            {
-                CommandParameter commandParm = new CommandParameter(null, scriptParameter);
-                commandParameters.Add(commandParm);
-                scriptCommand.Parameters.Add(commandParm);
-            }
-            pipeline.Commands.Add(scriptCommand);
-            Collection<PSObject> psObjects;
-            psObjects = pipeline.Invoke();
-        }
+        bool isVmImage = false;
+        string ImageName = "";
+        string ImagePath = "";
         
         [HttpPost]
         // GET: /Dashboard/
@@ -107,10 +91,10 @@ namespace Ijepai.Web.Controllers.Dashboard
             var user = db.Users.Where(u => u.Id == model.ApplicationUserID).FirstOrDefault();
             model.RecepientEmail = model.RecepientEmail ?? user.Email_Address;
             vmName = model.Name;
-            var status = GenerateVMConfig(model);
             await GetVMLabel(model.OS);
             model.OSLabel = label;
             model.ServiceName = serviceName;
+            var status = GenerateVMConfig(model);       
             db.QuickCreates.Add(model);
             db.SaveChanges();
             Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
@@ -134,7 +118,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);
             ApplicationDbContext db = new ApplicationDbContext();
             var cloudService = db.QuickCreates.Where(l => l.ID == id ).FirstOrDefault();
-            await vmm.DeleteVM(cloudService.ServiceName);
+            await vmm.DeleteQCVM(cloudService.ServiceName);
             db.QuickCreates.Remove(cloudService);
             db.SaveChanges();
             return Json(new { Status = 0 });
@@ -147,12 +131,11 @@ namespace Ijepai.Web.Controllers.Dashboard
             var cloudService = db.QuickCreates.Where(l => l.ID == id).FirstOrDefault();
             await vmm.ShutDownVM(cloudService.ServiceName, cloudService.Name);
             VirtualMachineCaptureVMImageParameters param = new VirtualMachineCaptureVMImageParameters();
-            param.VMImageLabel = ImageName;
-            param.VMImageName = ImageName;
-            param.OSState = "Generalized";
+            param.VMImageLabel = "NewVmImage";
+            param.VMImageName = "NewVmImage";
+            param.OSState = "Specialized";
             System.Threading.CancellationToken token = new System.Threading.CancellationToken(false);
             await vmm.CaptureVM(cloudService.ServiceName, cloudService.Name, param.VMImageName);
-           // await vmm.BeginCapturingVMImageAsync(cloudService.ServiceName, cloudService.ServiceName, cloudService.Name, param, token);
             await vmm.RebootVM(cloudService.ServiceName, cloudService.Name);
             return Json(new { Status = 0 });
         }
@@ -160,11 +143,19 @@ namespace Ijepai.Web.Controllers.Dashboard
         public async Task<JsonResult> GetVMStatus(string ServiceName, string VMName)
         {
             VMManager vmm = GetVMM();
+            string instanceStatus = string.Empty;
+            string powerState = string.Empty;
             XDocument vmXML = await vmm.GetAzureVM(ServiceName, VMName);
+            var statusm = vmXML.Root.Descendants(vmm.ns + "RoleInstanceList");
+            foreach(var status in statusm)
+            {
+                instanceStatus = status.Element(vmm.ns + "RoleInstance").Element(vmm.ns + "InstanceStatus").Value;
+                powerState = status.Element(vmm.ns + "RoleInstance").Element(vmm.ns + "PowerState").Value;
+            }
             return Json(new {
                 Status=0,
-                InstanceStatus = (string)vmXML.Element(vmm.ns + "InstanceStatus"),
-                PowerState = (string)vmXML.Element(vmm.ns + "PowerState"),
+                InstanceStatus = instanceStatus,
+                PowerState = powerState,
                 VMName = VMName,
                 ServiceName = ServiceName
             });
@@ -187,12 +178,15 @@ namespace Ijepai.Web.Controllers.Dashboard
             }
             
 
-            XDocument vm = vmm.NewAzureVMConfig(vmName,model.Machine_Size , model.OS, GetOSDiskMediaLocation(), true);
-
-            vm = vmm.NewWindowsProvisioningConfig(vm, vmName, password);
-            vm = vmm.NewNetworkConfigurationSet(vm);
-            vm = vmm.AddNewInputEndpoint(vm, "web", "TCP", 80, 80);
-            vm = vmm.AddNewInputEndpoint(vm, "rdp", "TCP", 3389, 3389);
+            XDocument vm = vmm.NewAzureVMConfig(vmName,model.Machine_Size , model.OS, GetOSDiskMediaLocation(model.OSLabel), true, isVmImage, ImageName, ImagePath);
+            if (!isVmImage)
+            {
+                vm = vmm.NewWindowsProvisioningConfig(vm, vmName, password);
+                vm = vmm.NewNetworkConfigurationSet(vm);
+                vm = vmm.AddNewInputEndpoint(vm, "web", "TCP", 80, 80);
+                vm = vmm.AddNewInputEndpoint(vm, "rdp", "TCP", 3389, 3389);
+            }
+           
 
             var builder = new StringBuilder();
             var settings = new XmlWriterSettings()
@@ -211,7 +205,7 @@ namespace Ijepai.Web.Controllers.Dashboard
                 if (result.Status == OperationStatus.Succeeded)
                 {
                     // VM creation takes too long so we'll check it later
-                    requestID_createDeployment = await vmm.NewAzureVMDeployment(serviceName, vmName, String.Empty, vm, null).ConfigureAwait(continueOnCapturedContext:false);
+                    requestID_createDeployment = await vmm.NewAzureVMDeployment(serviceName, vmName, String.Empty, vm, null, isVmImage).ConfigureAwait(continueOnCapturedContext:false);
                 }
                 else
                 {
@@ -221,9 +215,37 @@ namespace Ijepai.Web.Controllers.Dashboard
                 return Json(new { Status = result.Status, ServiceName = serviceName , VMName = vmName});
         }
 
-        private String GetOSDiskMediaLocation()
+        async private Task<String> GetVMImageDiskLocation(string imageName)
         {
-            String osdiskmedialocation = String.Format("https://{0}.blob.core.windows.net/vhds/{1}-OS-{2}.vhd", "Ijepai", vmName, Guid.NewGuid().ToString());
+            XNamespace ns = "http://schemas.microsoft.com/windowsazure";
+            VMManager vmm = GetVMM();
+            string imageLocation = string.Empty;
+            XDocument xml = await vmm.GetUserVMImages();
+            var images = xml.Root.Descendants(ns + "VMImage").Where(i => i.Element(ns + "Category").Value == "User");
+            foreach (var image in images)
+            {
+                string imgName = image.Element(ns + "Name").Value;   
+                if (imageName == imgName)
+                {
+                    imageLocation = image.Element(ns + "OSDiskConfiguration").Element(ns + "MediaLink").Value;
+                    isVmImage = true;
+                    ImageName = imgName;
+                    ImagePath = imageLocation;
+                }
+            }
+             
+            return imageLocation;
+        }
+
+
+        private String GetOSDiskMediaLocation(string imageName)
+        {
+            
+            String osdiskmedialocation = GetVMImageDiskLocation(imageName).Result;
+            if (osdiskmedialocation == string.Empty)
+            {
+               osdiskmedialocation = String.Format("https://{0}.blob.core.windows.net/vhds/{1}-OS-{2}.vhd", "Ijepai", vmName, Guid.NewGuid().ToString());
+            }
             return osdiskmedialocation;
         }
 
