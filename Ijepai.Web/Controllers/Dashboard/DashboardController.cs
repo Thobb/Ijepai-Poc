@@ -117,7 +117,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             string link = "http://vmengine.azurewebsites.net/?" + serviceName + ".cloudapp.net" + "/" + "administrator" + "/" + password;
             mail.Compose(link, model.RecepientEmail);
             mail.SendMail();
-            return Json(new { Status = 0, VMName = vmName, ServiceName = serviceName });
+            return Json(new { Status = 0, VMName = vmName, ServiceName = serviceName, id = model.ID });
         }
 
 

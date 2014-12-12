@@ -99,15 +99,15 @@ App.UpdateVMStatus = function (data) {
         $.ajax({
             url: "/Dashboard/GetVMStatus",
             type: "POST",
-            data: "ServiceName=" + data.ServiceName + "&VMName=" + data.VMName,
+            data: "ServiceName=" + data.ServiceName + "&VMName=" + data.VMName + "&id=" + data.id,
             success: function (data, status, xhr) {
                 if (data.Status == "0") {
-                    alert("<b>Machine state : <b>" + data.InstanceStatus + "<br><b>Power state : </b>" + data.PowerState);
+                    $("#QC-" + data.id + " .Status").html("<b>Machine state : <b>" + data.InstanceStatus + "<br><b>Power state : </b>" + data.PowerState);
                 } else {
-                    alert("Some error occured")
+                    alert("Some error occured");
                 }
                 if ((data.InstanceStatus == "ReadyRole") && (data.PowerState == "Started")) {
-                    clearInterval(statusTimerHandle)
+                    clearInterval(statusTimerHandle);
                 }
             }
         })
