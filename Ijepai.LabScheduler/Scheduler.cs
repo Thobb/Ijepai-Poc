@@ -21,13 +21,14 @@ namespace Ijepai.LabScheduler
         private const string CertThumbPrint = "2A82DC33E49F9CB2C7F12DE64859868387A7C69C";
         string password = "1234Test!";
 
+
         SqlConnection conn = new SqlConnection();
 
 
         public void Init()
         {
             conn.ConnectionString = ConnectionString;
-            conn.Open();
+            conn.Open();  
             Timer checkLabUptime = new Timer();
             checkLabUptime.Elapsed += new ElapsedEventHandler(checkLabUptime_Elapsed);
             checkLabUptime.Interval = 60000;
@@ -41,6 +42,7 @@ namespace Ijepai.LabScheduler
         async void checkLabUptime_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
+
             {
                 if (conn.State != ConnectionState.Open)
                 {
@@ -55,10 +57,12 @@ namespace Ijepai.LabScheduler
 
             }
             SqlCommand labs = new SqlCommand("Select * from Labs where ((datediff(minute, start_time, getdate()) = -15) and (status = 'Scheduled'))", conn);
+
             SqlDataReader labsReader = labs.ExecuteReader();
             if (labsReader != null)
             {
                 try
+
                 {
                     while (labsReader.Read())
                     {
@@ -115,6 +119,7 @@ namespace Ijepai.LabScheduler
                 }
                 catch (Exception exc)
                 {
+
                     //Log Exception
                 }
             }
@@ -167,7 +172,7 @@ namespace Ijepai.LabScheduler
                         conn5.Open();
                         SqlCommand closeLabConfigOb = new SqlCommand("Delete from LabConfigurations where LabID = " + labID, conn5);
                         SqlDataReader closeLabConfigReader = closeLabConfigOb.ExecuteReader();
-                        conn5.Close();
+                        conn5.Close(); 
                         conn1.Close();
                         SqlConnection conn6 = new SqlConnection();
                         conn6.ConnectionString = ConnectionString;
@@ -241,7 +246,6 @@ namespace Ijepai.LabScheduler
             String[] emailComp = Username.Split('@');
             String[] domainComp = emailComp[1].Split('.');
             return Labname + emailComp[0] + "_" + domainComp[0];
-
         }
     }
 }
