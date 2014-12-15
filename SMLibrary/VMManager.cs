@@ -70,7 +70,44 @@ namespace SMLibrary
             }            
             return null;
         }
-        
+
+        private static X509Certificate2 FindX509Certificate(string thumbprint)
+        {
+            List<StoreLocation> locations = new List<StoreLocation>
+            { 
+                StoreLocation.CurrentUser, 
+                StoreLocation.LocalMachine
+            };
+            foreach (var location in locations)
+            {
+                X509Store store = new X509Store("My", location);
+                try
+                {
+                    store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+                    X509Certificate2Collection certificates = store.Certificates.Find(
+                        X509FindType.FindByThumbprint, thumbprint, false);
+                    if (certificates.Count == 1)
+                    {
+                        return certificates[0];
+                    }
+                }
+                finally
+                {
+                    store.Close();
+                }
+            }
+            throw new ArgumentException(string.Format("A Certificate with Thumbprint '{0}' could not be located.", thumbprint));
+        }
+
+        private static void ApplyNamespace(XElement parent, XNamespace nameSpace)
+        {
+            parent.Name = nameSpace + parent.Name.LocalName;
+            foreach (XElement child in parent.Elements())
+            {
+                ApplyNamespace(child, nameSpace);
+            }
+        }
+
         async public Task<XDocument> GetAzureSubscription()
         {
             String uri = String.Format("https://management.core.windows.net/{0}", _subscriptionid);
@@ -88,8 +125,7 @@ namespace SMLibrary
         {
             return _subscriptionid;
         }
-
-        
+ 
         async public Task<XDocument> GetUserVMImages()
         {
             HttpClient http = GetHttpClient();
@@ -185,8 +221,6 @@ namespace SMLibrary
             return requestID;
         }
 
-
-
         async public Task<String> CaptureVM(String ServiceName, String RoleName, string imageName)
         {
             String requestID = String.Empty;
@@ -244,6 +278,7 @@ namespace SMLibrary
 
             return requestID;
         }
+
         private HttpWebRequest CreateHttpWebRequest(Uri uri, String httpWebRequestMethod)
         {
             X509Certificate2 x509Certificate2 = FindX509Certificate(_certthumbprint);
@@ -255,7 +290,6 @@ namespace SMLibrary
             return httpWebRequest;
  }       
         
-
         async public Task<XDocument> GetAzureVMs()
         {
             List<XDocument> services = await GetAzureServices();
@@ -452,7 +486,6 @@ namespace SMLibrary
             return requestID;
         }
 
-
         async public Task<String> UpdateAzureVM(String ServiceName, String VMName, XDocument VMXML)
         {
             String requestID = String.Empty;
@@ -526,9 +559,6 @@ namespace SMLibrary
             return responseString;
         } 
 
-       
-       
-       
         public void DeleteRoleInstance(string roleInstanceNames, string cloudServiceName)
         {
             string endpoint = string.Format("https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/production/roleinstances/?comp=delete", _subscriptionid, cloudServiceName);
@@ -573,7 +603,6 @@ namespace SMLibrary
             }
         }
         
-
         async public Task<byte[]> GetRDPFile(String ServiceName, String vmName)
         {
             String deploymentName = await GetAzureDeploymentName(ServiceName);
@@ -915,49 +944,7 @@ namespace SMLibrary
                     done = true;
                 }
             }
-
             return result;
         }
-
-        private static X509Certificate2 FindX509Certificate(string thumbprint)
-        {
-            List<StoreLocation> locations = new List<StoreLocation>
-            { 
-                StoreLocation.CurrentUser, 
-                StoreLocation.LocalMachine
-            };
-            foreach (var location in locations)
-            {
-                X509Store store = new X509Store("My", location);
-                try
-                {
-                    store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                    X509Certificate2Collection certificates = store.Certificates.Find(
-                        X509FindType.FindByThumbprint, thumbprint, false);
-                    if (certificates.Count == 1)
-                    {
-                        return certificates[0];
-                    }
-                }
-                finally
-                {
-                    store.Close();
-                }
-            }
-            throw new ArgumentException(string.Format("A Certificate with Thumbprint '{0}' could not be located.",thumbprint));
-        }
-  
-
-        
-        
-        private static void ApplyNamespace(XElement parent, XNamespace nameSpace)
-        {
-            parent.Name = nameSpace + parent.Name.LocalName;
-            foreach (XElement child in parent.Elements())
-            {
-                ApplyNamespace(child, nameSpace);
-            }
-        }
-
     }
 }

@@ -78,7 +78,7 @@ namespace Ijepai.Web.Controllers.Dashboard
         public JsonResult GetQC()
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            var QCVM = db.QuickCreates.Select(l => new { l.ID, l.Name, l.Machine_Size, l.OSLabel, l.RecepientEmail }).ToList();
+            var QCVM = db.QuickCreates.Select(l => new { l.ID, l.Name, l.Machine_Size, l.OSLabel, l.RecepientEmail, l.ServiceName }).ToList();
             return Json(new { Status = 0, TotalItems = QCVM.Count(), rows = QCVM, org = Session["org"] });
         }
 
@@ -101,7 +101,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             string link = "http://vmengine.azurewebsites.net/?" + serviceName + ".cloudapp.net" + "/" + "administrator" + "/" + password;
             mail.Compose(link, model.RecepientEmail);
             mail.SendMail();
-            return Json(new { Status = 0, VMName = vmName, ServiceName = serviceName, id = model.ID });
+            return Json(new { Status = 0, VMName = vmName, ServiceName = serviceName });
         }
 
 
@@ -140,7 +140,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             return Json(new { Status = 0 });
         }
 
-        public async Task<JsonResult> GetVMStatus(string ServiceName, string VMName)
+        public async Task<JsonResult> GetVMStatus(string ServiceName, string VMName, string id)
         {
             VMManager vmm = GetVMM();
             string instanceStatus = string.Empty;
@@ -157,7 +157,8 @@ namespace Ijepai.Web.Controllers.Dashboard
                 InstanceStatus = instanceStatus,
                 PowerState = powerState,
                 VMName = VMName,
-                ServiceName = ServiceName
+                ServiceName = ServiceName,
+                id = id
             });
         }
 

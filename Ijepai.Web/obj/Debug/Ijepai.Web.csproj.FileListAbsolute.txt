@@ -209,7 +209,6 @@ D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Web.Razor.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Web.WebPages.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Web.WebPages.Deployment.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Web.WebPages.Razor.xml
-D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Newtonsoft.Json.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Antlr3.Runtime.pdb
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\EntityFramework.xml
 D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\EntityFramework.SqlServer.xml
@@ -230,3 +229,13 @@ D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.dll
 D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.pdb
 D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.Migrations.Initial.resources
 D:\work\c#\Ijepai-Poc\Ijepai.Web\obj\Debug\Ijepai.Web.csproj.GenerateResource.Cache
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.Data.Edm.dll
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.Data.OData.dll
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.WindowsAzure.Diagnostics.dll
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Management.Automation.dll
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Spatial.dll
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Windows.Forms.dll
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\MonAgentListener.dll
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.Data.Edm.xml
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\Microsoft.Data.OData.xml
+D:\work\c#\Ijepai-Poc\Ijepai.Web\bin\System.Spatial.xml

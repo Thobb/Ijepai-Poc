@@ -4,10 +4,10 @@
     id: "ID",
     columns: {
         Name: { title: "VM Name" },
-        Machine_Size: { title: "Machine Size" },
-        OSLabel: { title: "OS", style: "width: 185px" },
+        Machine_Size: { title: "Machine Size", style: "width: 185px" },
+        OSLabel: { title: "OS", style: "width: 285px" },
         RecepientEmail: { title: "Email Address", style: "width: 185px" },
-        Status: { title: "Status", style: "width: 100px" },
+        Status: { title: "Status", style: "width: 150px" },
         QCActions: { title: "Actions"}
     },
     actions: {
@@ -26,6 +26,40 @@
             }
         }
     },
+    rowData: {
+        ServiceName: {
+        },
+        Name: {
+        }
+    },
+    rowLoad: function (id) {
+        data = {
+            serviceName: Grids.QuickCreateGrid.rowData.ServiceName[i],
+            VMName: Grids.QuickCreateGrid.rowData.Name[i],
+            id: id
+        }
+        var statusTimerHandle = setInterval(function () {
+            $.ajax({
+                url: "/Dashboard/GetVMStatus",
+                type: "POST",
+                data: "ServiceName=" + data.serviceName + "&VMName=" + data.VMName + "&id=" + data.id,
+                success: function (data, status, xhr) {
+                    if (data.Status == "0") {
+                        if ((data.InstanceStatus == "ReadyRole") && (data.PowerState == "Started")) {
+                            $("#QC-" + data.id + " .Status").html("Running");
+                        } else {
+                            $("#QC-" + data.id + " .Status").html("Provisioning");
+                        }
+                    } else {
+                        alert("Some error occured");
+                    }
+                    if ((data.InstanceStatus == "ReadyRole") && (data.PowerState == "Started")) {
+                        clearInterval(statusTimerHandle);
+                    }
+                }
+            })
+        }, 10000);
+    },
     subgrid: false
 }
 
@@ -36,6 +70,7 @@ var Dashboard = {
             type: "POST",
             data: "id="+id,
             success: function () {
+                Grid.Load("#QC-list", "QuickCreateGrid");
                 //thisBtn.removeClass("glyphicon-play").addClass("glyphicon-stop").attr("title", "Click to stop the VM");
             }
         })
@@ -96,23 +131,7 @@ var Dashboard = {
 
 App.UpdateVMStatus = function (data) {
     Dashboard.hideQCForm();
-    var statusTimerHandle = setInterval(function () {
-        $.ajax({
-            url: "/Dashboard/GetVMStatus",
-            type: "POST",
-            data: "ServiceName=" + data.ServiceName + "&VMName=" + data.VMName + "&id=" + data.id,
-            success: function (data, status, xhr) {
-                if (data.Status == "0") {
-                    $("#QC-" + data.id + " .Status").html("<b>Machine state : <b>" + data.InstanceStatus + "<br><b>Power state : </b>" + data.PowerState);
-                } else {
-                    alert("Some error occured");
-                }
-                if ((data.InstanceStatus == "ReadyRole") && (data.PowerState == "Started")) {
-                    clearInterval(statusTimerHandle);
-                }
-            }
-        })
-    }, 10000);
+    Grid.Load("#QC-list", "QuickCreateGrid");
 }
 $(function () {
     Grid.Init("#QC-list", "QuickCreateGrid");

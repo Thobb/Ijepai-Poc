@@ -261,9 +261,6 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\jquery.datetimepicker.css" />
-    <Content Include="AddCertificate.cmd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Properties\PublishProfiles\ijepai.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Dashboard.js" />
@@ -639,9 +636,6 @@
     <Content Include="Scripts\Scripts.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Content\processing-request.png" />
-    <Content Include="Startup\winhttpcertcfg.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -691,15 +685,6 @@
     <Content Include="Views\Labs\_LabCreateFormPartial.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Scripts\jquery.validate.globalize.min.js.map" />
-    <Content Include="Startup\ijepaiDeploy.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Startup\ijepai.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Startup\IjepaiLatest.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

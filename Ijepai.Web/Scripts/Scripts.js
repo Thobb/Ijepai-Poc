@@ -230,6 +230,7 @@
                 if (data.Status == "0") {
                     if (rows.length != 0) {
                         var cols = config.columns;
+                        var rowData = config.rowData;
                         var classes = ["odd", "even"];
                         var hasSubgrid = config.subgrid;
                         var tbody = $("<tbody />");
@@ -281,7 +282,15 @@
                             for (field in cols) {
                                 tr.append($("<td>").addClass(field).append(rows[i][field]));
                             }
+                            if (rowData) {
+                                for (dataFrag in rowData) {
+                                    config.rowData[dataFrag][i] = rows[i][dataFrag];
+                                }
+                            }
                             tbody.append(tr);
+                            if (typeof (config.rowLoad) == "function") {
+                                config.rowLoad(rows[i][config.id]);
+                            }
                             if (hasSubgrid) {
                                 var colNum = 7;
                                 var subgridCols = config.subgridColumns;
@@ -292,7 +301,7 @@
                                 var subGridContainer = $("<div class=\"carved-box\" />");
                                 var loadScreen = $("<div class='load-screen' />");
                                 var subGrid = $("<table id=\"" + rows[i][config.id] + "-subgrid\" class=\"subgrid-table\" />");
-                                var head = $("<thead />")
+                                var head = $("<thead />");
                                 var headings = $("<tr />");
                                 headings.append("<th class='vm-status'></th>").append($("<th class=\"participant-index\">S No</th>"))
                                 for (j in subgridCols) {
