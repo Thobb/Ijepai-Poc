@@ -36,6 +36,7 @@ namespace Ijepai.Web.Controllers.Labs
                 Networked = (l.LabConfig == null)? "" : l.LabConfig.Networked,
                 OS = (l.LabConfig == null)? "" : l.LabConfig.OS,
                 VM_Type = (l.LabConfig == null)? "" : l.LabConfig.VM_Type,
+                Machine_Size = (l.LabConfig == null) ? "" : l.LabConfig.Machine_Size,
                 Hard_Disk = (l.LabConfig == null)? 0 : l.LabConfig.Hard_Disk
             });
             
@@ -109,7 +110,7 @@ namespace Ijepai.Web.Controllers.Labs
             {
                 if (Lab_ID != 0)
                 {
-                    if (newLabData.Networked != null)
+                    if (newLabData.OS != null)
                     {
                         ConfigureLab(newLabData, Lab_ID);
                     }
@@ -140,7 +141,8 @@ namespace Ijepai.Web.Controllers.Labs
             newLabConfig.Networked = newLabData.Networked;
             newLabConfig.OS = newLabData.OS;
             newLabConfig.VM_Count = newLabData.VM_Count;
-            newLabConfig.Hard_Disk = newLabData.Machine_Size;
+            newLabConfig.Machine_Size = newLabData.Machine_Size;
+           // newLabConfig.Hard_Disk = newLabData.;
             if (config == null)
             {
                 db.LabConfiguration.Add(newLabConfig);

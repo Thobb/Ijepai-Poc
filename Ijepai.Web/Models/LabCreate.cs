@@ -42,7 +42,7 @@ namespace Ijepai.Web.Models
 
         [Required(ErrorMessage = "Ram and processor specs are required.")]
         [Display(Name = "Machine Capacity")]
-        public double Machine_Size { get; set; }
+        public string Machine_Size { get; set; }
 
         [Display(Name = "Operating System")]
         public string OS { get; set; }

@@ -801,24 +801,6 @@ namespace SMLibrary
             return VMXML;
         }
 
-        //async public Task<Boolean> AddAzureImages()
-        //{
-
-        //    String uri = String.Format("https://management.core.windows.net/{0}/services/images", _subscriptionid);
-
-        //    HttpClient http = GetHttpClient();
-        //    Stream responseStream = await http.GetStreamAsync(uri);
-
-        //    if (responseStream != null)
-        //    {
-        //        XDocument xml = XDocument.Load(responseStream);
-        //        var images = xml.Root.Descendants(ns + "OSImage").Where(i => i.Element(ns + "OS").Value == "Windows");
-
-        //    }
-
-
-
-        //}
 
         public XDocument NewNetworkConfigurationSet(XDocument VMXML)
         {

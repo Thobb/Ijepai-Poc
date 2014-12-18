@@ -13,6 +13,7 @@ namespace Ijepai.Web.Models
         public Nullable<int> VM_Count { get; set; }
         public string VM_Type { get; set; }
         public double Hard_Disk { get; set; }
+        public string Machine_Size { get; set; }
         public string OS { get; set; }
         public string Networked { get; set; }
 

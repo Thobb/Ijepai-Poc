@@ -105,14 +105,6 @@ namespace Ijepai.Web.Controllers.Dashboard
         }
 
 
-        private static void ApplyNamespace(XElement parent, XNamespace nameSpace)
-        {
-            parent.Name = nameSpace + parent.Name.LocalName;
-            foreach (XElement child in parent.Elements())
-            {
-                ApplyNamespace(child, nameSpace);
-            }
-        }
         async public Task <JsonResult> DeleteQCVM(int id)
         {           
             VMManager vmm = new VMManager(ConfigurationManager.AppSettings["SubcriptionID"], ConfigurationManager.AppSettings["CertificateThumbprint"]);

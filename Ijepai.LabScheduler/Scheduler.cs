@@ -11,6 +11,7 @@ using SMLibrary;
 using System.Xml;
 using System.Xml.Linq;
 using IjepaiMailer;
+//using Ijepai.Logging;
 
 namespace Ijepai.LabScheduler
 {
@@ -53,10 +54,11 @@ namespace Ijepai.LabScheduler
             }
             catch (Exception ex)
             {
-                //Log exception message
+                //Log.Write(EventKind.Critical, Log.FormatExceptionInfo(ex), null);
+               
 
             }
-            SqlCommand labs = new SqlCommand("Select * from Labs where ((datediff(minute, start_time, getdate()) = -15) and (status = 'Scheduled'))", conn);
+            SqlCommand labs = new SqlCommand("Select * from Labs where ((datediff(minute, start_time, getdate()) = -6) and (status = 'Scheduled'))", conn);
 
             SqlDataReader labsReader = labs.ExecuteReader();
             if (labsReader != null)
@@ -67,58 +69,41 @@ namespace Ijepai.LabScheduler
                     while (labsReader.Read())
                     {
                         string labName = labsReader.GetString(1);
-                        int labID = labsReader.GetInt32(0);
-                        SqlConnection conn3 = new SqlConnection();
-                        conn3.ConnectionString = ConnectionString;
-                        conn3.Open();
-                        SqlCommand UserNameCmd = new SqlCommand("Select * from AspNetUsers where Id='" + labsReader.GetString(7) + "'", conn3);
+                        int labID = labsReader.GetInt32(0);                       
+                        SqlCommand UserNameCmd = new SqlCommand("Select * from AspNetUsers where Id='" + labsReader.GetString(7) + "'", conn);
                         SqlDataReader UserNameReader = UserNameCmd.ExecuteReader();
                         UserNameReader.Read();
-                        string UserName = UserNameReader.GetString(1);
-                        conn3.Close();
-                        SqlConnection conn1 = new SqlConnection();
-                        conn1.ConnectionString = ConnectionString;
-                        conn1.Open();
-                        SqlCommand participantList = new SqlCommand("Select * from LabParticipants where LabID = " + labID, conn1);
-                        SqlDataReader participantReader = participantList.ExecuteReader();
-                        SqlConnection conn5 = new SqlConnection();
-                        conn5.ConnectionString = ConnectionString;
-                        conn5.Open();
-                        SqlCommand labConfigOb = new SqlCommand("Select * from LabConfigurations where LabID = " + labID, conn5);
+                        string UserName = UserNameReader.GetString(1);                       
+                        SqlCommand participantList = new SqlCommand("Select * from LabParticipants where LabID = " + labID, conn);
+                        SqlDataReader participantReader = participantList.ExecuteReader();                     
+                        SqlCommand labConfigOb = new SqlCommand("Select * from LabConfigurations where LabID = " + labID, conn);
                         SqlDataReader labConfigReader = labConfigOb.ExecuteReader();
                         labConfigReader.Read();
                         string MachineSize = labConfigReader.GetString(6);
                         string OS = labConfigReader.GetString(4);
-                        conn5.Close();
                         String serviceName = string.Empty;
                         while (participantReader.Read())
                         {
+                            SqlCommand updateLabsStatus = new SqlCommand("update labs set status='Provisioning' where id = " + labID, conn);
+                            updateLabsStatus.ExecuteNonQuery();
                             string email = participantReader.GetString(1);
                             serviceName = CreateServiceName(labName, email);
-                            string machineLink = "http://ijepai.azurewebsites.net/" + serviceName + ".cloudapp.net" + "/" + "administrator" + "/" + password;
+                            string machineLink = "http://vmengine.azurewebsites.net/?" + serviceName + ".cloudapp.net" + "/" + "administrator" + "/" + password;
                             Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
                             mail.Compose(machineLink, email);
-
-                            bool status = await CreateVM(serviceName, serviceName, password, MachineSize, OS).ConfigureAwait(continueOnCapturedContext: false);
+                            bool status = await CreateVM(serviceName, "VM1", password, MachineSize, OS).ConfigureAwait(continueOnCapturedContext: false);
                             mail.SendMail();
                         }
-                        conn1.Close();
-                        SqlConnection conn4 = new SqlConnection();
-                        conn4.ConnectionString = ConnectionString;
-                        conn4.Open();
-                        SqlCommand updateLabsStatus = new SqlCommand("update labs set status='Provisioning' where id = " + labID, conn4);
-                        updateLabsStatus.ExecuteNonQuery();
-                        conn4.Close();
-                        SqlConnection conn6 = new SqlConnection();
-                        conn6.ConnectionString = ConnectionString;
-                        conn6.Open();
-                        SqlCommand addVMPath = new SqlCommand("insert into labvms VALUES (" + labID + "," + serviceName + ")", conn4);
-                        updateLabsStatus.ExecuteNonQuery();
-                        conn6.Close();
-                    }
+                        SqlCommand updateLabsStatusRunning = new SqlCommand("update labs set status='Available' where id = " + labID, conn);
+                        updateLabsStatusRunning.ExecuteNonQuery();
+                        
+                        SqlCommand addVMPath = new SqlCommand("insert into LabVMs VALUES ('" + labID + "','" + serviceName + "')", conn);
+                        addVMPath.ExecuteNonQuery();
+                      }
                 }
                 catch (Exception exc)
                 {
+                    //Log.Write(EventKind.Critical, Log.FormatExceptionInfo(exc), null);
 
                     //Log Exception
                 }
@@ -137,6 +122,7 @@ namespace Ijepai.LabScheduler
             }
             catch (Exception ex)
             {
+               // Log.Write(EventKind.Critical, Log.FormatExceptionInfo(ex), null);
                 //Log exception message
 
             }
@@ -149,48 +135,36 @@ namespace Ijepai.LabScheduler
                     while (closeLabsReader.Read())
                     {
                         string labName = closeLabsReader.GetString(1);
-                        int labID = closeLabsReader.GetInt32(0);
-                        SqlConnection conn2 = new SqlConnection();
-                        conn2.ConnectionString = ConnectionString;
-                        conn2.Open();
-                        SqlCommand VMList = new SqlCommand("Select * from from LabVMs where LabID = " + labID, conn2);
+                        int labID = closeLabsReader.GetInt32(0);                        
+                        SqlCommand VMList = new SqlCommand("Select * from LabVMs where Lab_ID = " + labID, conn);
                         SqlDataReader VMListReader = VMList.ExecuteReader();
                         while (VMListReader.Read())
                         {
+                            SqlCommand updateLabsStatus = new SqlCommand("update labs set status='Deleting' where id = " + labID, conn);
+                            updateLabsStatus.ExecuteNonQuery();
+
                             string serviceName = VMListReader.GetString(1);
+                            SqlCommand closeParticipantList = new SqlCommand("Delete from LabParticipants where LabID = " + labID, conn);
+                            SqlDataReader closeParticipantReader = closeParticipantList.ExecuteReader();
+
+                            SqlCommand closeLabConfigOb = new SqlCommand("Delete from LabConfigurations where LabID = " + labID, conn);
+                            SqlDataReader closeLabConfigReader = closeLabConfigOb.ExecuteReader();
+
+                            SqlCommand deleteVMPath = new SqlCommand("Delete from LabVMs where Lab_ID = " + labID, conn);
+                            deleteVMPath.ExecuteNonQuery();
+
+                            SqlCommand deleteLabsStatus = new SqlCommand("Delete from Labs where id = " + labID, conn);
+                            deleteLabsStatus.ExecuteNonQuery();
+                            
                             VMManager vmm = new VMManager(SubscriptionID, CertThumbPrint);
                             string status = await vmm.DeleteQCVM(serviceName).ConfigureAwait(continueOnCapturedContext: false);
                         }
-                        conn2.Close();
-                        SqlConnection conn1 = new SqlConnection();
-                        conn1.ConnectionString = ConnectionString;
-                        conn1.Open();
-                        SqlCommand closeParticipantList = new SqlCommand("Delete from from LabParticipants where LabID = " + labID, conn1);
-                        SqlDataReader closeParticipantReader = closeParticipantList.ExecuteReader();
-                        SqlConnection conn5 = new SqlConnection();
-                        conn5.ConnectionString = ConnectionString;
-                        conn5.Open();
-                        SqlCommand closeLabConfigOb = new SqlCommand("Delete from LabConfigurations where LabID = " + labID, conn5);
-                        SqlDataReader closeLabConfigReader = closeLabConfigOb.ExecuteReader();
-                        conn5.Close(); 
-                        conn1.Close();
-                        SqlConnection conn6 = new SqlConnection();
-                        conn6.ConnectionString = ConnectionString;
-                        conn6.Open();
-                        SqlConnection conn4 = new SqlConnection();
-                        conn4.ConnectionString = ConnectionString;
-                        conn4.Open();
-                        SqlCommand deleteLabsStatus = new SqlCommand("Delete from Labs where id = " + labID, conn4);
-                        deleteLabsStatus.ExecuteNonQuery();
-                        conn4.Close();
-                        SqlCommand deleteVMPath = new SqlCommand("delete from LabVMs where Lab_ID = " + labID, conn6);
-                        deleteVMPath.ExecuteNonQuery();
-                        conn6.Close();
                     }
                 }
                 catch (Exception exc)
                 {
                     //Log Exception
+                   // Log.Write(EventKind.Critical, Log.FormatExceptionInfo(exc), null);
                 }
             }
         }
@@ -245,7 +219,7 @@ namespace Ijepai.LabScheduler
         {
             String[] emailComp = Username.Split('@');
             String[] domainComp = emailComp[1].Split('.');
-            return Labname + emailComp[0] + "_" + domainComp[0];
+            return Labname + emailComp[0] + "-" + domainComp[0];
         }
     }
 }
