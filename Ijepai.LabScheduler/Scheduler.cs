@@ -95,7 +95,7 @@ namespace Ijepai.LabScheduler
                             string encUserName = StringCipher.Encrypt("administrator",passPhrase);
                             string encPassword = StringCipher.Encrypt(password,passPhrase);
 
-                            string machineLink = "http://vmengine.azurewebsites.net/?" + encService + "/" + encUserName + "/" + encPassword;
+                            string machineLink = "http://vmengine.azurewebsites.net/?" + StringCipher.initVector + "/" + "LB" + "/" + encService + "/" + encUserName + "/" + encPassword;
                             Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
                             mail.Compose(machineLink, email);
                             bool status = await CreateVM(serviceName, "VM1", password, MachineSize, OS).ConfigureAwait(continueOnCapturedContext: false);

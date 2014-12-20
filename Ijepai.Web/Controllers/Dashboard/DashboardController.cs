@@ -103,7 +103,7 @@ namespace Ijepai.Web.Controllers.Dashboard
             string encUserName = StringCipher.Encrypt("administrator", passPhrase);
             string encPassword = StringCipher.Encrypt(password, passPhrase);
 
-            string link = "http://vmengine.azurewebsites.net/?" + encService + "/" + encUserName + "/" + encPassword;
+            string link = "http://vmengine.azurewebsites.net/?" +StringCipher.initVector +"/" + "QC"+ "/"+ encService + "/" + encUserName + "/" + encPassword;
             Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
             mail.Compose(link, model.RecepientEmail);
             mail.SendMail();
