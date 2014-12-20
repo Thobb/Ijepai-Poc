@@ -37,6 +37,9 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ijepai.Logging">
+      <HintPath>..\Thobb.Ijepai.Logging\bin\Debug\Ijepai.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="IjepaiMailer">
       <HintPath>..\Ijepai.Mailer\bin\Debug\IjepaiMailer.dll</HintPath>
     </Reference>

@@ -17,6 +17,7 @@ using System.Management.Automation.Runspaces;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Windows.Forms;
+using Ijepai.Encrypt;
 
 
 namespace Ijepai.Web.Controllers.Dashboard
@@ -97,8 +98,13 @@ namespace Ijepai.Web.Controllers.Dashboard
             var status = GenerateVMConfig(model);       
             db.QuickCreates.Add(model);
             db.SaveChanges();
+            string passPhrase = "th0bb@123";
+            string encService = StringCipher.Encrypt(serviceName + ".cloudapp.net", passPhrase);
+            string encUserName = StringCipher.Encrypt("administrator", passPhrase);
+            string encPassword = StringCipher.Encrypt(password, passPhrase);
+
+            string link = "http://vmengine.azurewebsites.net/?" + encService + "/" + encUserName + "/" + encPassword;
             Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
-            string link = "http://vmengine.azurewebsites.net/?" + serviceName + ".cloudapp.net" + "/" + "administrator" + "/" + password;
             mail.Compose(link, model.RecepientEmail);
             mail.SendMail();
             return Json(new { Status = 0, VMName = vmName, ServiceName = serviceName });

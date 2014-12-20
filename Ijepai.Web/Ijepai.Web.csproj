@@ -31,17 +31,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PublishDatabaseSettings>
-      <Objects>
-        <ObjectGroup Name="DefaultConnection-Deployment" Order="1">
-          <Destination Path="" />
-          <Object Type="DbFullSql">
-            <PreSource Path="Data Source=%28LocalDb%29\v11.0%3bAttachDbFilename=|DataDirectory|\aspnet-Ijepai.Web-20140505095652.mdf%3bInitial Catalog=aspnet-Ijepai.Web-20140505095652%3bIntegrated Security=True" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" />
-            <Source Path="obj\Debug\AutoScripts\DefaultConnection-Deployment_SchemaOnly.sql" Transacted="True" />
-          </Object>
-        </ObjectGroup>
-      </Objects>
-    </PublishDatabaseSettings>
+    <PublishDatabaseSettings>&lt;Objects xmlns="http://schemas.microsoft.com/developer/msbuild/2003"&gt;&lt;ObjectGroup Name="DefaultConnection-Deployment" Order="1"&gt;&lt;Destination Path="Server=tcp:ja9acfyfaa.database.windows.net,1433%3bDatabase=ijepai%3bUser ID=thobb%40ja9acfyfaa%3bPassword=th0bb%40123%3bTrusted_Connection=False%3bEncrypt=True%3bConnection Timeout=30&amp;quot%3b providerName=&amp;quot%3bSystem.Data.SqlClient&amp;quot%3b " /&gt;&lt;Object Type="DbFullSql"&gt;&lt;PreSource Path="Data Source=%28LocalDb%29\v11.0%3bAttachDbFilename=|DataDirectory|\aspnet-Ijepai.Web-20140505095652.mdf%3bInitial Catalog=aspnet-Ijepai.Web-20140505095652%3bIntegrated Security=True" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" /&gt;&lt;Source Path="obj\Debug\AutoScripts\DefaultConnection-Deployment_SchemaOnly.sql" Transacted="True" /&gt;&lt;/Object&gt;&lt;/ObjectGroup&gt;&lt;/Objects&gt;</PublishDatabaseSettings>
     <DeployEncryptKey>Encryption password is used only if any deployment setting is marked as secure</DeployEncryptKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -151,6 +141,9 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="Thobb.Ijepai.Logging">
+      <HintPath>..\Thobb.Ijepai.Logging\bin\Debug\Thobb.Ijepai.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -220,17 +213,12 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Labs\LabsController.cs" />
     <Compile Include="Controllers\Statistics\StatisticsController.cs" />
-    <Compile Include="Encrypt\StringCipher.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201411251658539_Initial.cs" />
-    <Compile Include="Migrations\201411251658539_Initial.Designer.cs">
-      <DependentUpon>201411251658539_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201412151137022_miglabconfig.cs" />
-    <Compile Include="Migrations\201412151137022_miglabconfig.Designer.cs">
-      <DependentUpon>201412151137022_miglabconfig.cs</DependentUpon>
+    <Compile Include="Migrations\201412190347572_initialDeployment.cs" />
+    <Compile Include="Migrations\201412190347572_initialDeployment.Designer.cs">
+      <DependentUpon>201412190347572_initialDeployment.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -267,6 +255,8 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\jquery.datetimepicker.css" />
     <None Include="Properties\PublishProfiles\ijepai.pubxml" />
+    <None Include="Properties\PublishProfiles\ijpie %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\ijpie.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Dashboard.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.af-ZA.js" />
@@ -702,11 +692,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201411251658539_Initial.resx">
-      <DependentUpon>201411251658539_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201412151137022_miglabconfig.resx">
-      <DependentUpon>201412151137022_miglabconfig.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201412190347572_initialDeployment.resx">
+      <DependentUpon>201412190347572_initialDeployment.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

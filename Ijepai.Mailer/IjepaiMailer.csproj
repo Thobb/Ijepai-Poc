@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Encrypt\StringCipher.cs" />
     <Compile Include="Interface\IMailProvider.cs" />
     <Compile Include="Interface\IMailProviderFactory.cs" />
     <Compile Include="Mailer.cs" />

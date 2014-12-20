@@ -11,13 +11,15 @@ using SMLibrary;
 using System.Xml;
 using System.Xml.Linq;
 using IjepaiMailer;
+using Ijepai.Encrypt;
+
 //using Ijepai.Logging;
 
 namespace Ijepai.LabScheduler
 {
     public class Scheduler
     {
-        private const string ConnectionString = @"Data Source=(LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-Ijepai.Web-20140505095652.mdf;Initial Catalog=aspnet-Ijepai.Web-20140505095652;Integrated Security=True; MultipleActiveResultSets=true";
+        private const string ConnectionString = @"Server=tcp:ja9acfyfaa.database.windows.net,1433;Database=ijpie;User ID=thobb@ja9acfyfaa;Password=th0bb@123;Trusted_Connection=False;Encrypt=True;Connection Timeout=30; MultipleActiveResultSets=true";
         private const string SubscriptionID = "195686de-146a-4f9a-96c5-cd4071185af8";
         private const string CertThumbPrint = "2A82DC33E49F9CB2C7F12DE64859868387A7C69C";
         string password = "1234Test!";
@@ -84,11 +86,16 @@ namespace Ijepai.LabScheduler
                         String serviceName = string.Empty;
                         while (participantReader.Read())
                         {
+                            string passPhrase = "th0bb@123";
                             SqlCommand updateLabsStatus = new SqlCommand("update labs set status='Provisioning' where id = " + labID, conn);
                             updateLabsStatus.ExecuteNonQuery();
                             string email = participantReader.GetString(1);
                             serviceName = CreateServiceName(labName, email);
-                            string machineLink = "http://vmengine.azurewebsites.net/?" + serviceName + ".cloudapp.net" + "/" + "administrator" + "/" + password;
+                            string encService = StringCipher.Encrypt(serviceName+ ".cloudapp.net",passPhrase);
+                            string encUserName = StringCipher.Encrypt("administrator",passPhrase);
+                            string encPassword = StringCipher.Encrypt(password,passPhrase);
+
+                            string machineLink = "http://vmengine.azurewebsites.net/?" + encService + "/" + encUserName + "/" + encPassword;
                             Mailer mail = new Mailer("rahulkarn@gmail.com", "Ijepai");
                             mail.Compose(machineLink, email);
                             bool status = await CreateVM(serviceName, "VM1", password, MachineSize, OS).ConfigureAwait(continueOnCapturedContext: false);
